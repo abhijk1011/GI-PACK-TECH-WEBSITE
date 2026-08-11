@@ -18,11 +18,38 @@ Netlify DB (Postgres), and uploaded photographs live in Netlify Blobs.
 The repository is already connected. Three things need to be switched on before
 the site will work.
 
-### 1. Enable Netlify DB
+### 1. Connect a database
 
-In your Netlify project, open **Database** in the sidebar and create one.
-Netlify provisions a Postgres database and sets `NETLIFY_DATABASE_URL`
-automatically — you do not need to copy the connection string anywhere.
+Any Postgres works. The app uses `DATABASE_URL` if it is set, and otherwise
+falls back to `NETLIFY_DATABASE_URL`.
+
+**Easiest:** open **Database** in the Netlify sidebar and create one. Netlify
+provisions Postgres and sets `NETLIFY_DATABASE_URL` for you — nothing to copy.
+
+**Or bring your own.** Add the connection string as `DATABASE_URL` in the
+environment variables. Free options that suit this site:
+
+| Provider | Notes |
+| --- | --- |
+| **Neon** | Free tier. Sleeps when idle and wakes on the next request, adding a second or two. The same engine Netlify DB uses. |
+| **Supabase** | Free tier, but **pauses a project after 7 days with no activity** and needs resuming by hand. Risky for a site with quiet weeks unless you keep an eye on it. |
+| **Aiven** | Free Postgres plan, no idle pause. |
+
+Whichever you pick, use the **pooled** connection string if the provider offers
+one — serverless functions open many short connections. On Neon that is the
+host containing `-pooler`; on Supabase it is the connection pooler on port 6543.
+
+This site's content is a few megabytes at most, so free storage limits are not
+a concern.
+
+Test a connection string before deploying:
+
+```bash
+DATABASE_URL="postgresql://user:pass@host/db?sslmode=require" npm run db:check
+```
+
+It reports whether the connection works, which Postgres it reached, and how
+much content is loaded.
 
 ### 2. Set the environment variables
 
@@ -97,6 +124,7 @@ Website: <http://localhost:3000> · Admin panel: <http://localhost:3000/admin-pa
 | `npm run seed` | Creates tables and adds anything missing. Safe to re-run |
 | `npm run reset` | Wipes the content tables and reloads the catalogue from source |
 | `npm run smoke` | Checks that all 74 pages render and the admin panel is protected |
+| `npm run db:check` | Tests a database connection string and reports what is loaded |
 
 `npm run reset` discards content edits made in the admin panel. Enquiries,
 uploaded images and your login are never touched by either seed command.

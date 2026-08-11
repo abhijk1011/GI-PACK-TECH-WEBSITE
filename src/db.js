@@ -32,13 +32,23 @@ let driver = null;
  * session store can share it. Serverless containers are limited in how many
  * database connections they may hold, so a second pool is worth avoiding.
  */
+/*
+ * Hosted Postgres (Neon, Supabase, Aiven, Netlify DB) requires TLS but presents
+ * a chain the runtime does not carry a root for, so verification is relaxed.
+ * A local or explicitly plaintext database gets no TLS at all, otherwise the
+ * connection is refused.
+ */
+function sslFor(connectionString) {
+  if (/sslmode=disable/i.test(connectionString)) return false;
+  if (/@(localhost|127\.0\.0\.1)[:/]/.test(connectionString)) return false;
+  return { rejectUnauthorized: false };
+}
+
 if (!USE_PGLITE) {
   const { Pool } = require('pg');
   const pool = new Pool({
     connectionString: CONNECTION,
-    // Neon and most managed Postgres require TLS but present a chain the
-    // container does not carry a root for.
-    ssl: { rejectUnauthorized: false },
+    ssl: sslFor(CONNECTION),
     max: Number(process.env.PG_POOL_MAX || 3),
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 15_000,

@@ -2,7 +2,7 @@
   "name": "gi-packtech-website",
   "version": "1.0.0",
   "private": true,
-  "description": "GI PackTech — industrial flexible packaging website with admin panel",
+  "description": "GI PackTech \u2014 industrial flexible packaging website with admin panel",
   "main": "server.js",
   "engines": {
     "node": ">=18"
@@ -12,7 +12,8 @@
     "dev": "node --watch server.js",
     "seed": "node scripts/seed.js",
     "reset": "node scripts/seed.js --reset",
-    "smoke": "node scripts/smoke.js"
+    "smoke": "node scripts/smoke.js",
+    "db:check": "node scripts/db-check.js"
   },
   "dependencies": {
     "@netlify/blobs": "^10.7.12",
