@@ -59,9 +59,11 @@ much content is loaded.
 | Variable | Value |
 | --- | --- |
 | `SESSION_SECRET` | A long random string. Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
-| `NODE_ENV` | `production` |
 | `ADMIN_EMAIL` | The email you want to sign in with |
 | `ADMIN_PASSWORD` | A strong password. Only used the first time the database is seeded |
+
+Do not set `NODE_ENV=production` on Netlify: it makes npm skip devDependencies
+during the build. Secure cookies are enabled by detecting Netlify instead.
 
 Set `ADMIN_PASSWORD` **before the first deploy**. After the admin user exists,
 changing it here has no effect — use **Account & password** inside the panel.

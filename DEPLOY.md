@@ -37,8 +37,11 @@ Add a variable**. Add these four, one at a time.
 | --- | --- |
 | `DATABASE_URL` | The Neon connection string you copied |
 | `SESSION_SECRET` | Any long random text, 40+ characters. Mash the keyboard if you like — it is never typed again |
-| `NODE_ENV` | `production` |
 | `ADMIN_PASSWORD` | The password you want for the admin panel. Choose it now |
+
+**Do not add `NODE_ENV`.** Setting it to `production` makes npm skip part of
+the install during the build, which can break the deploy. The site already
+detects Netlify and secures its cookies without it.
 
 Optionally also add `ADMIN_EMAIL` if you want to sign in with something other
 than `admin@gipacktech.com`.

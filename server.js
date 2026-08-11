@@ -51,7 +51,10 @@ const sessionOptions = {
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    // HTTPS-only cookies in production. Netlify is always HTTPS, so this is
+    // detected rather than relying on NODE_ENV, which would make npm skip
+    // devDependencies during the build if it were set there.
+    secure: process.env.NODE_ENV === 'production' || Boolean(process.env.NETLIFY),
     maxAge: 1000 * 60 * 60 * 12,
   },
 };

@@ -10,14 +10,21 @@
   # is left alone.
   command = "npm run seed"
 
+[build.environment]
+  # Pinned so a change to Netlify's default cannot break a deploy.
+  NODE_VERSION = "20"
+  # NODE_ENV is deliberately not set here. Setting it to "production" makes
+  # npm skip devDependencies during the build.
+
 [functions]
   # The EJS templates are read at runtime, so they must travel with the bundle.
   node_bundler = "esbuild"
   included_files = ["views/**", "src/**"]
 
-  # PGlite is a 26 MB WebAssembly Postgres used only for local development.
-  # Bundling it would bloat the function past its size limit for no benefit.
-  external_node_modules = ["@electric-sql/pglite"]
+  # PGlite is not listed as an external module on purpose. It is a
+  # devDependency, so it may not be installed here, and asking the bundler to
+  # include a missing package fails the build. src/db.js builds its module id
+  # at runtime instead, which keeps it out of the bundle either way.
 
 [functions."server"]
   # Plenty for a page render; the default is lower on some plans.
