@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= seo.title %> · <%= s.company_name %> Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="side__brand" href="/admin-panel">
+      <img src="/img/logo-mark.svg" alt="">
+      <span>
+        <span class="side__brandname" style="display:block;"><%= s.company_name %></span>
+        <span class="side__brandsub">Admin panel</span>
+      </span>
+    </a>
+
+    <div class="side__h">Content</div>
+    <a class="side__link" href="/admin-panel" <%= currentPath === '/admin-panel' ? 'aria-current="page"' : '' %>>
+      <%- icon('grid', 15) %> Dashboard
+    </a>
+    <a class="side__link" href="/admin-panel/products" <%= currentPath.startsWith('/admin-panel/products') ? 'aria-current="page"' : '' %>>
+      <%- icon('layers', 15) %> Products
+    </a>
+    <a class="side__link" href="/admin-panel/r/categories" <%= currentPath.startsWith('/admin-panel/r/categories') ? 'aria-current="page"' : '' %>>
+      <%- icon('drum', 15) %> Categories
+    </a>
+    <a class="side__link" href="/admin-panel/pages" <%= currentPath.startsWith('/admin-panel/pages') ? 'aria-current="page"' : '' %>>
+      <%- icon('doc', 15) %> Pages &amp; sections
+    </a>
+    <a class="side__link" href="/admin-panel/r/industries" <%= currentPath.startsWith('/admin-panel/r/industries') ? 'aria-current="page"' : '' %>>
+      <%- icon('factory', 15) %> Industries
+    </a>
+    <a class="side__link" href="/admin-panel/r/roles" <%= currentPath.startsWith('/admin-panel/r/roles') ? 'aria-current="page"' : '' %>>
+      <%- icon('users', 15) %> Buyer roles
+    </a>
+    <a class="side__link" href="/admin-panel/r/materials" <%= currentPath.startsWith('/admin-panel/r/materials') ? 'aria-current="page"' : '' %>>
+      <%- icon('ruler', 15) %> Materials
+    </a>
+    <a class="side__link" href="/admin-panel/r/value_rows" <%= currentPath.startsWith('/admin-panel/r/value_rows') ? 'aria-current="page"' : '' %>>
+      <%- icon('calculator', 15) %> Value equation
+    </a>
+    <a class="side__link" href="/admin-panel/r/case_studies" <%= currentPath.startsWith('/admin-panel/r/case_studies') ? 'aria-current="page"' : '' %>>
+      <%- icon('check', 15) %> Case examples
+    </a>
+
+    <div class="side__h">Enquiries</div>
+    <a class="side__link" href="/admin-panel/enquiries" <%= currentPath.startsWith('/admin-panel/enquiries') ? 'aria-current="page"' : '' %>>
+      <%- icon('inbox', 15) %> Inbox
+      <% if (pendingEnquiries) { %><span class="side__count"><%= pendingEnquiries %></span><% } %>
+    </a>
+    <a class="side__link" href="/admin-panel/r/checklist_items" <%= currentPath.startsWith('/admin-panel/r/checklist_items') ? 'aria-current="page"' : '' %>>
+      <%- icon('doc', 15) %> Enquiry checklist
+    </a>
+
+    <div class="side__h">Site</div>
+    <a class="side__link" href="/admin-panel/media" <%= currentPath.startsWith('/admin-panel/media') ? 'aria-current="page"' : '' %>>
+      <%- icon('image', 15) %> Media library
+    </a>
+    <a class="side__link" href="/admin-panel/settings" <%= currentPath.startsWith('/admin-panel/settings') ? 'aria-current="page"' : '' %>>
+      <%- icon('settings', 15) %> Settings &amp; SEO
+    </a>
+    <a class="side__link" href="/admin-panel/r/redirects" <%= currentPath.startsWith('/admin-panel/r/redirects') ? 'aria-current="page"' : '' %>>
+      <%- icon('arrowUR', 15) %> Redirects
+    </a>
+
+    <div class="side__foot">
+      <a href="/" target="_blank" rel="noopener">View the website ↗</a>
+      <a href="/admin-panel/account">Account &amp; password</a>
+      <form method="post" action="/admin-panel/logout" style="margin-top:.4rem;">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="b b--ghost b--sm" type="submit" style="background:transparent;color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.2);">
+          Sign out
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <% if (typeof breadcrumb !== 'undefined' && breadcrumb) { %>
+          <div class="breadcrumb"><%- breadcrumb %></div>
+        <% } %>
+        <h1><%= seo.title %></h1>
+      </div>
+      <div class="topbar__right"><%- typeof topActions !== 'undefined' ? topActions : '' %></div>
+    </div>
+
+    <div class="content">
+      <% if (flash) { %>
+        <div class="msg msg--<%= flash.type === 'error' ? 'error' : 'ok' %>"><%= flash.message %></div>
+      <% } %>

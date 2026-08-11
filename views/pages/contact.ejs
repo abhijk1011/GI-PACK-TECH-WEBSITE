@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <p class="eyebrow"><%= b.hero_eyebrow %></p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= b.hero_heading %></h1>
+      <p class="lede" style="margin-top:1.5rem;"><%= b.intro %></p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="split" style="align-items:start;">
+        <div>
+          <% if (sent) { %>
+            <div class="notice" style="margin-bottom:2rem;">
+              <strong>Received.</strong> <%= s.enquiry_thanks %>
+            </div>
+          <% } %>
+
+          <form method="post" action="/enquiry" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrf %>">
+            <input type="hidden" name="source" value="contact">
+            <div style="position:absolute;left:-9999px;" aria-hidden="true">
+              <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <div class="formgrid">
+              <div class="field field--req">
+                <label class="field__label" for="name">Name</label>
+                <input type="text" id="name" name="name" required autocomplete="name">
+              </div>
+              <div class="field field--req">
+                <label class="field__label" for="company">Company</label>
+                <input type="text" id="company" name="company" required autocomplete="organization">
+              </div>
+              <div class="field field--req">
+                <label class="field__label" for="email">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+              </div>
+              <div class="field">
+                <label class="field__label" for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="message">What are you trying to protect?</label>
+              <textarea id="message" name="message" placeholder="The product, the container or machine, and the problem you are seeing."></textarea>
+              <span class="field__why">The more specific this is, the more useful the first reply will be</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn--primary" type="submit">
+                Send <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+              </button>
+              <a class="btn btn--ghost" href="/specify">Use the full specification form</a>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="spec">
+            <div class="spec__row">
+              <div class="spec__key">Contact</div>
+              <div class="spec__val"><%= s.contact_person %><br><span class="muted"><%= s.contact_title %></span></div>
+            </div>
+            <div class="spec__row">
+              <div class="spec__key">Phone</div>
+              <div class="spec__val"><a class="tlink" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a></div>
+            </div>
+            <div class="spec__row">
+              <div class="spec__key">Email</div>
+              <div class="spec__val"><a class="tlink" href="mailto:<%= s.email %>"><%= s.email %></a></div>
+            </div>
+            <% if (s.whatsapp) { %>
+              <div class="spec__row">
+                <div class="spec__key">WhatsApp</div>
+                <div class="spec__val"><a class="tlink" href="https://wa.me/<%= s.whatsapp %>" rel="noopener">Message us</a></div>
+              </div>
+            <% } %>
+            <div class="spec__row">
+              <div class="spec__key">Plant</div>
+              <div class="spec__val"><%= s.plant_address %></div>
+            </div>
+            <div class="spec__row">
+              <div class="spec__key">Mumbai office</div>
+              <div class="spec__val"><%= s.office_address %></div>
+            </div>
+            <div class="spec__row">
+              <div class="spec__key">GST</div>
+              <div class="spec__val"><%= s.gst_number %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

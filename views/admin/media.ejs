@@ -1,0 +1,59 @@
+<%- include('_head') %>
+
+<div class="panel">
+  <div class="panel__head"><h2>Upload</h2></div>
+  <div class="panel__body">
+    <form method="post" action="/admin-panel/media" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <div class="f">
+        <label class="f__label" for="images">Choose photographs</label>
+        <input type="file" id="images" name="images" accept="image/*" multiple required>
+        <div class="f__hint">
+          JPG, PNG, WebP, AVIF, GIF or SVG. Up to 8&nbsp;MB each. Select as many as you like at once —
+          this is the fastest way to load a batch from a photo shoot.
+        </div>
+      </div>
+      <button class="b b--primary" type="submit">Upload</button>
+    </form>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:1.25rem;">
+  <div class="panel__head">
+    <h2>Library</h2>
+    <span class="panel__note" style="margin-left:auto;"><%= media.length %> file<%= media.length === 1 ? '' : 's' %></span>
+  </div>
+  <div class="panel__body">
+    <% if (!media.length) { %>
+      <div class="empty">Nothing uploaded yet.</div>
+    <% } else { %>
+      <div class="mediagrid">
+        <% media.forEach(function(m){ %>
+          <div class="mediaitem">
+            <a href="<%= m.path %>" target="_blank" rel="noopener">
+              <img src="<%= m.path %>" alt="<%= m.alt %>" loading="lazy">
+            </a>
+            <div class="mediaitem__body">
+              <div class="mediaitem__name"><%= m.filename %></div>
+              <form method="post" action="/admin-panel/media/<%= m.id %>">
+                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                <input type="text" name="alt" value="<%= m.alt %>" placeholder="Alt text"
+                       style="width:100%;padding:.35rem .5rem;border:1px solid var(--a-line-2);border-radius:3px;font-size:.75rem;">
+                <div class="brow" style="margin-top:.45rem;">
+                  <button class="b b--ghost b--sm" type="submit">Save</button>
+                </div>
+              </form>
+              <form method="post" action="/admin-panel/media/<%= m.id %>/delete" style="margin-top:.35rem;"
+                    onsubmit="return confirm('Delete this file permanently?')">
+                <input type="hidden" name="_csrf" value="<%= csrf %>">
+                <button class="b b--danger b--sm" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('_foot') %>

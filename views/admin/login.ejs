@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · <%= s.company_name %> Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="loginwrap">
+    <div class="loginbox">
+      <div class="loginbox__brand">
+        <img src="/img/logo-mark.svg" alt="">
+        <span>
+          <span style="display:block;font-weight:700;font-size:1.05rem;letter-spacing:-.02em;"><%= s.company_name %></span>
+          <span style="font-family:var(--a-mono);font-size:.62rem;letter-spacing:.1em;color:var(--a-ink-3);text-transform:uppercase;">Admin panel</span>
+        </span>
+      </div>
+
+      <% if (error) { %><div class="msg msg--error"><%= error %></div><% } %>
+
+      <form method="post" action="/admin-panel/login">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <div class="f">
+          <label class="f__label" for="email">Email</label>
+          <input type="email" id="email" name="email" required autocomplete="username" autofocus>
+        </div>
+        <div class="f">
+          <label class="f__label" for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <button class="b b--primary" type="submit" style="width:100%;justify-content:center;">Sign in</button>
+      </form>
+
+      <p style="margin-top:1.5rem;font-size:.78rem;color:var(--a-ink-3);text-align:center;">
+        <a href="/" style="text-decoration:underline;">Back to the website</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

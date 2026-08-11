@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/industries">Industries</a><span>/</span>
+        <span style="color:var(--ink-3);"><%= industry.name %></span>
+      </nav>
+      <p class="eyebrow">Industry</p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= industry.name %></h1>
+
+      <% if (industry.problem_lead) { %>
+        <div class="problem" style="max-width:64ch;">
+          <div class="problem__label">What this sector loses</div>
+          <h2 class="problem__head" style="font-size:var(--step-1);"><%= industry.problem_lead %></h2>
+        </div>
+      <% } %>
+
+      <div class="prose" style="margin-top:1.5rem;">
+        <% h.paragraphs(industry.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div style="max-width:52ch;margin-bottom:2rem;">
+        <p class="eyebrow">Specified here</p>
+        <h2 class="h-section" style="font-size:var(--step-2);">Products built for this sector.</h2>
+      </div>
+      <div class="cards cards--3">
+        <% products.forEach(function(p){ %>
+          <%- include('../partials/product-card', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper section--rule">
+    <div class="wrap">
+      <p class="eyebrow">Other industries</p>
+      <div class="cards cards--4" style="margin-top:1.5rem;">
+        <% others.forEach(function(i){ %>
+          <a class="card" href="/industries/<%= i.slug %>">
+            <h3 class="card__title" style="font-size:.98rem;"><%= i.name %></h3>
+            <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

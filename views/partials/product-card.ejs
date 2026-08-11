@@ -1,0 +1,30 @@
+<article class="pcard">
+  <div class="pcard__media">
+    <% if (p.badge) { %><span class="badge"><%= p.badge %></span><% } %>
+    <% if (p.image) { %>
+      <img src="<%= p.image.path %>" alt="<%= p.image.alt || p.name %>" loading="lazy" width="600" height="450">
+    <% } else { %>
+      <div class="slot">
+        <div>
+          <%- icon('image', 26) %>
+          <span class="slot__label">Photograph to follow</span>
+        </div>
+      </div>
+    <% } %>
+  </div>
+  <div class="pcard__body">
+    <h3 class="pcard__title">
+      <a href="/products/<%= p.category_slug %>/<%= p.slug %>" style="position:static;">
+        <%= p.name %>
+      </a>
+    </h3>
+    <% if (p.tagline) { %><p class="pcard__tag"><%= p.tagline %></p><% } %>
+    <div class="pcard__foot">
+      <span class="num"><%= p.code %></span>
+      <span class="card__arrow"><%- icon('arrow', 16) %></span>
+    </div>
+  </div>
+  <a href="/products/<%= p.category_slug %>/<%= p.slug %>"
+     aria-label="<%= p.name %>"
+     style="position:absolute;inset:0;"></a>
+</article>

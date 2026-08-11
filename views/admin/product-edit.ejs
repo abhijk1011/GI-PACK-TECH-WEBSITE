@@ -1,0 +1,190 @@
+<%
+var breadcrumb = '<a href="/admin-panel/products">Products</a> / ' + (isNew ? 'New' : 'Edit');
+var topActions = (isNew || !categorySlug) ? '' :
+  '<a class="b b--ghost b--sm" href="/products/' + categorySlug + '/' + product.slug +
+  '" target="_blank" rel="noopener">View on site</a>';
+var groups = [];
+fields.forEach(function(f){
+  var g = f.group || 'Basics';
+  var found = groups.find(function(x){ return x.name === g; });
+  if (!found) groups.push({ name: g, fields: [f] });
+  else found.fields.push(f);
+});
+%>
+<%- include('_head') %>
+
+<form method="post" action="/admin-panel/products/<%= isNew ? 'new' : product.id %>">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+
+  <div class="grid" style="grid-template-columns: minmax(0,1fr) 320px; align-items:start;">
+    <div>
+      <div class="panel">
+        <div class="panel__head"><h2><%= isNew ? 'New product' : product.name %></h2></div>
+        <div class="panel__body">
+          <% groups.forEach(function(g){ %>
+            <div class="fgroup">
+              <div class="fgroup__h"><%= g.name %></div>
+              <% if (g.name === 'Basics') { %>
+                <div class="f">
+                  <label class="f__label" for="category_id">Category <span style="color:var(--a-orange);">*</span></label>
+                  <select id="category_id" name="category_id" required>
+                    <% categories.forEach(function(c){ %>
+                      <option value="<%= c.id %>" <%= Number(product.category_id) === c.id ? 'selected' : '' %>><%= c.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+              <% } %>
+              <div class="<%= g.name === 'Basics' || g.name === 'Admin notes' ? 'fgrid' : '' %>">
+                <% g.fields.forEach(function(f){ %>
+                  <%- include('_field', { f: f, value: product[f.key], media: media }) %>
+                <% }) %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="panel__head"><h2>Save</h2></div>
+        <div class="panel__body">
+          <button class="b b--primary" type="submit" style="width:100%;justify-content:center;">
+            <%= isNew ? 'Create product' : 'Save changes' %>
+          </button>
+          <p class="panel__note" style="margin-top:.75rem;">
+            <%= isNew ? 'Images can be added once the product exists.' : 'Changes appear on the website immediately.' %>
+          </p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><h2>Commonly specified with</h2></div>
+        <div class="panel__body">
+          <p class="panel__note" style="margin-bottom:.6rem;">
+            These appear at the bottom of the product page. This is the cross-sell block.
+          </p>
+          <div class="checklist">
+            <% allProducts.forEach(function(p){ %>
+              <label>
+                <input type="checkbox" name="related" value="<%= p.id %>" <%= related.indexOf(p.id) !== -1 ? 'checked' : '' %>>
+                <span><%= p.name %></span>
+              </label>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<% if (!isNew) { %>
+  <div class="panel" id="images" style="margin-top:1.25rem;">
+    <div class="panel__head">
+      <h2>Photographs</h2>
+      <span class="tag <%= images.length ? 'tag--on' : 'tag--warn' %>"><%= images.length %></span>
+    </div>
+
+    <% if (product.image_brief) { %>
+      <div class="panel__body" style="padding-bottom:0;">
+        <div class="msg msg--warn" style="margin:0;">
+          <strong>Shot brief:</strong> <%= product.image_brief %>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="panel__body">
+      <% if (!images.length) { %>
+        <p class="panel__note" style="margin-bottom:1rem;">
+          No photographs yet. The website shows a neutral “photograph to follow” panel in their place,
+          so the page still looks finished.
+        </p>
+      <% } %>
+
+      <% images.forEach(function(img){ %>
+        <div class="imgrow">
+          <img src="<%= img.path %>" alt="">
+          <div class="imgrow__fields">
+            <form method="post" action="/admin-panel/products/<%= product.id %>/images/<%= img.id %>">
+              <input type="hidden" name="_csrf" value="<%= csrf %>">
+              <div class="fgrid">
+                <div class="f">
+                  <label class="f__label">Alt text <span class="panel__note">(for search engines and screen readers)</span></label>
+                  <input type="text" name="alt" value="<%= img.alt %>">
+                </div>
+                <div class="f">
+                  <label class="f__label">Order</label>
+                  <input type="number" name="sort" value="<%= img.sort %>">
+                </div>
+              </div>
+              <div class="f">
+                <label class="f__label">Caption <span class="panel__note">(shown under the image)</span></label>
+                <input type="text" name="caption" value="<%= img.caption %>">
+              </div>
+              <div class="brow">
+                <button class="b b--ghost b--sm" type="submit">Save image</button>
+              </div>
+            </form>
+            <form method="post" action="/admin-panel/products/<%= product.id %>/images/<%= img.id %>/delete"
+                  style="margin-top:.5rem;" onsubmit="return confirm('Remove this image from the product?')">
+              <input type="hidden" name="_csrf" value="<%= csrf %>">
+              <button class="b b--danger b--sm" type="submit">Remove</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+
+      <form method="post" action="/admin-panel/products/<%= product.id %>/images"
+            enctype="multipart/form-data" style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--a-line);">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <div class="fgrid">
+          <div class="f">
+            <label class="f__label" for="images">Upload new photographs</label>
+            <input type="file" id="images" name="images" accept="image/*" multiple>
+            <div class="f__hint">JPG, PNG, WebP or SVG. Up to 8&nbsp;MB each. You can select several at once.</div>
+          </div>
+          <div class="f">
+            <label class="f__label" for="alt">Alt text</label>
+            <input type="text" id="alt" name="alt" placeholder="What the photograph shows">
+          </div>
+        </div>
+        <div class="f">
+          <label class="f__label" for="caption">Caption</label>
+          <input type="text" id="caption" name="caption">
+        </div>
+
+        <% if (media.length) { %>
+          <details style="margin-bottom:1rem;">
+            <summary style="cursor:pointer;font-size:.82rem;color:var(--a-ink-3);">Or attach one already in the media library</summary>
+            <div class="picker" style="margin-top:.6rem;">
+              <% media.forEach(function(m){ %>
+                <label>
+                  <input type="radio" name="existing_path" value="<%= m.path %>">
+                  <img src="<%= m.path %>" alt="<%= m.alt %>" loading="lazy">
+                </label>
+              <% }) %>
+            </div>
+          </details>
+        <% } %>
+
+        <button class="b b--primary" type="submit">Add photographs</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:1.25rem;">
+    <div class="panel__head"><h2>Danger zone</h2></div>
+    <div class="panel__body">
+      <form method="post" action="/admin-panel/products/<%= product.id %>/delete"
+            onsubmit="return confirm('Delete this product permanently? This cannot be undone.')">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <p class="panel__note" style="margin-bottom:.75rem;">
+          To take a product off the website without losing it, untick <strong>Published</strong> above instead.
+        </p>
+        <button class="b b--danger" type="submit">Delete this product</button>
+      </form>
+    </div>
+  </div>
+<% } %>
+
+<%- include('_foot') %>

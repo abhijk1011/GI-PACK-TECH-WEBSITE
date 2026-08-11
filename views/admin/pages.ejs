@@ -1,0 +1,36 @@
+<%- include('_head') %>
+
+<div class="panel">
+  <div class="panel__head">
+    <h2>Editable pages</h2>
+    <span class="panel__note" style="margin-left:auto;">
+      Every heading and paragraph on these pages can be changed here.
+    </span>
+  </div>
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>Page</th><th>Address</th><th style="width:110px;">Sections</th><th class="right" style="width:160px;">Actions</th></tr>
+      </thead>
+      <tbody>
+        <% pages.forEach(function(p){ %>
+          <tr>
+            <td><a href="/admin-panel/pages/<%= p.slug %>" style="font-weight:500;"><%= p.title %></a></td>
+            <td style="font-family:var(--a-mono);font-size:.76rem;color:var(--a-ink-3);">
+              <%= p.slug === 'home' ? '/' : '/' + p.slug %>
+            </td>
+            <td><span class="tag"><%= p.block_count %></span></td>
+            <td class="right">
+              <div class="brow" style="justify-content:flex-end;">
+                <a class="b b--ghost b--sm" href="/admin-panel/pages/<%= p.slug %>">Edit</a>
+                <a class="b b--ghost b--sm" href="<%= p.slug === 'home' ? '/' : '/' + p.slug %>" target="_blank" rel="noopener">View</a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('_foot') %>

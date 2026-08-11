@@ -1,0 +1,89 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="header">
+  <div class="wrap header__bar">
+    <a class="brand" href="/" aria-label="<%= s.company_name %> home">
+      <img class="brand__mark" src="<%= s.logo_path && s.logo_path !== '/img/logo.svg' ? s.logo_path : '/img/logo-mark.svg' %>" alt="" width="40" height="29">
+      <span class="brand__text">
+        <span class="brand__name">PackTech</span>
+        <span class="brand__tag">Since <%= s.established_year %> · Valsad</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <div class="nav__item" data-dropdown>
+        <button class="nav__link nav__toggle" type="button" aria-expanded="false">
+          Products <%- icon('chevron', 14) %>
+        </button>
+        <div class="nav__panel">
+          <% nav.categories.forEach(function(c){ %>
+            <a class="nav__panelitem" href="/products/<%= c.slug %>">
+              <span class="nav__panelnum"><%= c.number %></span>
+              <span>
+                <span class="nav__panelname"><%= c.name %></span>
+                <span class="nav__paneldesc"><%= c.tagline %></span>
+              </span>
+            </a>
+          <% }) %>
+          <a class="nav__panelitem" href="/products">
+            <span class="nav__panelnum">→</span>
+            <span>
+              <span class="nav__panelname">All products</span>
+              <span class="nav__paneldesc">The full range in one list</span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav__item" data-dropdown>
+        <button class="nav__link nav__toggle" type="button" aria-expanded="false">
+          Industries <%- icon('chevron', 14) %>
+        </button>
+        <div class="nav__panel">
+          <% nav.industries.forEach(function(i){ %>
+            <a class="nav__panelitem" href="/industries/<%= i.slug %>">
+              <span class="nav__panelnum">·</span>
+              <span><span class="nav__panelname"><%= i.name %></span></span>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <a class="nav__link" href="/materials">Materials</a>
+      <a class="nav__link" href="/capabilities">Capabilities</a>
+      <a class="nav__link" href="/about">About</a>
+      <a class="nav__link" href="/contact">Contact</a>
+      <a class="btn btn--primary btn--sm nav__cta" href="/specify">
+        <%= s.cta_primary || 'Specify your requirement' %>
+      </a>
+    </nav>
+
+    <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" data-burger>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobilenav" data-mobilenav>
+    <div class="wrap">
+      <span class="mono">Products</span>
+      <% nav.categories.forEach(function(c){ %>
+        <a href="/products/<%= c.slug %>"><%= c.name %></a>
+      <% }) %>
+      <a href="/products">All products</a>
+      <span class="mono">By role</span>
+      <% nav.roles.forEach(function(r){ %>
+        <a href="/for/<%= r.slug %>"><%= r.name %></a>
+      <% }) %>
+      <span class="mono">Company</span>
+      <a href="/industries">Industries</a>
+      <a href="/materials">Materials</a>
+      <a href="/capabilities">Capabilities</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <div style="padding: 1.25rem 0 2rem;">
+        <a class="btn btn--primary" href="/specify" style="width:100%;justify-content:center;">
+          <%= s.cta_primary || 'Specify your requirement' %>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

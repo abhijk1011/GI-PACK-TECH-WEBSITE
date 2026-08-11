@@ -1,0 +1,49 @@
+<%- include('_head') %>
+
+<div class="panel">
+  <div class="panel__head">
+    <div class="brow">
+      <a class="b <%= status === '' ? 'b--ink' : 'b--ghost' %> b--sm" href="/admin-panel/enquiries">All</a>
+      <a class="b <%= status === 'new' ? 'b--ink' : 'b--ghost' %> b--sm" href="/admin-panel/enquiries?status=new">New</a>
+      <a class="b <%= status === 'contacted' ? 'b--ink' : 'b--ghost' %> b--sm" href="/admin-panel/enquiries?status=contacted">Contacted</a>
+      <a class="b <%= status === 'quoted' ? 'b--ink' : 'b--ghost' %> b--sm" href="/admin-panel/enquiries?status=quoted">Quoted</a>
+      <a class="b <%= status === 'closed' ? 'b--ink' : 'b--ghost' %> b--sm" href="/admin-panel/enquiries?status=closed">Closed</a>
+    </div>
+    <span class="panel__note" style="margin-left:auto;"><%= enquiries.length %> shown</span>
+  </div>
+
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:90px;">Date</th>
+          <th>Contact</th>
+          <th>Company</th>
+          <th>Product</th>
+          <th style="width:100px;">Status</th>
+          <th class="right" style="width:80px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!enquiries.length) { %>
+          <tr><td colspan="6"><div class="empty">No enquiries here yet.</div></td></tr>
+        <% } %>
+        <% enquiries.forEach(function(e){ %>
+          <tr>
+            <td style="font-family:var(--a-mono);font-size:.74rem;color:var(--a-ink-3);"><%= e.created_at.slice(0, 10) %></td>
+            <td>
+              <a href="/admin-panel/enquiries/<%= e.id %>" style="font-weight:500;"><%= e.name || 'Unnamed' %></a>
+              <div style="font-size:.75rem;color:var(--a-ink-3);"><%= e.email %></div>
+            </td>
+            <td style="font-size:.82rem;"><%= e.company %></td>
+            <td style="font-size:.8rem;color:var(--a-ink-3);"><%= e.product || '—' %></td>
+            <td><span class="tag <%= e.status === 'new' ? 'tag--new' : '' %>"><%= e.status %></span></td>
+            <td class="right"><a class="b b--ghost b--sm" href="/admin-panel/enquiries/<%= e.id %>">Open</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('_foot') %>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <p class="eyebrow"><%= b.hero_eyebrow %></p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:22ch;"><%= b.hero_heading %></h1>
+      <p class="lede" style="margin-top:1.5rem;"><%= b.intro %></p>
+      <div class="btn-row" style="margin-top:2rem;">
+        <a class="btn btn--primary" href="/specify">
+          <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <p class="eyebrow">In-house processes</p>
+      <div class="cards cards--3" style="margin-top:1.5rem;">
+        <% [
+          ['Lamination', 'Multilayer and aluminium foil laminate structures, including 5 and 6 layer constructions with nylon and polyester.'],
+          ['Extrusion', 'Co-extruded films engineered to get more strength from less material, and to carry EVOH or conductive layers.'],
+          ['Cutting and fabrication', 'Any diameter from 6 to 100 inches, any machine profile, from a one-off cover to a bulk production run.'],
+          ['Heat sealing', 'The seal is where barrier films are made or lost. Seal specification is developed and tested before dispatch.'],
+          ['Vacuum and VCI', 'Vacuum drawing, heat sealing and VCI formulation matched to the metal and the sealed volume.'],
+          ['R&D and quality', 'Material compatibility worked out against your product data sheet before anything is quoted.']
+        ].forEach(function(item, i){ %>
+          <div class="card">
+            <span class="card__num">0<%= i + 1 %></span>
+            <h2 class="card__title"><%= item[0] %></h2>
+            <p class="card__desc"><%= item[1] %></p>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper section--rule">
+    <div class="wrap">
+      <div class="split" style="align-items:start;">
+        <div>
+          <p class="eyebrow">What we need from you</p>
+          <h2 class="h-section" style="font-size:var(--step-2);margin-bottom:1.5rem;">
+            One drawing usually replaces three phone calls.
+          </h2>
+          <ul class="ticklist ticklist--orange">
+            <li><%- icon('doc', 16) %><span>A machine general arrangement drawing</span></li>
+            <li><%- icon('drum', 16) %><span>The drum's measured internal diameter and height, or one sample drum</span></li>
+            <li><%- icon('doc', 16) %><span>The product data sheet, so material compatibility can be confirmed</span></li>
+            <li><%- icon('doc', 16) %><span>A method statement, where the work is on a licensed site</span></li>
+            <li><%- icon('grid', 16) %><span>A container load plan, where the question is freight efficiency</span></li>
+          </ul>
+          <div class="btn-row" style="margin-top:2rem;">
+            <a class="btn btn--ink" href="/specify">Send it through <span class="btn__arrow"><%- icon('arrow', 16) %></span></a>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">Product families</p>
+          <div class="cards cards--2" style="grid-template-columns:1fr;">
+            <% categories.forEach(function(c){ %>
+              <a class="card" href="/products/<%= c.slug %>" style="padding:1.25rem 1.5rem;">
+                <span class="card__num"><%= c.number %></span>
+                <h3 class="card__title" style="font-size:1rem;"><%= c.name %></h3>
+                <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+              </a>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Materials we work in</p>
+      <div class="tablewrap" style="margin-top:1.5rem;">
+        <table class="dtable">
+          <thead>
+            <tr><th scope="col">Material</th><th scope="col">Main property</th><th scope="col">Usually specified for</th></tr>
+          </thead>
+          <tbody>
+            <% materials.forEach(function(m){ %>
+              <tr>
+                <td><%= m.name %></td>
+                <td style="color:var(--ink-2);"><%= m.main_property %></td>
+                <td style="color:var(--ink-3);"><%= m.specified_for %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1.25rem;"><a class="tlink" href="/materials">Full material reference <%- icon('arrow', 15) %></a></p>
+    </div>
+  </section>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

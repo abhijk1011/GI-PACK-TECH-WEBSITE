@@ -1,0 +1,69 @@
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__brand">
+          <img src="/img/logo-mark.svg" alt="" width="40" height="29" style="width:40px;height:auto;">
+          <span class="brand__text">
+            <span class="brand__name" style="color:#fff;"><%= s.company_name %></span>
+          </span>
+        </div>
+        <p class="footer__line"><%= s.positioning_line %></p>
+        <div class="footer__creds" style="margin-top:1.5rem;">
+          <% if (s.show_iso === '1' && s.iso_text) { %><span><%= s.iso_text %></span><% } %>
+          <span><%= s.nature_of_business %></span>
+          <span>Est. <%= s.established_year %></span>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="footer__h">Products</h2>
+        <ul class="footer__list">
+          <% nav.categories.forEach(function(c){ %>
+            <li><a href="/products/<%= c.slug %>"><%= c.short_name || c.name %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer__h">Company</h2>
+        <ul class="footer__list">
+          <li><a href="/about">About</a></li>
+          <li><a href="/capabilities">Capabilities</a></li>
+          <li><a href="/industries">Industries</a></li>
+          <li><a href="/materials">Material reference</a></li>
+          <li><a href="/specify">Specify a requirement</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer__h">Contact</h2>
+        <ul class="footer__list">
+          <li><a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a></li>
+          <li><a href="mailto:<%= s.email %>"><%= s.email %></a></li>
+          <% if (s.whatsapp) { %>
+            <li><a href="https://wa.me/<%= s.whatsapp %>" rel="noopener">WhatsApp</a></li>
+          <% } %>
+        </ul>
+        <h2 class="footer__h" style="margin-top:1.75rem;">Plant</h2>
+        <p style="color:rgba(255,255,255,.6);font-size:.86rem;line-height:1.6;"><%= s.plant_address %></p>
+        <% if (s.linkedin_url || s.facebook_url || s.instagram_url || s.youtube_url) { %>
+          <ul class="footer__list" style="margin-top:1.25rem;">
+            <% if (s.linkedin_url) { %><li><a href="<%= s.linkedin_url %>" rel="noopener">LinkedIn</a></li><% } %>
+            <% if (s.instagram_url) { %><li><a href="<%= s.instagram_url %>" rel="noopener">Instagram</a></li><% } %>
+            <% if (s.facebook_url) { %><li><a href="<%= s.facebook_url %>" rel="noopener">Facebook</a></li><% } %>
+            <% if (s.youtube_url) { %><li><a href="<%= s.youtube_url %>" rel="noopener">YouTube</a></li><% } %>
+          </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>&copy; <%= new Date().getFullYear() %> <%= s.company_name %>. <%= s.company_descriptor %>.</span>
+      <span>GST <%= s.gst_number %></span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+<%- s.body_scripts || '' %>

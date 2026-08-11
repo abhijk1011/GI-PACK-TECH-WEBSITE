@@ -1,0 +1,66 @@
+<%- include('_head') %>
+
+<form method="post" action="/admin-panel/settings">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+
+  <div class="grid" style="grid-template-columns: minmax(0,1fr) 300px; align-items:start;">
+    <div>
+      <% Object.keys(groups).forEach(function(groupName){ %>
+        <div class="panel">
+          <div class="panel__head"><h2><%= groupName %></h2></div>
+          <div class="panel__body">
+            <% if (groupName === 'SEO') { %>
+              <div class="msg msg--warn" style="margin-bottom:1.25rem;">
+                Set <strong>Site URL</strong> to your real domain once you have bought it. It is used for
+                canonical links, the sitemap and social sharing cards, so search engines index the right address.
+              </div>
+            <% } %>
+            <div class="<%= ['Identity','Contact','Credentials','Social'].indexOf(groupName) !== -1 ? 'fgrid' : '' %>">
+              <% groups[groupName].forEach(function(row){ %>
+                <%- include('_field', {
+                  f: {
+                    key: row.key,
+                    label: row.label || row.key,
+                    hint: row.hint,
+                    type: row.input_type
+                  },
+                  value: row.value,
+                  media: media
+                }) %>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="panel__head"><h2>Save</h2></div>
+        <div class="panel__body">
+          <button class="b b--primary" type="submit" style="width:100%;justify-content:center;">Save settings</button>
+          <p class="panel__note" style="margin-top:.75rem;">
+            These values appear across the whole website — header, footer, contact page and every
+            page's search engine listing.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><h2>Going live checklist</h2></div>
+        <div class="panel__body">
+          <ul style="display:grid;gap:.6rem;font-size:.83rem;color:var(--a-ink-2);">
+            <li>1. Buy the domain and point it at the server</li>
+            <li>2. Set <strong>Site URL</strong> above to that domain</li>
+            <li>3. Turn on <strong>Allow search engines</strong></li>
+            <li>4. Move the email address to the new domain</li>
+            <li>5. Paste the Search Console verification into <strong>Custom head code</strong></li>
+            <li>6. Submit <a href="/sitemap.xml" target="_blank" rel="noopener" style="text-decoration:underline;">/sitemap.xml</a> to Google</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<%- include('_foot') %>

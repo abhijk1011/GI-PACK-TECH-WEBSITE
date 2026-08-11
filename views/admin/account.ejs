@@ -1,0 +1,48 @@
+<%- include('_head') %>
+
+<div class="grid" style="grid-template-columns: minmax(0,560px); align-items:start;">
+  <div>
+    <% if (error) { %><div class="msg msg--error"><%= error %></div><% } %>
+
+    <form method="post" action="/admin-panel/account">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+
+      <div class="panel">
+        <div class="panel__head"><h2>Your details</h2></div>
+        <div class="panel__body">
+          <div class="f">
+            <label class="f__label">Email</label>
+            <input type="text" value="<%= adminUser.email %>" disabled style="background:#F4F6F8;color:var(--a-ink-3);">
+            <div class="f__hint">This is the address you sign in with.</div>
+          </div>
+          <div class="f">
+            <label class="f__label" for="name">Name</label>
+            <input type="text" id="name" name="name" value="<%= adminUser.name %>">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head"><h2>Change password</h2></div>
+        <div class="panel__body">
+          <div class="f">
+            <label class="f__label" for="current">Current password</label>
+            <input type="password" id="current" name="current" autocomplete="current-password">
+          </div>
+          <div class="f">
+            <label class="f__label" for="next">New password</label>
+            <input type="password" id="next" name="next" autocomplete="new-password">
+            <div class="f__hint">At least 10 characters. Leave blank to keep your current password.</div>
+          </div>
+          <div class="f">
+            <label class="f__label" for="confirm">Confirm new password</label>
+            <input type="password" id="confirm" name="confirm" autocomplete="new-password">
+          </div>
+          <button class="b b--primary" type="submit">Save changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('_foot') %>

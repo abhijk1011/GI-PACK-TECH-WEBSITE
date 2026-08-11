@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <p class="eyebrow">Industries</p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:24ch;">
+        Different sectors, the same question: what is this protecting?
+      </h1>
+      <p class="lede" style="margin-top:1.5rem;">
+        Every product is built to order, so the specification starts from your product, your container
+        and your route &mdash; not from a standard range.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="cards cards--2">
+        <% industries.forEach(function(i){ %>
+          <a class="card" href="/industries/<%= i.slug %>">
+            <h2 class="card__title"><%= i.name %></h2>
+            <% if (i.problem_lead) { %>
+              <p style="color:var(--orange);font-size:.9rem;font-weight:500;line-height:1.45;"><%= i.problem_lead %></p>
+            <% } %>
+            <p class="card__desc"><%= i.applications %></p>
+            <span class="card__meta">
+              <span></span>
+              <span class="card__arrow"><%- icon('arrow', 16) %></span>
+            </span>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

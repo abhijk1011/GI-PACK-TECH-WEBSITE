@@ -1,0 +1,74 @@
+<% var topActions = '<a class="b b--primary b--sm" href="/admin-panel/products/new">New product</a>' %>
+<%- include('_head') %>
+
+<div class="panel">
+  <div class="panel__head">
+    <form class="searchbar" method="get" action="/admin-panel/products">
+      <input type="text" name="q" value="<%= q %>" placeholder="Search name or code…">
+      <select name="category">
+        <option value="">All categories</option>
+        <% categories.forEach(function(c){ %>
+          <option value="<%= c.slug %>" <%= category === c.slug ? 'selected' : '' %>><%= c.name %></option>
+        <% }) %>
+      </select>
+      <button class="b b--ghost b--sm" type="submit">Filter</button>
+      <% if (q || category) { %><a class="b b--ghost b--sm" href="/admin-panel/products">Clear</a><% } %>
+    </form>
+    <span class="panel__note" style="margin-left:auto;"><%= products.length %> shown</span>
+  </div>
+
+  <div class="tblwrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:60px;">Image</th>
+          <th style="width:56px;">Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th style="width:70px;">Photos</th>
+          <th style="width:90px;">Status</th>
+          <th class="right" style="width:150px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!products.length) { %>
+          <tr><td colspan="7"><div class="empty">No products match that filter.</div></td></tr>
+        <% } %>
+        <% products.forEach(function(p){ %>
+          <% var img = h.primaryImage(p.id); %>
+          <tr>
+            <td>
+              <% if (img) { %>
+                <img class="tbl__thumb" src="<%= img.path %>" alt="" loading="lazy">
+              <% } else { %>
+                <div class="tbl__thumb" style="display:grid;place-items:center;background:#F0F2F5;color:#A9B4C0;">
+                  <%- icon('image', 14) %>
+                </div>
+              <% } %>
+            </td>
+            <td><span style="font-family:var(--a-mono);font-size:.75rem;color:var(--a-ink-3);"><%= p.code %></span></td>
+            <td>
+              <a href="/admin-panel/products/<%= p.id %>" style="font-weight:500;"><%= p.name %></a>
+              <% if (p.featured) { %> <span class="tag tag--new">Featured</span><% } %>
+            </td>
+            <td style="color:var(--a-ink-3);font-size:.8rem;"><%= p.category_name %></td>
+            <td>
+              <span class="tag <%= p.image_count ? 'tag--on' : 'tag--warn' %>"><%= p.image_count %></span>
+            </td>
+            <td>
+              <span class="tag <%= p.published ? 'tag--on' : 'tag--off' %>"><%= p.published ? 'Live' : 'Draft' %></span>
+            </td>
+            <td class="right">
+              <div class="brow" style="justify-content:flex-end;">
+                <a class="b b--ghost b--sm" href="/admin-panel/products/<%= p.id %>">Edit</a>
+                <a class="b b--ghost b--sm" href="/products/<%= p.category_slug %>/<%= p.slug %>" target="_blank" rel="noopener">View</a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('_foot') %>

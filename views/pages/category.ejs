@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/products">Products</a><span>/</span>
+        <span style="color:var(--ink-3);"><%= category.name %></span>
+      </nav>
+      <p class="eyebrow"><%= category.number %> / <%= s.stat_categories %> &nbsp;·&nbsp; <%= products.length %> products</p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= category.name %></h1>
+      <% if (category.problem_lead) { %>
+        <p class="lede" style="margin-top:1.5rem;color:var(--orange);font-weight:500;max-width:56ch;">
+          <%= category.problem_lead %>
+        </p>
+      <% } %>
+      <div class="prose" style="margin-top:1.5rem;">
+        <% h.paragraphs(category.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="cards cards--3">
+        <% products.forEach(function(p){ %>
+          <%- include('../partials/product-card', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper section--rule">
+    <div class="wrap">
+      <p class="eyebrow">Other categories</p>
+      <div class="cards cards--4" style="margin-top:1.5rem;">
+        <% others.forEach(function(c){ %>
+          <a class="card" href="/products/<%= c.slug %>">
+            <span class="card__num"><%= c.number %></span>
+            <h3 class="card__title" style="font-size:1rem;"><%= c.short_name || c.name %></h3>
+            <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

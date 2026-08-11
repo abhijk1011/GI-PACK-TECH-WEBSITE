@@ -1,0 +1,17 @@
+node_modules/
+.env
+
+# Local database. Rebuilt from source with `npm run seed`.
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Images uploaded through the admin panel.
+public/uploads/*
+!public/uploads/.gitkeep
+
+.DS_Store
+npm-debug.log*
+*.log

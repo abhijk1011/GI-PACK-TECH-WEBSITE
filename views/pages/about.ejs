@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section section--tight gridbg">
+    <div class="wrap">
+      <p class="eyebrow"><%= b.hero_eyebrow %></p>
+      <h1 class="h-hero" style="font-size:var(--step-4);max-width:22ch;"><%= b.hero_heading %></h1>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="split" style="align-items:start;">
+        <div class="prose" style="font-size:var(--step-1);line-height:1.55;">
+          <% h.paragraphs(b.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+        </div>
+        <div>
+          <div class="spec">
+            <div class="spec__row"><div class="spec__key">Nature of business</div><div class="spec__val"><%= s.nature_of_business %></div></div>
+            <div class="spec__row"><div class="spec__key">Established</div><div class="spec__val"><%= s.established_year %></div></div>
+            <div class="spec__row"><div class="spec__key">Legal status</div><div class="spec__val"><%= s.legal_status %></div></div>
+            <div class="spec__row"><div class="spec__key">Plant</div><div class="spec__val"><%= s.plant_address %></div></div>
+            <div class="spec__row"><div class="spec__key">Office</div><div class="spec__val"><%= s.office_address %></div></div>
+            <div class="spec__row"><div class="spec__key">Employees</div><div class="spec__val"><%= s.employees %></div></div>
+            <div class="spec__row"><div class="spec__key">GST</div><div class="spec__val"><%= s.gst_number %></div></div>
+            <% if (s.show_iso === '1' && s.iso_text) { %>
+              <div class="spec__row"><div class="spec__key">Quality</div><div class="spec__val"><%= s.iso_text %></div></div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper section--rule">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">What we believe</p>
+      <h2 class="h-section" style="margin-bottom:1.75rem;"><%= b.belief_heading %></h2>
+      <div class="prose" style="max-width:none;">
+        <% h.paragraphs(b.belief_body).forEach(function(para){ %><p><%= para %></p><% }) %>
+      </div>
+      <blockquote style="margin:3rem 0 0;padding:2rem;border-left:3px solid var(--orange);background:var(--paper);">
+        <p style="font-family:var(--font-display);font-size:var(--step-2);font-weight:500;letter-spacing:-0.02em;line-height:1.25;">
+          <%= s.positioning_line %>
+        </p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">How we work</p>
+      <h2 class="h-section" style="margin-bottom:1.75rem;"><%= b.refuse_heading %></h2>
+      <div class="prose" style="max-width:none;">
+        <% h.paragraphs(b.refuse_body).forEach(function(para){ %><p><%= para %></p><% }) %>
+      </div>
+    </div>
+  </section>
+
+  <% if (proof.length) { %>
+    <section class="section section--paper section--rule">
+      <div class="wrap">
+        <p class="eyebrow">Real work</p>
+        <div class="gallerystrip" style="margin-top:1.5rem;">
+          <% proof.forEach(function(img){ %>
+            <figure>
+              <img src="<%= img.path %>" alt="<%= img.alt %>" loading="lazy" width="500" height="375">
+              <figcaption><%= img.caption || img.alt %></figcaption>
+            </figure>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
