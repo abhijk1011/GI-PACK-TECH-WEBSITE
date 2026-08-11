@@ -15,8 +15,9 @@ Netlify DB (Postgres), and uploaded photographs live in Netlify Blobs.
 
 ## Deploying to Netlify
 
-The repository is already connected. Three things need to be switched on before
-the site will work.
+**For step-by-step instructions with nothing assumed, see [DEPLOY.md](DEPLOY.md).**
+
+The summary is below. Three things need to be switched on before the site works.
 
 ### 1. Connect a database
 
