@@ -35,6 +35,16 @@ const PUBLIC_DIR = resolveDir('public');
 
 // Behind Netlify's edge (or any reverse proxy) so secure cookies work.
 app.set('trust proxy', 1);
+
+/*
+ * Express normally loads its template engine with require(extension), computed
+ * at runtime. A bundler cannot see through that, so EJS was left out of the
+ * deployed function and every page failed with "Cannot find module 'ejs'".
+ * Registering the engine here makes the dependency explicit: the require is
+ * now static, so it is bundled, and Express uses the registered engine instead
+ * of trying to resolve one itself.
+ */
+app.engine('ejs', require('ejs').__express);
 app.set('view engine', 'ejs');
 app.set('views', VIEWS_DIR);
 
@@ -153,12 +163,54 @@ app.use((req, res) => {
   });
 });
 
-// 500
+/*
+ * 500.
+ *
+ * The failure may have happened before the per-request middleware populated
+ * res.locals — a database outage, for instance — in which case the error page
+ * has no settings or navigation to render with and would fail too, replacing a
+ * readable page with a raw stack trace. So the values it needs are filled in
+ * defensively, and there is a plain fallback if rendering still cannot succeed.
+ */
+const FALLBACK_LOCALS = {
+  company_name: 'GI PackTech',
+  company_descriptor: 'Industrial Flexible Innovative Packaging Solutions',
+  established_year: '2006',
+  phone: '',
+  email: '',
+  plant_address: '',
+  gst_number: '',
+  positioning_line: '',
+};
+
 app.use((err, req, res, _next) => {
   console.error(err);
-  res.status(500).render('pages/500', {
-    seo: { title: 'Something went wrong', description: '', noindex: true },
-  });
+
+  res.locals.s = { ...FALLBACK_LOCALS, ...(res.locals.s || {}) };
+  res.locals.nav = res.locals.nav || { categories: [], roles: [], industries: [] };
+  res.locals.h = res.locals.h || h;
+  res.locals.icon = res.locals.icon || require('./src/lib/icons');
+  res.locals.csrf = res.locals.csrf || '';
+  res.locals.currentPath = res.locals.currentPath || req.path;
+
+  res.status(500).render(
+    'pages/500',
+    { seo: { title: 'Something went wrong', description: '', noindex: true } },
+    (renderErr, html) => {
+      if (!renderErr) return res.send(html);
+      console.error('The error page could not be rendered:', renderErr);
+      res
+        .type('html')
+        .send(
+          '<!doctype html><meta charset="utf-8"><title>Something went wrong</title>' +
+            '<div style="font-family:system-ui,sans-serif;max-width:34rem;margin:15vh auto;padding:0 1.5rem;">' +
+            '<h1 style="font-size:1.5rem;">Something went wrong at our end.</h1>' +
+            '<p style="color:#555;line-height:1.6;">Please try again shortly. If you were sending an ' +
+            'enquiry, call us and we will pick it up directly.</p>' +
+            '<p><a href="/" style="color:#F4520E;">Back to home</a></p></div>'
+        );
+    }
+  );
 });
 
 if (require.main === module) {

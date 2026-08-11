@@ -2,7 +2,7 @@
   "name": "gi-packtech-website",
   "version": "1.0.0",
   "private": true,
-  "description": "GI PackTech \u2014 industrial flexible packaging website with admin panel",
+  "description": "GI PackTech — industrial flexible packaging website with admin panel",
   "main": "server.js",
   "engines": {
     "node": ">=18"
@@ -28,6 +28,7 @@
     "serverless-http": "^4.0.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.4"
+    "@electric-sql/pglite": "^0.5.4",
+    "esbuild": "^0.28.2"
   }
 }

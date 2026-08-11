@@ -21,10 +21,14 @@
   node_bundler = "esbuild"
   included_files = ["views/**", "src/**"]
 
-  # PGlite is not listed as an external module on purpose. It is a
-  # devDependency, so it may not be installed here, and asking the bundler to
-  # include a missing package fails the build. src/db.js builds its module id
-  # at runtime instead, which keeps it out of the bundle either way.
+  # EJS is copied in whole rather than bundled. It resolves templates and
+  # partials at runtime, which a bundler cannot follow.
+  external_node_modules = ["ejs"]
+
+  # PGlite is deliberately absent from that list. It is a devDependency, so it
+  # may not be installed here, and asking the bundler to include a missing
+  # package fails the build. src/db.js builds its module id at runtime instead,
+  # which keeps it out of the bundle either way.
 
 [functions."server"]
   # Plenty for a page render; the default is lower on some plans.
