@@ -20,8 +20,33 @@ const { settings, pages, valueRows } = require('../src/content/company');
 
 const reset = process.argv.includes('--reset');
 
+/** Shows which database is in use without printing the password. */
+function describeConnection() {
+  if (db.kind === 'pglite') return 'in-process PGlite (local development)';
+  const source = process.env.DATABASE_URL
+    ? 'DATABASE_URL'
+    : process.env.NETLIFY_DATABASE_URL
+      ? 'NETLIFY_DATABASE_URL'
+      : 'NETLIFY_DATABASE_URL_UNPOOLED';
+  const raw =
+    process.env.DATABASE_URL ||
+    process.env.NETLIFY_DATABASE_URL ||
+    process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
+    '';
+  let where = 'unparseable connection string';
+  try {
+    const url = new URL(raw);
+    where = `${url.hostname}${url.pathname}`;
+  } catch {
+    /* leave the fallback */
+  }
+  return `Postgres via ${source} -> ${where}`;
+}
+
 async function main() {
+  console.log(`\nDatabase: ${describeConnection()}`);
   await db.migrate();
+  console.log('Schema ready.');
 
   if (reset) {
     console.log('Resetting content tables...');

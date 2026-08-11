@@ -107,7 +107,11 @@ async function getDriver() {
   if (driver) return driver;
 
   if (USE_PGLITE) {
-    const { PGlite } = require('@electric-sql/pglite');
+    // Built at runtime so bundlers cannot resolve it statically. PGlite carries
+    // 26 MB of WebAssembly Postgres and is only ever used for local work, so it
+    // must not be pulled into the deployed function.
+    const pgliteModule = ['@electric-sql', 'pglite'].join('/');
+    const { PGlite } = require(pgliteModule);
     const path = require('path');
     const dir = process.env.PGLITE_DIR || path.join(__dirname, '..', 'data', 'pgdata');
     const client = new PGlite(dir);

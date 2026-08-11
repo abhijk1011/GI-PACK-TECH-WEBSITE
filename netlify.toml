@@ -15,6 +15,10 @@
   node_bundler = "esbuild"
   included_files = ["views/**", "src/**"]
 
+  # PGlite is a 26 MB WebAssembly Postgres used only for local development.
+  # Bundling it would bloat the function past its size limit for no benefit.
+  external_node_modules = ["@electric-sql/pglite"]
+
 [functions."server"]
   # Plenty for a page render; the default is lower on some plans.
   timeout = 26
