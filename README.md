@@ -8,81 +8,98 @@ Everything visible on the site is stored in the database and editable from the
 admin panel — headings, paragraphs, product copy, images, contact details and
 the search-engine listing for every page.
 
+Runs on Netlify: the pages are rendered by a Netlify Function, content lives in
+Netlify DB (Postgres), and uploaded photographs live in Netlify Blobs.
+
+---
+
+## Deploying to Netlify
+
+The repository is already connected. Three things need to be switched on before
+the site will work.
+
+### 1. Enable Netlify DB
+
+In your Netlify project, open **Database** in the sidebar and create one.
+Netlify provisions a Postgres database and sets `NETLIFY_DATABASE_URL`
+automatically — you do not need to copy the connection string anywhere.
+
+### 2. Set the environment variables
+
+**Project configuration → Environment variables**, add:
+
+| Variable | Value |
+| --- | --- |
+| `SESSION_SECRET` | A long random string. Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `NODE_ENV` | `production` |
+| `ADMIN_EMAIL` | The email you want to sign in with |
+| `ADMIN_PASSWORD` | A strong password. Only used the first time the database is seeded |
+
+Set `ADMIN_PASSWORD` **before the first deploy**. After the admin user exists,
+changing it here has no effect — use **Account & password** inside the panel.
+
+### 3. Deploy
+
+Push to the connected branch, or hit **Trigger deploy**. The build runs
+`npm run seed`, which creates the tables and loads the catalogue. It is safe to
+run on every deploy: inserts use `ON CONFLICT DO NOTHING`, so anything you have
+edited in the admin panel is left alone.
+
+Then open `https://your-site.netlify.app/admin-panel` and sign in.
+
+### Blobs
+
+Nothing to configure. Netlify Blobs is available to the function automatically
+and is where admin-uploaded photographs are stored.
+
+---
+
+## After it is live
+
+In the admin panel, under **Settings & SEO**:
+
+1. Set **Site URL** to the real address. It drives canonical links, the sitemap
+   and social sharing cards, so search engines index the right domain. Update it
+   again when you move from `*.netlify.app` to your own domain.
+2. Turn on **Allow search engines to index the site**. It is off by default so
+   nothing gets indexed while you are still reviewing.
+3. Update the contact email once the GI PackTech mailbox exists.
+4. Paste the Google Search Console verification tag into **Custom head code**,
+   then submit `https://yourdomain.com/sitemap.xml`.
+
+To add your own domain: **Domain management → Add a domain**. Netlify issues the
+HTTPS certificate for you.
+
 ---
 
 ## Running it locally
 
 ```bash
 npm install
-cp .env.example .env      # then edit SESSION_SECRET and ADMIN_PASSWORD
-npm run seed              # loads the catalogue and creates the admin login
+cp .env.example .env
+```
+
+Then either point `DATABASE_URL` at your Netlify database, or work offline
+against an in-process Postgres:
+
+```bash
+export USE_PGLITE=1     # no database server needed
+npm run seed
 npm start
 ```
 
 Website: <http://localhost:3000> · Admin panel: <http://localhost:3000/admin-panel>
 
-The first `npm run seed` prints the admin email and password it created. Sign in
-and change the password immediately under **Account & password**.
-
 | Command | What it does |
 | --- | --- |
 | `npm start` | Runs the site |
 | `npm run dev` | Runs it and restarts on file changes |
-| `npm run seed` | Adds anything missing. Safe to re-run; it will not overwrite your edits |
+| `npm run seed` | Creates tables and adds anything missing. Safe to re-run |
 | `npm run reset` | Wipes the content tables and reloads the catalogue from source |
 | `npm run smoke` | Checks that all 74 pages render and the admin panel is protected |
 
 `npm run reset` discards content edits made in the admin panel. Enquiries,
 uploaded images and your login are never touched by either seed command.
-
----
-
-## Going live on your own domain
-
-1. **Get a server that runs Node.js.** A small VPS (Hostinger, DigitalOcean,
-   Contabo) or a managed host (Render, Railway) is enough — this site is light.
-   Plain static hosting such as Netlify will not work, because the admin panel
-   needs a server to save content and receive uploads.
-
-2. **Attach a persistent disk** and point `DATA_DIR` and `UPLOAD_DIR` at it.
-   This matters: on hosts with temporary storage, everything you have typed into
-   the admin panel and every photograph you have uploaded is erased on the next
-   deploy unless these live on a disk that survives restarts.
-
-3. **Set the environment variables** from `.env.example`, especially
-   `SESSION_SECRET` and `NODE_ENV=production`.
-
-4. **Put HTTPS in front of it.** Nginx with Certbot, or your host's built-in
-   certificate. Session cookies are secure-only in production, so the admin
-   panel will not accept a login over plain HTTP.
-
-5. **Point the domain at the server**, then open the admin panel and:
-   - set **Site URL** under Settings & SEO to `https://yourdomain.com`
-   - turn on **Allow search engines to index the site**
-   - update the contact email once the new mailbox is live
-
-6. **Submit the sitemap** at `https://yourdomain.com/sitemap.xml` to Google
-   Search Console. Paste the verification tag into **Custom head code** in
-   Settings & SEO — no code change needed.
-
-### Example: Nginx in front of the app
-
-```nginx
-server {
-    server_name gipacktech.com www.gipacktech.com;
-    client_max_body_size 10M;          # allows 8 MB image uploads
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Keep the app running with `pm2 start server.js --name gipacktech` or a systemd
-service so it restarts automatically.
 
 ---
 
@@ -147,17 +164,22 @@ playbook — appears anywhere on the public site.
 
 ## Technical notes
 
-Node.js and Express, EJS templates rendered on the server, SQLite via
-better-sqlite3. No build step and no front-end framework — the pages are real
-HTML, which is both fast and good for search.
+Node.js and Express with EJS templates rendered on the server, wrapped as a
+single Netlify Function. No build step and no front-end framework — the pages
+are real HTML, which is both fast and good for search. CSS, JavaScript and the
+catalogue photographs are served straight from Netlify's CDN and never invoke
+the function.
 
-Security: passwords hashed with bcrypt, session cookies signed and http-only,
-CSRF tokens on every form, uploads restricted to image types and 8 MB, and the
-admin panel excluded from `robots.txt`.
+Security: passwords hashed with bcrypt, sessions stored in Postgres with signed
+http-only cookies, CSRF tokens on every form, uploads restricted to image types
+and 8 MB, and the admin panel excluded from `robots.txt`.
 
 ```
+netlify.toml           build, function and redirect configuration
+netlify/functions/     the function entry point
 server.js              app setup, sessions, CSRF
-src/db.js              database schema
+src/db.js              Postgres schema and query layer
+src/lib/storage.js     image storage (Netlify Blobs, or disk locally)
 src/content/           the catalogue as source — what `npm run seed` loads
 src/routes/public.js   the website
 src/routes/admin.js    the admin panel
@@ -169,3 +191,10 @@ public/css/admin.css   the admin panel
 
 To change the wording of something, use the admin panel. `src/content/` is only
 the starting data — editing it after seeding changes nothing until you re-seed.
+
+### A note on the database layer
+
+`src/db.js` exposes a small `prepare().get()/.all()/.run()` wrapper over
+Postgres. It rewrites `?` and `@named` placeholders into `$1` form and adds
+`RETURNING id` to inserts, which is why the query strings throughout the app
+read the way they do.

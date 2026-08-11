@@ -6,49 +6,86 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
 
 const db = require('./src/db');
 const h = require('./src/lib/helpers');
+const storage = require('./src/lib/storage');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
-const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, 'public', 'uploads');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-// Behind a reverse proxy (Nginx, Render, Railway) so secure cookies work.
+/*
+ * The function bundle does not keep the repository layout, so __dirname is not
+ * a reliable base for runtime assets. Resolve each directory by looking for the
+ * first candidate that actually exists.
+ */
+function resolveDir(name) {
+  const candidates = [
+    path.join(__dirname, name),
+    path.join(process.cwd(), name),
+    path.join(__dirname, '..', '..', name),
+    path.join('/var/task', name),
+  ];
+  return candidates.find((dir) => fs.existsSync(dir)) || candidates[0];
+}
+
+const VIEWS_DIR = resolveDir('views');
+const PUBLIC_DIR = resolveDir('public');
+
+// Behind Netlify's edge (or any reverse proxy) so secure cookies work.
 app.set('trust proxy', 1);
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', VIEWS_DIR);
 
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(express.json({ limit: '2mb' }));
 
-app.use(
-  session({
-    store: new SQLiteStore({ db: 'sessions.db', dir: DATA_DIR }),
-    secret: process.env.SESSION_SECRET || 'gi-packtech-dev-secret-change-me',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 12,
-    },
-  })
-);
-
-// Static assets. Uploads are served from a configurable directory so a
-// persistent disk can be mounted there in production.
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
-app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '30d' }));
-
-/* --- CSRF ---------------------------------------------------------------
- * Small hand-rolled token: stored on the session, compared on every
- * state-changing request. Keeps a dependency out of the tree.
+/* --- sessions ------------------------------------------------------------
+ * Stored in Postgres. Serverless invocations do not share memory, so an
+ * in-memory store would sign the admin out on almost every request.
  */
+const sessionOptions = {
+  secret: process.env.SESSION_SECRET || 'gi-packtech-dev-secret-change-me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 12,
+  },
+};
+
+if (db.kind === 'pg') {
+  const PgSession = require('connect-pg-simple')(session);
+  sessionOptions.store = new PgSession({
+    pool: db.pool,
+    tableName: 'session',
+    createTableIfMissing: true,
+  });
+}
+app.use(session(sessionOptions));
+
+/* --- static assets -------------------------------------------------------
+ * On Netlify these are served straight from the CDN and never reach the
+ * function; this covers local development and any other host.
+ */
+app.use(express.static(PUBLIC_DIR, { maxAge: '7d' }));
+
+/** Serves images uploaded through the admin panel out of blob storage. */
+app.get('/uploads/:key', async (req, res, next) => {
+  try {
+    const file = await storage.read(path.basename(req.params.key));
+    if (!file) return next();
+    res.set('Content-Type', file.contentType);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(file.buffer);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/* --- CSRF ---------------------------------------------------------------- */
 app.use((req, res, next) => {
   if (!req.session.csrf) {
     req.session.csrf = require('crypto').randomBytes(24).toString('hex');
@@ -68,27 +105,38 @@ function verifyCsrf(req, res, next) {
 }
 app.use(verifyCsrf);
 
-// Values every template can reach.
-app.use((req, res, next) => {
-  res.locals.s = h.settings();
-  res.locals.currentPath = req.path;
-  res.locals.h = h;
-  res.locals.icon = require('./src/lib/icons');
-  res.locals.nav = {
-    categories: db
-      .prepare('SELECT slug, name, short_name, number, tagline FROM categories WHERE published = 1 ORDER BY sort')
-      .all(),
-    roles: db.prepare('SELECT slug, name, short_name FROM roles WHERE published = 1 ORDER BY sort').all(),
-    industries: db.prepare('SELECT slug, name FROM industries WHERE published = 1 ORDER BY sort').all(),
-  };
-  next();
+/* --- per-request context ------------------------------------------------- */
+app.use(async (req, res, next) => {
+  try {
+    await db.migrate();
+    res.locals.s = await h.loadSettings();
+    res.locals.currentPath = req.path;
+    res.locals.h = h;
+    res.locals.icon = require('./src/lib/icons');
+
+    const [categories, roles, industries] = await Promise.all([
+      db
+        .prepare('SELECT slug, name, short_name, number, tagline FROM categories WHERE published = 1 ORDER BY sort')
+        .all(),
+      db.prepare('SELECT slug, name, short_name FROM roles WHERE published = 1 ORDER BY sort').all(),
+      db.prepare('SELECT slug, name FROM industries WHERE published = 1 ORDER BY sort').all(),
+    ]);
+    res.locals.nav = { categories, roles, industries };
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Admin-managed redirects, checked before routing.
-app.use((req, res, next) => {
-  const row = db.prepare('SELECT to_path, code FROM redirects WHERE from_path = ?').get(req.path);
-  if (row) return res.redirect(row.code || 301, row.to_path);
-  next();
+app.use(async (req, res, next) => {
+  try {
+    const row = await db.prepare('SELECT to_path, code FROM redirects WHERE from_path = ?').get(req.path);
+    if (row) return res.redirect(row.code || 301, row.to_path);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.use('/admin-panel', require('./src/routes/admin'));
@@ -110,10 +158,17 @@ app.use((err, req, res, _next) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`GI PackTech running on http://localhost:${PORT}`);
-    console.log(`Admin panel:              http://localhost:${PORT}/admin-panel`);
-  });
+  db.migrate()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`GI PackTech running on http://localhost:${PORT}  (db: ${db.kind})`);
+        console.log(`Admin panel:              http://localhost:${PORT}/admin-panel`);
+      });
+    })
+    .catch((err) => {
+      console.error('Could not start:', err);
+      process.exit(1);
+    });
 }
 
 module.exports = app;

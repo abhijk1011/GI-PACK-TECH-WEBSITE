@@ -1,34 +1,203 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
-const Database = require('better-sqlite3');
+/*
+ * Database layer — Postgres (Netlify DB / Neon).
+ *
+ * Netlify Functions are serverless, so nothing on local disk survives between
+ * requests. Content therefore lives in Postgres and uploaded images in Netlify
+ * Blobs.
+ *
+ * Two drivers are supported:
+ *   - `pg` against DATABASE_URL / NETLIFY_DATABASE_URL (production and local dev)
+ *   - PGlite, an in-process Postgres, when USE_PGLITE=1 (tests, offline work)
+ *
+ * `prepare()` mirrors the shape the rest of the app already used, so query
+ * strings stayed as they were. It rewrites `?` and `@named` placeholders into
+ * Postgres `$n` form and adds RETURNING id to inserts so `lastInsertRowid`
+ * keeps working.
+ */
 
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
-fs.mkdirSync(DATA_DIR, { recursive: true });
+const CONNECTION =
+  process.env.DATABASE_URL ||
+  process.env.NETLIFY_DATABASE_URL ||
+  process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
+  '';
 
-const db = new Database(path.join(DATA_DIR, 'site.db'));
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const USE_PGLITE = process.env.USE_PGLITE === '1' || !CONNECTION;
+
+let driver = null;
 
 /*
- * Schema notes
- * ------------
- * Everything the public site renders is stored here so the admin panel can edit it.
- * Text fields that hold lists (features, customisation options, applications) are
- * stored as newline-separated text -- simple to edit in a textarea, simple to render.
+ * The pg Pool is created eagerly (constructing it opens no connections) so the
+ * session store can share it. Serverless containers are limited in how many
+ * database connections they may hold, so a second pool is worth avoiding.
  */
-db.exec(`
+if (!USE_PGLITE) {
+  const { Pool } = require('pg');
+  const pool = new Pool({
+    connectionString: CONNECTION,
+    // Neon and most managed Postgres require TLS but present a chain the
+    // container does not carry a root for.
+    ssl: { rejectUnauthorized: false },
+    max: Number(process.env.PG_POOL_MAX || 3),
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 15_000,
+  });
+  pool.on('error', (err) => console.error('Postgres pool error:', err.message));
+  driver = {
+    kind: 'pg',
+    pool,
+    query: (text, values) => pool.query(text, values),
+    exec: (text) => pool.query(text),
+  };
+}
+
+async function getDriver() {
+  if (driver) return driver;
+
+  if (USE_PGLITE) {
+    const { PGlite } = require('@electric-sql/pglite');
+    const path = require('path');
+    const dir = process.env.PGLITE_DIR || path.join(__dirname, '..', 'data', 'pgdata');
+    const client = new PGlite(dir);
+    await client.waitReady;
+    driver = {
+      kind: 'pglite',
+      client,
+      query: (text, values) => client.query(text, values),
+      exec: (text) => client.exec(text),
+    };
+  }
+  return driver;
+}
+
+/**
+ * Rewrites a query written for better-sqlite3 into Postgres form.
+ * Returns the new SQL plus the parameters in positional order.
+ */
+function toPositional(sql, args) {
+  // Named form: db.prepare('... @name ...').run({ name: 1 })
+  const named = args.length === 1 && args[0] && typeof args[0] === 'object' && !Array.isArray(args[0]);
+
+  if (named && /@[a-zA-Z_][a-zA-Z0-9_]*/.test(sql)) {
+    const source = args[0];
+    const values = [];
+    const seen = new Map();
+    const text = sql.replace(/@([a-zA-Z_][a-zA-Z0-9_]*)/g, (_, key) => {
+      if (!seen.has(key)) {
+        values.push(source[key]);
+        seen.set(key, values.length);
+      }
+      return `$${seen.get(key)}`;
+    });
+    return { text, values };
+  }
+
+  // Positional form: db.prepare('... ? ...').get(1, 2)
+  const values = args.flat();
+  let i = 0;
+  const text = sql.replace(/\?/g, () => `$${++i}`);
+  return { text, values };
+}
+
+/*
+ * Tables whose primary key is not a serial `id` column. Inserts into these
+ * must not have RETURNING id appended.
+ */
+const NO_ID_COLUMN = new Set([
+  'settings',
+  'product_relations',
+  'industry_products',
+  'role_products',
+  'session',
+]);
+
+/** Inserts need RETURNING id so lastInsertRowid can be reported. */
+function withReturning(sql) {
+  const match = /^\s*insert\s+into\s+"?([a-z_][a-z0-9_]*)"?/i.exec(sql);
+  if (!match || /returning\s/i.test(sql)) return { sql, added: false };
+  if (NO_ID_COLUMN.has(match[1].toLowerCase())) return { sql, added: false };
+  return { sql: `${sql.replace(/;\s*$/, '')} RETURNING id`, added: true };
+}
+
+async function run(sql, args) {
+  const d = await getDriver();
+  const { text, values } = toPositional(sql, args);
+  const res = await d.query(text, values);
+  return res;
+}
+
+const db = {
+  /** better-sqlite3-shaped statement object, but async. */
+  prepare(sql) {
+    return {
+      async get(...args) {
+        const res = await run(sql, args);
+        return (res.rows || [])[0];
+      },
+      async all(...args) {
+        const res = await run(sql, args);
+        return res.rows || [];
+      },
+      async run(...args) {
+        // ON CONFLICT DO NOTHING can insert zero rows, so RETURNING may be empty.
+        const { sql: text, added } = withReturning(sql);
+        const res = await run(text, args);
+        const rows = res.rows || [];
+        return {
+          lastInsertRowid: added && rows[0] ? rows[0].id : undefined,
+          changes: res.rowCount ?? res.affectedRows ?? rows.length,
+        };
+      },
+    };
+  },
+
+  /** Runs a multi-statement script (schema creation). */
+  async exec(sql) {
+    const d = await getDriver();
+    if (d.kind === 'pglite') return d.exec(sql);
+    // node-postgres refuses multiple statements with parameters, but allows
+    // them in a simple query, which is what this is.
+    return d.pool.query(sql);
+  },
+
+  async query(text, values) {
+    const d = await getDriver();
+    return d.query(text, values);
+  },
+
+  async close() {
+    if (!driver) return;
+    if (driver.kind === 'pg') await driver.pool.end();
+    // PGlite holds a lock on its data directory until the client is closed.
+    if (driver.kind === 'pglite' && driver.client) await driver.client.close();
+    driver = null;
+    migrated = null;
+  },
+
+  get kind() {
+    return USE_PGLITE ? 'pglite' : 'pg';
+  },
+
+  /** The shared pg Pool, so the session store does not open its own. */
+  get pool() {
+    return driver && driver.kind === 'pg' ? driver.pool : null;
+  },
+};
+
+/*
+ * Schema. Timestamps are stored as sortable text so the templates can slice
+ * them directly, and booleans stay as 0/1 integers as they were.
+ */
+const SCHEMA = `
 CREATE TABLE IF NOT EXISTS users (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  id            SERIAL PRIMARY KEY,
   email         TEXT NOT NULL UNIQUE,
   name          TEXT NOT NULL DEFAULT '',
   password_hash TEXT NOT NULL,
-  created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at    TEXT NOT NULL DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')
 );
 
--- Global key/value settings. 'group_name' drives the admin panel tab layout,
--- 'input_type' drives which control is rendered (text, textarea, image, bool).
 CREATE TABLE IF NOT EXISTS settings (
   key         TEXT PRIMARY KEY,
   value       TEXT NOT NULL DEFAULT '',
@@ -40,7 +209,7 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,
   number          TEXT NOT NULL DEFAULT '',
   name            TEXT NOT NULL,
@@ -57,16 +226,14 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 CREATE TABLE IF NOT EXISTS products (
-  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  id                SERIAL PRIMARY KEY,
   category_id       INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
   slug              TEXT NOT NULL UNIQUE,
   code              TEXT NOT NULL DEFAULT '',
   name              TEXT NOT NULL,
   tagline           TEXT NOT NULL DEFAULT '',
-  -- "Show the loss first": the failure this product prevents.
   problem_headline  TEXT NOT NULL DEFAULT '',
   problem_body      TEXT NOT NULL DEFAULT '',
-  -- "Show the cause second, the product last."
   description       TEXT NOT NULL DEFAULT '',
   features          TEXT NOT NULL DEFAULT '',
   materials         TEXT NOT NULL DEFAULT '',
@@ -85,9 +252,8 @@ CREATE TABLE IF NOT EXISTS products (
 );
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 
--- Ordered image list per product. Empty table for a product = image slots shown.
 CREATE TABLE IF NOT EXISTS product_images (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  id         SERIAL PRIMARY KEY,
   product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   path       TEXT NOT NULL,
   alt        TEXT NOT NULL DEFAULT '',
@@ -96,7 +262,6 @@ CREATE TABLE IF NOT EXISTS product_images (
 );
 CREATE INDEX IF NOT EXISTS idx_product_images ON product_images(product_id, sort);
 
--- Cross-sell / upsell relationships surfaced as "Commonly specified with".
 CREATE TABLE IF NOT EXISTS product_relations (
   product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   related_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -106,7 +271,7 @@ CREATE TABLE IF NOT EXISTS product_relations (
 );
 
 CREATE TABLE IF NOT EXISTS industries (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,
   name            TEXT NOT NULL,
   applications    TEXT NOT NULL DEFAULT '',
@@ -127,9 +292,8 @@ CREATE TABLE IF NOT EXISTS industry_products (
   PRIMARY KEY (industry_id, product_id)
 );
 
--- The four people a packaging decision passes through.
 CREATE TABLE IF NOT EXISTS roles (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,
   name            TEXT NOT NULL,
   short_name      TEXT NOT NULL DEFAULT '',
@@ -152,7 +316,7 @@ CREATE TABLE IF NOT EXISTS role_products (
 );
 
 CREATE TABLE IF NOT EXISTS materials (
-  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  id             SERIAL PRIMARY KEY,
   slug           TEXT NOT NULL UNIQUE,
   name           TEXT NOT NULL,
   main_property  TEXT NOT NULL DEFAULT '',
@@ -162,9 +326,8 @@ CREATE TABLE IF NOT EXISTS materials (
   published      INTEGER NOT NULL DEFAULT 1
 );
 
--- Drives the guided "Specify your requirement" builder.
 CREATE TABLE IF NOT EXISTS checklist_items (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  id         SERIAL PRIMARY KEY,
   field_key  TEXT NOT NULL UNIQUE,
   question   TEXT NOT NULL,
   why        TEXT NOT NULL DEFAULT '',
@@ -176,9 +339,8 @@ CREATE TABLE IF NOT EXISTS checklist_items (
   published  INTEGER NOT NULL DEFAULT 1
 );
 
--- Editable standalone pages (home sections, about, capabilities, contact...).
 CREATE TABLE IF NOT EXISTS pages (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,
   title           TEXT NOT NULL,
   seo_title       TEXT NOT NULL DEFAULT '',
@@ -186,10 +348,8 @@ CREATE TABLE IF NOT EXISTS pages (
   published       INTEGER NOT NULL DEFAULT 1
 );
 
--- Named content blocks belonging to a page. Lets the admin edit every
--- heading and paragraph on the home page without touching templates.
 CREATE TABLE IF NOT EXISTS page_blocks (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  id         SERIAL PRIMARY KEY,
   page_id    INTEGER NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
   block_key  TEXT NOT NULL,
   label      TEXT NOT NULL DEFAULT '',
@@ -200,9 +360,8 @@ CREATE TABLE IF NOT EXISTS page_blocks (
   UNIQUE (page_id, block_key)
 );
 
--- The "what you see / what you don't see" rows on the home page.
 CREATE TABLE IF NOT EXISTS value_rows (
-  id        INTEGER PRIMARY KEY AUTOINCREMENT,
+  id        SERIAL PRIMARY KEY,
   seen      TEXT NOT NULL,
   unseen    TEXT NOT NULL,
   sort      INTEGER NOT NULL DEFAULT 0,
@@ -210,7 +369,7 @@ CREATE TABLE IF NOT EXISTS value_rows (
 );
 
 CREATE TABLE IF NOT EXISTS case_studies (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,
   title           TEXT NOT NULL,
   sector          TEXT NOT NULL DEFAULT '',
@@ -225,16 +384,16 @@ CREATE TABLE IF NOT EXISTS case_studies (
 );
 
 CREATE TABLE IF NOT EXISTS media (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  id          SERIAL PRIMARY KEY,
   filename    TEXT NOT NULL,
   path        TEXT NOT NULL UNIQUE,
   alt         TEXT NOT NULL DEFAULT '',
   size_bytes  INTEGER NOT NULL DEFAULT 0,
-  uploaded_at TEXT NOT NULL DEFAULT (datetime('now'))
+  uploaded_at TEXT NOT NULL DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')
 );
 
 CREATE TABLE IF NOT EXISTS enquiries (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  id         SERIAL PRIMARY KEY,
   name       TEXT NOT NULL DEFAULT '',
   company    TEXT NOT NULL DEFAULT '',
   email      TEXT NOT NULL DEFAULT '',
@@ -246,17 +405,32 @@ CREATE TABLE IF NOT EXISTS enquiries (
   source     TEXT NOT NULL DEFAULT '',
   status     TEXT NOT NULL DEFAULT 'new',
   notes      TEXT NOT NULL DEFAULT '',
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TEXT NOT NULL DEFAULT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')
 );
 CREATE INDEX IF NOT EXISTS idx_enquiries_created ON enquiries(created_at DESC);
 
--- Free-form <head> injection (Google Analytics, Search Console, Meta pixel...).
 CREATE TABLE IF NOT EXISTS redirects (
-  id     INTEGER PRIMARY KEY AUTOINCREMENT,
+  id        SERIAL PRIMARY KEY,
   from_path TEXT NOT NULL UNIQUE,
   to_path   TEXT NOT NULL,
   code      INTEGER NOT NULL DEFAULT 301
 );
-`);
+
+CREATE TABLE IF NOT EXISTS session (
+  sid    TEXT PRIMARY KEY,
+  sess   JSON NOT NULL,
+  expire TIMESTAMP(6) NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_session_expire ON session(expire);
+`;
+
+let migrated = null;
+/** Creates the schema once per process. Safe to call on every request. */
+function migrate() {
+  if (!migrated) migrated = db.exec(SCHEMA);
+  return migrated;
+}
 
 module.exports = db;
+module.exports.migrate = migrate;
+module.exports.SCHEMA = SCHEMA;

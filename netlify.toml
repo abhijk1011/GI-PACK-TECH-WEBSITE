@@ -1,0 +1,42 @@
+[build]
+  # `public` holds the CSS, JavaScript, logo and the catalogue photographs.
+  # Netlify serves those straight from its CDN; everything else falls through
+  # to the function below.
+  publish = "public"
+  functions = "netlify/functions"
+
+  # Creates the schema and loads the catalogue. Safe to run on every deploy:
+  # inserts use ON CONFLICT DO NOTHING, so content edited in the admin panel
+  # is left alone.
+  command = "npm run seed"
+
+[functions]
+  # The EJS templates are read at runtime, so they must travel with the bundle.
+  node_bundler = "esbuild"
+  included_files = ["views/**", "src/**"]
+
+[functions."server"]
+  # Plenty for a page render; the default is lower on some plans.
+  timeout = 26
+
+# Static files in `public` win automatically, so this only catches page
+# requests, form posts, the admin panel and uploaded images.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

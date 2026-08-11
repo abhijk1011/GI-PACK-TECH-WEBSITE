@@ -44,23 +44,32 @@ function truncate(str, n = 158) {
   return s.length <= n ? s : s.slice(0, n - 1).replace(/\s\S*$/, '') + '…';
 }
 
-/** All settings as a plain object, cached for the life of a request cycle. */
-let settingsCache = null;
-function settings() {
-  if (!settingsCache) {
-    settingsCache = Object.fromEntries(
-      db.prepare('SELECT key, value FROM settings').all().map((r) => [r.key, r.value])
-    );
-  }
-  return settingsCache;
+/*
+ * Settings are read fresh on each request so an edit in the admin panel shows
+ * up immediately, even though serverless requests may be served by different
+ * containers. The last result is kept so absUrl() can stay synchronous for
+ * templates; only site_url is read that way, which is identical per request.
+ */
+let lastSettings = {};
+
+async function loadSettings() {
+  const rows = await db.prepare('SELECT key, value FROM settings').all();
+  lastSettings = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return lastSettings;
 }
+
+function settings() {
+  return lastSettings;
+}
+
+/** Kept for callers that used to invalidate a cache; loading is now per-request. */
 function clearSettingsCache() {
-  settingsCache = null;
+  lastSettings = {};
 }
 
 /** Page blocks for a page slug, as { block_key: value }. */
-function blocks(pageSlug) {
-  const rows = db
+async function blocks(pageSlug) {
+  const rows = await db
     .prepare(
       `SELECT b.block_key, b.value FROM page_blocks b
        JOIN pages p ON p.id = b.page_id WHERE p.slug = ?`
@@ -69,13 +78,13 @@ function blocks(pageSlug) {
   return Object.fromEntries(rows.map((r) => [r.block_key, r.value]));
 }
 
-function page(slug) {
-  return db.prepare('SELECT * FROM pages WHERE slug = ?').get(slug) || {};
+async function page(slug) {
+  return (await db.prepare('SELECT * FROM pages WHERE slug = ?').get(slug)) || {};
 }
 
 /** Absolute URL for canonical tags, sitemap and social cards. */
 function absUrl(path = '/') {
-  const base = (settings().site_url || '').replace(/\/+$/, '');
+  const base = (lastSettings.site_url || '').replace(/\/+$/, '');
   if (!path.startsWith('/')) path = '/' + path;
   return base + path;
 }
@@ -85,24 +94,38 @@ const productSelect = `
   FROM products p JOIN categories c ON c.id = p.category_id
 `;
 
-function productImages(productId) {
+async function productImages(productId) {
   return db
     .prepare('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort, id')
     .all(productId);
 }
 
 /** First image for a product, or null when the slot is still empty. */
-function primaryImage(productId) {
+async function primaryImage(productId) {
   return (
-    db
+    (await db
       .prepare('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort, id LIMIT 1')
-      .get(productId) || null
+      .get(productId)) || null
   );
 }
 
-/** Attaches `image` to each product row so cards can render in one pass. */
-function withImages(rows) {
-  return rows.map((r) => ({ ...r, image: primaryImage(r.id) }));
+/**
+ * Attaches `image` to each product row so cards can render in one pass.
+ * Fetches every first image in a single query rather than one per product.
+ */
+async function withImages(rows) {
+  if (!rows.length) return rows;
+  const ids = rows.map((r) => r.id);
+  const placeholders = ids.map(() => '?').join(', ');
+  const images = await db
+    .prepare(
+      `SELECT DISTINCT ON (product_id) product_id, path, alt, caption
+       FROM product_images WHERE product_id IN (${placeholders})
+       ORDER BY product_id, sort, id`
+    )
+    .all(...ids);
+  const byProduct = new Map(images.map((img) => [img.product_id, img]));
+  return rows.map((r) => ({ ...r, image: byProduct.get(r.id) || null }));
 }
 
 module.exports = {
@@ -112,6 +135,7 @@ module.exports = {
   slugify,
   truncate,
   settings,
+  loadSettings,
   clearSettingsCache,
   blocks,
   page,

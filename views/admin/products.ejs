@@ -35,11 +35,10 @@
           <tr><td colspan="7"><div class="empty">No products match that filter.</div></td></tr>
         <% } %>
         <% products.forEach(function(p){ %>
-          <% var img = h.primaryImage(p.id); %>
           <tr>
             <td>
-              <% if (img) { %>
-                <img class="tbl__thumb" src="<%= img.path %>" alt="" loading="lazy">
+              <% if (p.image) { %>
+                <img class="tbl__thumb" src="<%= p.image.path %>" alt="" loading="lazy">
               <% } else { %>
                 <div class="tbl__thumb" style="display:grid;place-items:center;background:#F0F2F5;color:#A9B4C0;">
                   <%- icon('image', 14) %>

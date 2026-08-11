@@ -27,6 +27,7 @@ async function check(pathname, expected = 200) {
 }
 
 (async () => {
+  await db.migrate();
   const server = app.listen(process.env.PORT);
   await new Promise((r) => server.once('listening', r));
 
@@ -38,12 +39,12 @@ async function check(pathname, expected = 200) {
   for (const p of fixed) await check(p);
 
   console.log('\nEvery category page');
-  for (const c of db.prepare('SELECT slug FROM categories WHERE published = 1').all()) {
+  for (const c of await db.prepare('SELECT slug FROM categories WHERE published = 1').all()) {
     await check(`/products/${c.slug}`);
   }
 
   console.log('\nEvery product page');
-  const products = db
+  const products = await db
     .prepare(
       `SELECT p.slug, c.slug AS cat FROM products p
        JOIN categories c ON c.id = p.category_id WHERE p.published = 1 ORDER BY p.sort`
@@ -60,10 +61,10 @@ async function check(pathname, expected = 200) {
   log(productFails === 0, `${products.length} product pages`, productFails ? `${productFails} failed` : 'all 200');
 
   console.log('\nEvery industry and role page');
-  for (const i of db.prepare('SELECT slug FROM industries WHERE published = 1').all()) {
+  for (const i of await db.prepare('SELECT slug FROM industries WHERE published = 1').all()) {
     await check(`/industries/${i.slug}`);
   }
-  for (const r of db.prepare('SELECT slug FROM roles WHERE published = 1').all()) {
+  for (const r of await db.prepare('SELECT slug FROM roles WHERE published = 1').all()) {
     await check(`/for/${r.slug}`);
   }
 
@@ -83,7 +84,7 @@ async function check(pathname, expected = 200) {
   await check('/admin-panel/login');
 
   console.log('\nEnquiry form');
-  const before = db.prepare('SELECT COUNT(*) AS n FROM enquiries').get().n;
+  const before = (await db.prepare('SELECT COUNT(*)::int AS n FROM enquiries').get()).n;
   const page = await (await fetch(`${BASE}/specify`)).text();
   const token = (page.match(/name="_csrf" value="([^"]+)"/) || [])[1];
   const cookie = 'connect.sid=invalid';
@@ -95,7 +96,7 @@ async function check(pathname, expected = 200) {
   });
   log(rejected.status === 403, 'enquiry without a CSRF token is rejected', `→ ${rejected.status}`);
   log(
-    db.prepare('SELECT COUNT(*) AS n FROM enquiries').get().n === before,
+    (await db.prepare('SELECT COUNT(*)::int AS n FROM enquiries').get()).n === before,
     'rejected enquiry was not saved'
   );
   log(Boolean(token), 'specify form carries a CSRF token');
@@ -110,6 +111,7 @@ async function check(pathname, expected = 200) {
   log(productHtml.includes('rel="canonical"'), 'product page has a canonical URL');
 
   server.close();
+  await db.close();
   console.log(
     failures === 0
       ? '\nAll checks passed.\n'
