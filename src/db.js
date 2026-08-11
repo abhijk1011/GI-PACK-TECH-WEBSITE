@@ -17,11 +17,19 @@
  * keeps working.
  */
 
-const CONNECTION =
-  process.env.DATABASE_URL ||
-  process.env.NETLIFY_DATABASE_URL ||
-  process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
-  '';
+const env = require('./lib/env');
+
+/*
+ * Accepts a prefixed name too, so GIPACK_DATABASE_URL works as well as
+ * DATABASE_URL. Which key was used is reported below.
+ */
+const found =
+  ['DATABASE_URL', 'NETLIFY_DATABASE_URL', 'NETLIFY_DATABASE_URL_UNPOOLED']
+    .map((name) => env.resolve(name))
+    .find((r) => r.value) || { value: '', key: null };
+
+const CONNECTION = found.value || '';
+const CONNECTION_KEY = found.key;
 
 /*
  * PGlite is only ever used when it is asked for explicitly. It used to be the
@@ -38,32 +46,44 @@ const USE_PGLITE = process.env.USE_PGLITE === '1' && !process.env.NETLIFY;
 
 if (!USE_PGLITE && !CONNECTION) {
   const onNetlify = Boolean(process.env.NETLIFY);
-  throw new Error(
-    [
+  const ambiguous = env.resolve('DATABASE_URL').ambiguous;
+  const lines = ['', 'No database is configured.', ''];
+
+  if (ambiguous) {
+    lines.push(
+      'Several variables could be the database URL, so none was chosen:',
+      ...ambiguous.map((key) => `  ${key}`),
       '',
-      'No database is configured.',
-      '',
+      'Rename the correct one to exactly DATABASE_URL and remove the others.',
+      ''
+    );
+  } else {
+    lines.push(
       onNetlify
-        ? 'This build has no NETLIFY_DATABASE_URL or DATABASE_URL. Either:'
+        ? 'This build has no DATABASE_URL or NETLIFY_DATABASE_URL. Either:'
         : 'Set one of the following before starting:',
       '',
       onNetlify
-        ? '  1. Open Database in the Netlify sidebar and create one, which sets'
+        ? '  1. Add DATABASE_URL under Project configuration ->'
         : '  1. DATABASE_URL       a Postgres connection string',
       onNetlify
-        ? '     NETLIFY_DATABASE_URL automatically, then redeploy.'
+        ? '     Environment variables, pointing at any Postgres.'
         : '                        (test it with: npm run db:check)',
       onNetlify
-        ? '  2. Or add DATABASE_URL under Project configuration ->'
+        ? '  2. Or open Database in the Netlify sidebar and create one.'
         : '  2. USE_PGLITE=1       run an in-process Postgres for local work',
-      onNetlify ? '     Environment variables, pointing at any Postgres.' : '',
+      '',
+      'A name ending in _DATABASE_URL, such as MYAPP_DATABASE_URL, is also',
+      'accepted. Nothing matching either form was found.',
       '',
       'Do not create a local data directory to work around this. Anything the',
       'build writes to disk is discarded, so the site would deploy and then',
       'fail on every page.',
-      '',
-    ].join('\n')
-  );
+      ''
+    );
+  }
+
+  throw new Error(lines.join('\n'));
 }
 
 let driver = null;
@@ -232,6 +252,11 @@ const db = {
 
   get kind() {
     return USE_PGLITE ? 'pglite' : 'pg';
+  },
+
+  /** Which environment variable supplied the connection string. */
+  get connectionKey() {
+    return CONNECTION_KEY;
   },
 
   /** The shared pg Pool, so the session store does not open its own. */

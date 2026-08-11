@@ -39,6 +39,10 @@ Add a variable**. Add these four, one at a time.
 | `SESSION_SECRET` | Any long random text, 40+ characters. Mash the keyboard if you like — it is never typed again |
 | `ADMIN_PASSWORD` | The password you want for the admin panel. Choose it now |
 
+A prefix is fine: `GIPACK_DATABASE_URL` works as well as `DATABASE_URL`, and
+the build log names whichever it used. Just do not create two variables that
+both end in `_DATABASE_URL`, or it cannot tell which you meant.
+
 **Do not add `NODE_ENV`.** Setting it to `production` makes npm skip part of
 the install during the build, which can break the deploy. The site already
 detects Netlify and secures its cookies without it.

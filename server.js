@@ -10,6 +10,7 @@ const session = require('express-session');
 const db = require('./src/db');
 const h = require('./src/lib/helpers');
 const storage = require('./src/lib/storage');
+const env = require('./src/lib/env');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,7 +46,7 @@ app.use(express.json({ limit: '2mb' }));
  * in-memory store would sign the admin out on almost every request.
  */
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET || 'gi-packtech-dev-secret-change-me',
+  secret: env.get('SESSION_SECRET') || 'gi-packtech-dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: {

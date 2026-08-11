@@ -14,6 +14,7 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const db = require('../src/db');
+const env = require('../src/lib/env');
 const { categories, products } = require('../src/content/catalogue');
 const { industries, roles, materials, checklist } = require('../src/content/taxonomy');
 const { settings, pages, valueRows } = require('../src/content/company');
@@ -23,16 +24,8 @@ const reset = process.argv.includes('--reset');
 /** Shows which database is in use without printing the password. */
 function describeConnection() {
   if (db.kind === 'pglite') return 'in-process PGlite (local development)';
-  const source = process.env.DATABASE_URL
-    ? 'DATABASE_URL'
-    : process.env.NETLIFY_DATABASE_URL
-      ? 'NETLIFY_DATABASE_URL'
-      : 'NETLIFY_DATABASE_URL_UNPOOLED';
-  const raw =
-    process.env.DATABASE_URL ||
-    process.env.NETLIFY_DATABASE_URL ||
-    process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
-    '';
+  const source = db.connectionKey || 'unknown variable';
+  const raw = process.env[db.connectionKey] || '';
   let where = 'unparseable connection string';
   try {
     const url = new URL(raw);
@@ -359,16 +352,16 @@ async function main() {
   // --- Admin user -------------------------------------------------------
   const { n: userCount } = await db.prepare('SELECT COUNT(*)::int AS n FROM users').get();
   if (userCount === 0) {
-    const email = (process.env.ADMIN_EMAIL || 'admin@gipacktech.com').trim().toLowerCase();
-    const password = process.env.ADMIN_PASSWORD || 'ChangeMe!2026';
+    const email = (env.get('ADMIN_EMAIL') || 'admin@gipacktech.com').trim().toLowerCase();
+    const password = env.get('ADMIN_PASSWORD') || 'ChangeMe!2026';
     await db
       .prepare('INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)')
       .run(email, 'Administrator', bcrypt.hashSync(password, 12));
     console.log('\n  Admin user created');
     console.log(`    email:    ${email}`);
     console.log(
-      process.env.ADMIN_PASSWORD
-        ? '    password: (taken from ADMIN_PASSWORD)'
+      env.resolve('ADMIN_PASSWORD').value
+        ? `    password: (taken from ${env.resolve('ADMIN_PASSWORD').key})`
         : `    password: ${password}`
     );
     console.log('    Sign in at /admin-panel and change this immediately.\n');
