@@ -23,7 +23,48 @@ const CONNECTION =
   process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
   '';
 
-const USE_PGLITE = process.env.USE_PGLITE === '1' || !CONNECTION;
+/*
+ * PGlite is only ever used when it is asked for explicitly. It used to be the
+ * fallback whenever no connection string was present, which turned "the
+ * database was never created" into a confusing local filesystem error during
+ * the Netlify build — and, worse, would have produced a deploy that looked
+ * successful while every page failed at runtime.
+ */
+/*
+ * PGlite writes to local disk, which is never correct on Netlify, so the flag
+ * is ignored there even if it somehow ends up in the environment.
+ */
+const USE_PGLITE = process.env.USE_PGLITE === '1' && !process.env.NETLIFY;
+
+if (!USE_PGLITE && !CONNECTION) {
+  const onNetlify = Boolean(process.env.NETLIFY);
+  throw new Error(
+    [
+      '',
+      'No database is configured.',
+      '',
+      onNetlify
+        ? 'This build has no NETLIFY_DATABASE_URL or DATABASE_URL. Either:'
+        : 'Set one of the following before starting:',
+      '',
+      onNetlify
+        ? '  1. Open Database in the Netlify sidebar and create one, which sets'
+        : '  1. DATABASE_URL       a Postgres connection string',
+      onNetlify
+        ? '     NETLIFY_DATABASE_URL automatically, then redeploy.'
+        : '                        (test it with: npm run db:check)',
+      onNetlify
+        ? '  2. Or add DATABASE_URL under Project configuration ->'
+        : '  2. USE_PGLITE=1       run an in-process Postgres for local work',
+      onNetlify ? '     Environment variables, pointing at any Postgres.' : '',
+      '',
+      'Do not create a local data directory to work around this. Anything the',
+      'build writes to disk is discarded, so the site would deploy and then',
+      'fail on every page.',
+      '',
+    ].join('\n')
+  );
+}
 
 let driver = null;
 
