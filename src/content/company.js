@@ -1,8 +1,11 @@
 'use strict';
 
 /*
- * Global settings, editable page blocks and the value-equation rows.
- * Everything here appears in the admin panel, grouped by `group_name`.
+ * Global settings, page blocks and the value-equation rows.
+ *
+ * `group_name` and `label` are carried on each setting because they read as
+ * documentation: they say where a value belongs and what it is for, which is
+ * what makes this file navigable at 500 lines.
  */
 
 const settings = [
@@ -209,8 +212,8 @@ const settings = [
 ];
 
 /*
- * Editable page blocks. Every heading and paragraph on the built pages
- * is stored here so the admin panel can change wording without a deploy.
+ * Page blocks: every heading and paragraph on the pages that are written
+ * rather than generated from the catalogue.
  */
 const pages = [
   {

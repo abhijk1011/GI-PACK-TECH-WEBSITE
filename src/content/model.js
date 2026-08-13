@@ -4,7 +4,7 @@
  * The site's content, assembled in memory.
  *
  * Everything here used to be read back out of Postgres, one query per section
- * per page view. The database was only ever a copy: it is seeded from these
+ * per page view. The database was only ever a copy: it was seeded from these
  * same files, so it held nothing git did not already have, while adding a
  * network hop and a cold start to every request. This module produces the same
  * shapes the queries did, so the templates did not have to change.
@@ -22,7 +22,6 @@ const { categories: rawCategories, products: rawProducts } = require('./catalogu
 const { industries: rawIndustries, roles: rawRoles, materials, checklist } = require('./taxonomy');
 const { settings: rawSettings, pages: rawPages, valueRows } = require('./company');
 const { categories: faqCategories, faqs: rawFaqs } = require('./faqs');
-const { copyUpdates, seoUpdates } = require('./copy-updates');
 
 /*
  * Photographs are the one thing that is edited without touching code, so they
@@ -52,22 +51,6 @@ if (fs.existsSync(productDir)) {
   }
 }
 
-/*
- * Copy improvements were shipped as guarded database updates, because seeded
- * blocks were never overwritten. With no database they have to be applied to
- * the source values instead, or the site would render the superseded wording.
- * Same guard as before: only rewrite a value that still matches exactly.
- */
-const copyByOld = new Map(copyUpdates.map((u) => [u.from, u.to]));
-const seoByOld = new Map(seoUpdates.map((u) => [`${u.field} :: ${u.from}`, u.to]));
-
-function currentCopy(value) {
-  return copyByOld.get(value) ?? value;
-}
-function currentSeo(field, value) {
-  return seoByOld.get(`${field} :: ${value}`) ?? value;
-}
-
 /* ------------------------------------------------------------- settings */
 const settings = Object.fromEntries(rawSettings.map((s) => [s.key, s.value]));
 settings.logo_path = siteImages.logo || '/img/logo-mark.svg';
@@ -80,9 +63,9 @@ const pages = new Map(
     {
       slug: p.slug,
       title: p.title,
-      seo_title: currentSeo('seo_title', p.seo_title ?? ''),
-      seo_description: currentSeo('seo_description', p.seo_description ?? ''),
-      blocks: Object.fromEntries(p.blocks.map((b) => [b.block_key, currentCopy(b.value ?? '')])),
+      seo_title: p.seo_title ?? '',
+      seo_description: p.seo_description ?? '',
+      blocks: Object.fromEntries(p.blocks.map((b) => [b.block_key, b.value ?? ''])),
     },
   ])
 );

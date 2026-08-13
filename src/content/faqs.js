@@ -14,8 +14,8 @@
  * Where a genuine number is not established anywhere — a minimum quantity in
  * pieces, a lead time in days, payment terms — the answer says what governs it
  * and asks for the specification rather than inventing a figure. Those are the
- * answers to sharpen from the admin panel once the commercial team confirms
- * them; they are marked `needsFigures` so they are easy to find.
+ * answers to sharpen once the commercial team confirms the numbers; they are
+ * marked `needsFigures` so they are easy to find.
  */
 
 const categories = [

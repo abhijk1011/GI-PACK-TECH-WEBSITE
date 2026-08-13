@@ -501,7 +501,7 @@ strong, b { font-weight: 600; color: var(--ink); }
  */
 /*
  * The box is a fixed 3:2 and the image is contained inside it. The artwork is
- * uploaded from the admin panel, so its shape is not guaranteed — and the two
+ * uploaded from the image panel, so its shape is not guaranteed — and the two
  * obvious alternatives both fail: width:100% with height:auto lets a portrait
  * image run past a thousand pixels tall and push the headline off the screen,
  * and capping the height while the width is still forced squashes it. A

@@ -2,40 +2,24 @@
   "name": "gi-packtech-website",
   "version": "1.0.0",
   "private": true,
-  "description": "GI PackTech — industrial flexible packaging website with admin panel",
-  "main": "server.js",
+  "description": "GI PackTech — industrial flexible packaging website, rendered to static files",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "node scripts/build.js",
     "serve": "node scripts/serve.js",
-    "images:sync": "node scripts/sync-image-files.js",
     "start": "npm run build && npm run serve",
-    "dev": "node server.js",
-    "seed": "node scripts/seed.js",
-    "reset": "node scripts/seed.js --reset",
     "smoke": "node scripts/smoke.js",
-    "db:check": "node scripts/db-check.js"
+    "images:sync": "node scripts/sync-image-files.js"
   },
   "dependencies": {
-    "@netlify/blobs": "^10.7.12",
     "@sveltia/cms": "^0.189.0",
-    "bcryptjs": "^2.4.3",
-    "connect-pg-simple": "^10.0.0",
-    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.21.1",
-    "express-session": "^1.18.1",
-    "js-yaml": "^4.1.0",
-    "multer": "^1.4.5-lts.1",
-    "pg": "^8.23.0",
-    "serverless-http": "^4.0.0"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.4",
     "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
-    "esbuild": "^0.28.2"
+    "ajv-formats": "^3.0.1"
   }
 }

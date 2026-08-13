@@ -62,13 +62,9 @@ rebuilds.
 Photographs are the exception: they live in `content/`, because the image panel
 writes them. See below.
 
-Two files sit alongside them:
-
-- `copy-updates.js` — wording revisions, each guarded on the exact text it
-  replaces. They exist because these updates were once shipped as database
-  migrations; they are applied to the source values at build time now.
-- `model.js` — assembles the four content files into the shapes the templates
-  read, resolving the slug relations between products, industries and roles.
+`model.js` sits alongside them and assembles the four into the shapes the
+templates read, resolving the slug relations between products, industries and
+roles, and folding in the photographs from `content/`.
 
 Five FAQ answers are marked `needsFigures: true`. They are written without a
 number where no figure has been confirmed — minimum order quantity, lead time,

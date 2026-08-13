@@ -5,7 +5,7 @@
   /*
    * Search engines cut a description around 160 characters, mid-word, which
    * looks careless in a result. Trimming at a word boundary here means no page
-   * can ship an over-long one whatever is typed into the admin panel.
+   * can ship an over-long one, however long the description in the content is.
    */
   const description = h.truncate(seo.description || s.default_seo_description || '', 158);
   const canonical = h.absUrl(seo.path || currentPath);
