@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="section gridbg">
+    <div class="wrap phero--center" style="padding-block:3rem;">
+      <p class="eyebrow eyebrow--plain">Enquiry received</p>
+      <h1 class="h-page" style="margin-bottom:1.35rem;"><%- h.dot('It has reached the right desk.') %></h1>
+      <p class="lede measure--tight" style="margin-inline:auto;"><%= s.enquiry_thanks %></p>
+      <p class="measure--tight muted" style="margin-inline:auto;margin-top:1.35rem;">
+        Need an answer sooner? Call
+        <a class="tlink tlink--brand" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>.
+      </p>
+      <div class="btn-row" style="justify-content:center;margin-top:2rem;">
+        <a class="btn btn--primary" href="/products">See all products</a>
+        <a class="btn btn--ghost" href="/">Back to home</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

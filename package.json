@@ -8,8 +8,10 @@
     "node": ">=18"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "build": "node scripts/build.js",
+    "serve": "node scripts/serve.js",
+    "start": "npm run build && npm run serve",
+    "dev": "node server.js",
     "seed": "node scripts/seed.js",
     "reset": "node scripts/seed.js --reset",
     "smoke": "node scripts/smoke.js",

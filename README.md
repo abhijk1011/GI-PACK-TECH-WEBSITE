@@ -1,104 +1,26 @@
-# GI PackTech — website and admin panel
+# GI PackTech — website
 
-The public website plus a full admin panel at **`/admin-panel`**, built from the
-GI PackTech product catalogue. 41 products across 7 categories, 14 industry
-pages, 4 buyer-role pages, a material reference and a guided enquiry form.
+The GI PackTech website, built from the product catalogue: 41 products across 7
+categories, 14 industry pages, 4 buyer-role pages, a material reference, a
+35-question FAQ and a guided enquiry form. 74 pages in all.
 
-Everything visible on the site is stored in the database and editable from the
-admin panel — headings, paragraphs, product copy, images, contact details and
-the search-engine listing for every page.
-
-Runs on Netlify: the pages are rendered by a Netlify Function, content lives in
-Netlify DB (Postgres), and uploaded photographs live in Netlify Blobs.
+It is a **static site**. `npm run build` renders every page to a file in
+`dist/`, and Netlify serves those files from its CDN. Reading the site touches
+no server, no database and no function — there is nothing behind it to wake up,
+run out, or fail to bundle.
 
 ---
 
-## Deploying to Netlify
+## Deploying
 
-**For step-by-step instructions with nothing assumed, see [DEPLOY.md](DEPLOY.md).**
+**See [DEPLOY.md](DEPLOY.md) for the click-by-click version.** In short:
 
-The summary is below. Three things need to be switched on before the site works.
-
-### 1. Connect a database
-
-Any Postgres works. The app uses `DATABASE_URL` if it is set, and otherwise
-falls back to `NETLIFY_DATABASE_URL`.
-
-**Easiest:** open **Database** in the Netlify sidebar and create one. Netlify
-provisions Postgres and sets `NETLIFY_DATABASE_URL` for you — nothing to copy.
-
-**Or bring your own.** Add the connection string as `DATABASE_URL` in the
-environment variables. Free options that suit this site:
-
-| Provider | Notes |
-| --- | --- |
-| **Neon** | Free tier. Sleeps when idle and wakes on the next request, adding a second or two. The same engine Netlify DB uses. |
-| **Supabase** | Free tier, but **pauses a project after 7 days with no activity** and needs resuming by hand. Risky for a site with quiet weeks unless you keep an eye on it. |
-| **Aiven** | Free Postgres plan, no idle pause. |
-
-Whichever you pick, use the **pooled** connection string if the provider offers
-one — serverless functions open many short connections. On Neon that is the
-host containing `-pooler`; on Supabase it is the connection pooler on port 6543.
-
-This site's content is a few megabytes at most, so free storage limits are not
-a concern.
-
-Test a connection string before deploying:
-
-```bash
-DATABASE_URL="postgresql://user:pass@host/db?sslmode=require" npm run db:check
-```
-
-It reports whether the connection works, which Postgres it reached, and how
-much content is loaded.
-
-### 2. Set the environment variables
-
-**Project configuration → Environment variables**, add:
-
-| Variable | Value |
-| --- | --- |
-| `SESSION_SECRET` | A long random string. Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
-| `ADMIN_EMAIL` | The email you want to sign in with |
-| `ADMIN_PASSWORD` | A strong password. Only used the first time the database is seeded |
-
-Do not set `NODE_ENV=production` on Netlify: it makes npm skip devDependencies
-during the build. Secure cookies are enabled by detecting Netlify instead.
-
-Set `ADMIN_PASSWORD` **before the first deploy**. After the admin user exists,
-changing it here has no effect — use **Account & password** inside the panel.
-
-### 3. Deploy
-
-Push to the connected branch, or hit **Trigger deploy**. The build runs
-`npm run seed`, which creates the tables and loads the catalogue. It is safe to
-run on every deploy: inserts use `ON CONFLICT DO NOTHING`, so anything you have
-edited in the admin panel is left alone.
-
-Then open `https://your-site.netlify.app/admin-panel` and sign in.
-
-### Blobs
-
-Nothing to configure. Netlify Blobs is available to the function automatically
-and is where admin-uploaded photographs are stored.
-
----
-
-## After it is live
-
-In the admin panel, under **Settings & SEO**:
-
-1. Set **Site URL** to the real address. It drives canonical links, the sitemap
-   and social sharing cards, so search engines index the right domain. Update it
-   again when you move from `*.netlify.app` to your own domain.
-2. Turn on **Allow search engines to index the site**. It is off by default so
-   nothing gets indexed while you are still reviewing.
-3. Update the contact email once the GI PackTech mailbox exists.
-4. Paste the Google Search Console verification tag into **Custom head code**,
-   then submit `https://yourdomain.com/sitemap.xml`.
-
-To add your own domain: **Domain management → Add a domain**. Netlify issues the
-HTTPS certificate for you.
+1. Connect the repository in Netlify. `netlify.toml` already sets the build
+   command (`npm run build`) and publish directory (`dist`). No environment
+   variables are needed.
+2. Turn on **Forms → form detection** once, redeploy, and add an email
+   notification. That is what receives the enquiries.
+3. Set `site_url` in `src/content/company.js` to the real address.
 
 ---
 
@@ -106,68 +28,77 @@ HTTPS certificate for you.
 
 ```bash
 npm install
-cp .env.example .env
-```
-
-Then either point `DATABASE_URL` at your Netlify database, or work offline
-against an in-process Postgres:
-
-```bash
-export USE_PGLITE=1     # no database server needed
-npm run seed
 npm start
 ```
 
-Website: <http://localhost:3000> · Admin panel: <http://localhost:3000/admin-panel>
+<http://localhost:3000>
 
 | Command | What it does |
 | --- | --- |
-| `npm start` | Runs the site |
-| `npm run dev` | Runs it and restarts on file changes |
-| `npm run seed` | Creates tables and adds anything missing. Safe to re-run |
-| `npm run reset` | Wipes the content tables and reloads the catalogue from source |
-| `npm run smoke` | Checks that all 74 pages render and the admin panel is protected |
-| `npm run db:check` | Tests a database connection string and reports what is loaded |
+| `npm run build` | Renders the whole site into `dist/` |
+| `npm run serve` | Serves `dist/` the way Netlify will, redirects and all |
+| `npm start` | Both of the above |
+| `npm run smoke` | Builds, then checks every page, redirect, form and schema |
 
-`npm run reset` discards content edits made in the admin panel. Enquiries,
-uploaded images and your login are never touched by either seed command.
+`npm run smoke` is the check to run before pushing. It takes a couple of
+seconds and needs no network.
 
 ---
 
-## What the admin panel controls
+## Changing the site
 
-| Section | What you can change |
+Everything the site says lives in four files under `src/content/`. Edit one,
+run `npm run build`, and the change is in the output. Commit and Netlify
+rebuilds.
+
+| File | What is in it |
 | --- | --- |
-| **Products** | Every field of all 41 products: the problem it prevents, description, features, materials, sizes, applications, customisation options, photographs, cross-sell links, and the search-engine listing |
-| **Categories** | The 7 product families, their intro text and SEO |
-| **Pages & sections** | Every heading and paragraph on the home, about, capabilities, contact and specify pages |
-| **Industries** | 14 sector pages, their copy and which products appear on each |
-| **Buyer roles** | The four decision-makers, what each one sees, and their product lists |
-| **Materials** | The material selection reference table |
-| **Value equation** | The "what you see / what you don't see" rows on the home page |
-| **Case examples** | Written case studies. Empty by default — add them as they are approved |
-| **Inbox** | Every enquiry, with the full specification the buyer filled in, plus status and internal notes |
-| **Enquiry checklist** | The questions on the specification form, and the reason shown under each |
-| **Media library** | Upload and manage photographs, with alt text for search engines |
-| **Settings & SEO** | Contact details, addresses, GST, ISO line, social links, default meta tags, and analytics/verification code |
-| **Redirects** | Send old addresses to new ones, for when the two existing sites are retired |
+| `catalogue.js` | The 7 categories and all 41 products — the problem each one prevents, description, features, materials, sizes, applications, customisation options, photographs, cross-links and SEO |
+| `taxonomy.js` | The 14 industries, 4 buyer roles, the material reference table and the enquiry checklist |
+| `company.js` | Contact details, addresses, the settings that drive SEO, and the headings and paragraphs of the home, about, contact and specify pages |
+| `faqs.js` | The 35 questions and answers, in 7 groups |
+
+Two files sit alongside them:
+
+- `copy-updates.js` — wording revisions, each guarded on the exact text it
+  replaces. They exist because these updates were once shipped as database
+  migrations; they are applied to the source values at build time now.
+- `model.js` — assembles the four content files into the shapes the templates
+  read, resolving the slug relations between products, industries and roles.
+
+Five FAQ answers are marked `needsFigures: true`. They are written without a
+number where no figure has been confirmed — minimum order quantity, lead time,
+print minimums. Fill in the real figures and drop the flag.
 
 ---
 
 ## Photographs
 
-16 real photographs from the catalogue ship with the site and are already
-attached to the right products.
+Photographs live in `public/img/` and are attached to products in
+`catalogue.js`:
 
-The remaining 31 products show a neutral *"photograph to follow"* panel instead
-of a broken image, so every page still looks finished. The dashboard lists
-exactly which products are waiting, and each one carries the **shot brief**
-written for it in the catalogue — open the product and it is shown above the
-upload box. Each brief can be handed to a photographer or used as an AI image
-prompt.
+```js
+images: [{ path: '/img/drum-liner-spout-1.jpg', alt: '…', caption: '…' }]
+```
 
-To add photographs: **Products → open the product → Photographs → upload**, or
-upload a batch to the **Media library** first and attach them afterwards.
+16 real photographs ship with the site. The remaining products show a neutral
+*"photograph to follow"* panel rather than a broken image, so every page still
+looks finished. Each of those products carries the **shot brief** written for it
+in the catalogue — hand it to a photographer, or use it as an image prompt.
+
+To add one: drop the file into `public/img/`, add the `images` entry, and push.
+
+---
+
+## Enquiries
+
+The contact form and the specification form are handled by **Netlify Forms**,
+which reads them out of the deployed HTML — no function, no database, no
+secrets. Submissions land in your inbox and are kept in Netlify under **Forms**.
+
+Both forms declare a honeypot field (`website`) that real people never fill in,
+and Netlify filters spam before it reaches you. Success lands on `/thank-you`,
+which is `noindex` and out of the sitemap.
 
 ---
 
@@ -192,40 +123,43 @@ playbook — appears anywhere on the public site.
   is protecting.
 - **Every product has its own page** with its own meta tags and structured data,
   which is what search engines and AI answer engines read for specific queries.
+- **The FAQ answers stand alone.** Each is written to be quotable on its own, in
+  70 words or fewer, because an AI assistant lifts one answer rather than
+  reading the page.
+
+---
 
 ## Technical notes
 
-Node.js and Express with EJS templates rendered on the server, wrapped as a
-single Netlify Function. No build step and no front-end framework — the pages
-are real HTML, which is both fast and good for search. CSS, JavaScript and the
-catalogue photographs are served straight from Netlify's CDN and never invoke
-the function.
-
-Security: passwords hashed with bcrypt, sessions stored in Postgres with signed
-http-only cookies, CSRF tokens on every form, uploads restricted to image types
-and 8 MB, and the admin panel excluded from `robots.txt`.
+EJS templates rendered once at build time. No front-end framework; the pages
+are real HTML, which is both fast and good for search. The only JavaScript
+shipped is the navigation and the product gallery.
 
 ```
-netlify.toml           build, function and redirect configuration
-netlify/functions/     the function entry point
-server.js              app setup, sessions, CSRF
-src/db.js              Postgres schema and query layer
-src/lib/storage.js     image storage (Netlify Blobs, or disk locally)
-src/content/           the catalogue as source — what `npm run seed` loads
-src/routes/public.js   the website
-src/routes/admin.js    the admin panel
-src/lib/resources.js   field definitions driving the admin forms
+netlify.toml           build settings and cache headers
+scripts/build.js       renders every page into dist/
+scripts/serve.js       serves dist/ locally the way Netlify does
+scripts/smoke.js       builds, then checks the output
+src/content/           the site's content, and the model built from it
+src/lib/text.js        the view helpers
+src/lib/assets.js      the ?v= that stops a stale stylesheet being served
+src/lib/icons.js       inline SVG icons
 views/                 templates
-public/css/site.css    the website design system
-public/css/admin.css   the admin panel
+public/                CSS, JavaScript, webfonts and photographs, copied as-is
 ```
 
-To change the wording of something, use the admin panel. `src/content/` is only
-the starting data — editing it after seeding changes nothing until you re-seed.
+`dist/` is generated and not committed.
 
-### A note on the database layer
+### Cache headers
 
-`src/db.js` exposes a small `prepare().get()/.all()/.run()` wrapper over
-Postgres. It rewrites `?` and `@named` placeholders into `$1` form and adds
-`RETURNING id` to inserts, which is why the query strings throughout the app
-read the way they do.
+The stylesheet and scripts keep the same filenames from one deploy to the next,
+so they are served `max-age=0, must-revalidate` and requested with a `?v=` that
+changes per deploy — a 304 on every hit, and the new file the moment a deploy
+changes it. Fonts are a fixed release of Inter, so they are cached for a year.
+
+### Redirects
+
+`dist/_redirects` is generated by the build. It carries the retired
+`/capabilities` page, the old FAQ addresses, and a permanent redirect for every
+product reached under the wrong category, so no URL that was ever linked starts
+returning a 404.

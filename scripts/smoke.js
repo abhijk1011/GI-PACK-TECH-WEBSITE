@@ -1,18 +1,24 @@
 'use strict';
 
 /*
- * Route smoke test. Boots the app on a spare port and checks that every
- * public page renders, the admin panel is protected, and an enquiry saves.
+ * Build check. Renders the site, then reads dist/ the way Netlify will serve
+ * it and asserts that every page, redirect and piece of structured data the
+ * site promises is actually in the output.
  *
  *   npm run smoke
+ *
+ * This runs over files rather than over a running server, because the deployed
+ * site is files. Nothing here starts a process or opens a connection.
  */
 
-const db = require('../src/db');
+const { execFileSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-process.env.PORT = process.env.SMOKE_PORT || '3999';
-const app = require('../server');
+const ROOT = path.join(__dirname, '..');
+const DIST = path.join(ROOT, 'dist');
+const model = require('../src/content/model');
 
-const BASE = `http://127.0.0.1:${process.env.PORT}`;
 let failures = 0;
 
 function log(ok, label, extra = '') {
@@ -20,119 +26,118 @@ function log(ok, label, extra = '') {
   console.log(`${ok ? '  ok  ' : ' FAIL '} ${label}${extra ? '  ' + extra : ''}`);
 }
 
-async function check(pathname, expected = 200) {
-  const res = await fetch(BASE + pathname, { redirect: 'manual' });
-  log(res.status === expected, `${pathname}`, `→ ${res.status}`);
-  return res;
+/** The file Netlify would serve for a URL, or null for a 404. */
+function fileFor(url) {
+  const base = path.join(DIST, url === '/' ? '' : url);
+  for (const candidate of [base, path.join(base, 'index.html'), `${base}.html`]) {
+    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) return candidate;
+  }
+  return null;
 }
 
-(async () => {
-  await db.migrate();
-  const server = app.listen(process.env.PORT);
-  await new Promise((r) => server.once('listening', r));
+function html(url) {
+  const file = fileFor(url);
+  return file ? fs.readFileSync(file, 'utf8') : null;
+}
 
-  console.log('\nPublic pages');
-  const fixed = [
-    '/', '/products', '/industries', '/materials', '/faq',
-    '/about', '/contact', '/specify', '/sitemap.xml', '/robots.txt',
-  ];
-  for (const p of fixed) await check(p);
+function page(url) {
+  const body = html(url);
+  log(Boolean(body), url);
+  return body || '';
+}
 
-  console.log('\nEvery category page');
-  for (const c of await db.prepare('SELECT slug FROM categories WHERE published = 1').all()) {
-    await check(`/products/${c.slug}`);
+console.log('\nBuilding');
+execFileSync('node', [path.join(__dirname, 'build.js')], { stdio: 'inherit', cwd: ROOT });
+
+console.log('\nPublic pages');
+for (const p of ['/', '/products', '/industries', '/materials', '/faq', '/about', '/contact',
+  '/specify', '/thank-you', '/sitemap.xml', '/robots.txt', '/404.html']) {
+  page(p);
+}
+
+console.log('\nEvery category page');
+for (const c of model.categories) page(`/products/${c.slug}`);
+
+console.log('\nEvery product page');
+let missing = 0;
+for (const p of model.products) {
+  if (!fileFor(`/products/${p.category_slug}/${p.slug}`)) {
+    missing++;
+    log(false, `/products/${p.category_slug}/${p.slug}`);
   }
+}
+log(missing === 0, `${model.products.length} product pages`, missing ? `${missing} missing` : 'all rendered');
 
-  console.log('\nEvery product page');
-  const products = await db
-    .prepare(
-      `SELECT p.slug, c.slug AS cat FROM products p
-       JOIN categories c ON c.id = p.category_id WHERE p.published = 1 ORDER BY p.sort`
-    )
-    .all();
-  let productFails = 0;
-  for (const p of products) {
-    const res = await fetch(`${BASE}/products/${p.cat}/${p.slug}`);
-    if (res.status !== 200) {
-      productFails++;
-      log(false, `/products/${p.cat}/${p.slug}`, `→ ${res.status}`);
-    }
-  }
-  log(productFails === 0, `${products.length} product pages`, productFails ? `${productFails} failed` : 'all 200');
+console.log('\nEvery industry and role page');
+let gaps = 0;
+for (const i of model.industries) if (!fileFor(`/industries/${i.slug}`)) gaps++;
+for (const r of model.roles) if (!fileFor(`/for/${r.slug}`)) gaps++;
+log(gaps === 0, `${model.industries.length} industry and ${model.roles.length} role pages`,
+  gaps ? `${gaps} missing` : 'all rendered');
 
-  console.log('\nEvery industry and role page');
-  for (const i of await db.prepare('SELECT slug FROM industries WHERE published = 1').all()) {
-    await check(`/industries/${i.slug}`);
-  }
-  for (const r of await db.prepare('SELECT slug FROM roles WHERE published = 1').all()) {
-    await check(`/for/${r.slug}`);
-  }
+console.log('\nRedirects');
+const rules = new Map(
+  fs
+    .readFileSync(path.join(DIST, '_redirects'), 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => {
+      const [from, to, code] = line.trim().split(/\s+/);
+      return [from, { to, code }];
+    })
+);
+// The capabilities page was removed; its URL was indexed, so it must move
+// rather than 404.
+log(rules.get('/capabilities')?.to === '/products', '/capabilities moves to the range');
+log(rules.get('/faqs')?.to === '/faq', '/faqs moves to the FAQ');
+const wrongCat = rules.get('/products/pallet-covers-and-pallet-wraps/pvc-round-drum-liner');
+log(
+  wrongCat?.to === '/products/round-drum-liners/pvc-round-drum-liner',
+  'a product under the wrong category moves to its canonical URL'
+);
+log(
+  [...rules.values()].every((r) => r.code === '301'),
+  'every redirect is permanent',
+);
+log(![...rules.keys()].some((from) => fileFor(from)), 'no redirect shadows a real page');
 
-  console.log('\nErrors and redirects');
-  await check('/definitely-not-a-page', 404);
-  // The capabilities page was removed; its URL was indexed, so it must redirect
-  // rather than 404.
-  const gone = await check('/capabilities', 301);
-  log((gone.headers.get('location') || '').endsWith('/products'), '/capabilities redirects to the range');
-  await check('/faqs', 301);
-  const wrongCat = await check('/products/pallet-covers-and-pallet-wraps/pvc-round-drum-liner', 301);
-  log(
-    (wrongCat.headers.get('location') || '').includes('/products/round-drum-liners/'),
-    'wrong category redirects to the canonical URL'
-  );
+console.log('\nEnquiry forms');
+for (const [url, name] of [['/contact', 'contact'], ['/specify', 'specification']]) {
+  const body = html(url) || '';
+  log(body.includes(`name="${name}"`) && body.includes('data-netlify="true"'),
+    `${url} form is registered with Netlify Forms`);
+  log(body.includes(`<input type="hidden" name="form-name" value="${name}">`),
+    `${url} carries its form-name field`);
+  log(body.includes('netlify-honeypot="website"'), `${url} declares its honeypot`);
+  log(body.includes('action="/thank-you"'), `${url} lands on the thank-you page`);
+  log(!body.includes('_csrf'), `${url} has no stale CSRF field`);
+}
+log((html('/thank-you') || '').includes('noindex'), 'the thank-you page is noindex');
 
-  console.log('\nAdmin panel is protected');
-  for (const p of ['/admin-panel', '/admin-panel/products', '/admin-panel/settings', '/admin-panel/media']) {
-    const res = await fetch(BASE + p, { redirect: 'manual' });
-    log(res.status === 302, `${p} requires sign-in`, `→ ${res.status}`);
-  }
-  await check('/admin-panel/login');
+console.log('\nFAQ');
+const faqHtml = html('/faq') || '';
+log(/"@type":"FAQPage"/.test(faqHtml), 'FAQ page emits FAQPage JSON-LD');
+const qCount = (faqHtml.match(/"@type":"Question"/g) || []).length;
+log(qCount >= 20, 'FAQPage carries every question', `→ ${qCount}`);
+log(qCount === model.faqs.length, 'every published question is in the markup',
+  `→ ${qCount}/${model.faqs.length}`);
 
-  console.log('\nEnquiry form');
-  const before = (await db.prepare('SELECT COUNT(*)::int AS n FROM enquiries').get()).n;
-  const page = await (await fetch(`${BASE}/specify`)).text();
-  const token = (page.match(/name="_csrf" value="([^"]+)"/) || [])[1];
-  const cookie = 'connect.sid=invalid';
-  const rejected = await fetch(`${BASE}/enquiry`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded', cookie },
-    body: 'name=No+Token&email=x%40y.com',
-    redirect: 'manual',
-  });
-  log(rejected.status === 403, 'enquiry without a CSRF token is rejected', `→ ${rejected.status}`);
-  log(
-    (await db.prepare('SELECT COUNT(*)::int AS n FROM enquiries').get()).n === before,
-    'rejected enquiry was not saved'
-  );
-  log(Boolean(token), 'specify form carries a CSRF token');
+console.log('\nStructured data');
+const first = model.products[0];
+const productHtml = html(`/products/${first.category_slug}/${first.slug}`) || '';
+for (const type of ['Organization', 'Product', 'BreadcrumbList']) {
+  log(productHtml.includes(`"@type":"${type}"`), `product page emits ${type} JSON-LD`);
+}
+log(productHtml.includes('rel="canonical"'), 'product page has a canonical URL');
 
-  console.log('\nFAQ');
-  const faqHtml = await (await fetch(BASE + '/faq')).text();
-  const faqLd = /"@type":"FAQPage"/.test(faqHtml);
-  log(faqLd, 'FAQ page emits FAQPage JSON-LD');
-  const qCount = (faqHtml.match(/"@type":"Question"/g) || []).length;
-  log(qCount >= 20, `FAQPage carries every question`, `→ ${qCount}`);
-  const dbFaqs = (await db.prepare('SELECT COUNT(*)::int AS n FROM faqs WHERE published = 1').get()).n;
-  log(qCount === dbFaqs, 'every published question is in the markup', `→ ${qCount}/${dbFaqs}`);
+console.log('\nNothing dynamic leaked into the output');
+const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
+log(
+  (sitemap.match(/<loc>/g) || []).length === 8 + model.categories.length + model.products.length +
+    model.industries.length + model.roles.length,
+  'the sitemap lists every page'
+);
+log(!sitemap.includes('/thank-you'), 'the thank-you page stays out of the sitemap');
 
-  console.log('\nStructured data');
-  const productHtml = await (
-    await fetch(`${BASE}/products/${products[0].cat}/${products[0].slug}`)
-  ).text();
-  for (const type of ['Organization', 'Product', 'BreadcrumbList']) {
-    log(productHtml.includes(`"@type":"${type}"`), `product page emits ${type} JSON-LD`);
-  }
-  log(productHtml.includes('rel="canonical"'), 'product page has a canonical URL');
-
-  server.close();
-  await db.close();
-  console.log(
-    failures === 0
-      ? '\nAll checks passed.\n'
-      : `\n${failures} check(s) failed.\n`
-  );
-  process.exit(failures === 0 ? 0 : 1);
-})().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+console.log(failures === 0 ? '\nAll checks passed.\n' : `\n${failures} check(s) failed.\n`);
+process.exit(failures === 0 ? 0 : 1);

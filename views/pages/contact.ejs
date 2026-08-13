@@ -17,14 +17,15 @@
     <div class="wrap">
       <div class="split split--top">
         <div>
-          <% if (sent) { %>
-            <div class="notice" style="margin-bottom:2rem;">
-              <strong>Received.</strong> <%= s.enquiry_thanks %>
-            </div>
-          <% } %>
-
-          <form method="post" action="/enquiry" novalidate>
-            <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <form
+            name="contact"
+            method="post"
+            action="/thank-you"
+            data-netlify="true"
+            netlify-honeypot="website"
+            novalidate
+          >
+            <input type="hidden" name="form-name" value="contact">
             <input type="hidden" name="source" value="contact">
             <div class="visually-hidden" aria-hidden="true">
               <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>

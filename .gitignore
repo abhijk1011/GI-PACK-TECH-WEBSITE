@@ -16,3 +16,6 @@ public/uploads/*
 .DS_Store
 npm-debug.log*
 *.log
+
+# The rendered site. Netlify builds it on deploy; nothing here belongs in git.
+dist/

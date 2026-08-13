@@ -16,12 +16,6 @@
   <section class="section section--tight">
     <div class="wrap">
       <div class="measure--form">
-      <% if (sent) { %>
-        <div class="notice" style="margin-bottom:2.5rem;">
-          <strong>Received.</strong> <%= s.enquiry_thanks %>
-        </div>
-      <% } %>
-
       <div class="steps">
         <div class="step" data-active="true">
           <div class="step__n">Step 01</div>
@@ -37,8 +31,15 @@
         </div>
       </div>
 
-      <form method="post" action="/enquiry" novalidate>
-        <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <form
+        name="specification"
+        method="post"
+        action="/thank-you"
+        data-netlify="true"
+        netlify-honeypot="website"
+        novalidate
+      >
+        <input type="hidden" name="form-name" value="specification">
         <input type="hidden" name="source" value="specify">
         <!-- honeypot -->
         <div class="visually-hidden" aria-hidden="true">

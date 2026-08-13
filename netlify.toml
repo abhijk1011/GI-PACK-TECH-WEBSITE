@@ -1,14 +1,10 @@
 [build]
-  # `public` holds the CSS, JavaScript, webfonts, logo and the catalogue
-  # photographs. Netlify serves those straight from its CDN; everything else
-  # falls through to the function below.
-  publish = "public"
-  functions = "netlify/functions"
-
-  # Creates the schema and loads the catalogue. Safe to run on every deploy:
-  # inserts use ON CONFLICT DO NOTHING, so content edited in the admin panel
-  # is left alone.
-  command = "npm run seed"
+  # Every page is rendered to a file at deploy time, from the content in
+  # src/content. Reading the site therefore touches nothing but the CDN: no
+  # function to cold start, no database to wake, no connection string to get
+  # right, no runtime to keep pinned.
+  command = "npm run build"
+  publish = "dist"
 
 [build.environment]
   # Pinned so a change to Netlify's default cannot break a deploy.
@@ -16,30 +12,10 @@
   # NODE_ENV is deliberately not set here. Setting it to "production" makes
   # npm skip devDependencies during the build.
 
-[functions]
-  # The EJS templates are read at runtime, so they must travel with the bundle.
-  node_bundler = "esbuild"
-  included_files = ["views/**", "src/**"]
-
-  # EJS is copied in whole rather than bundled. It resolves templates and
-  # partials at runtime, which a bundler cannot follow.
-  external_node_modules = ["ejs"]
-
-  # PGlite is deliberately absent from that list. It is a devDependency, so it
-  # may not be installed here, and asking the bundler to include a missing
-  # package fails the build. src/db.js builds its module id at runtime instead,
-  # which keeps it out of the bundle either way.
-
-[functions."server"]
-  # Plenty for a page render; the default is lower on some plans.
-  timeout = 26
-
-# Static files in `public` win automatically, so this only catches page
-# requests, form posts, the admin panel and uploaded images.
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server"
-  status = 200
+# The redirects the Express app used to answer — the retired /capabilities
+# page, the old FAQ addresses, and product URLs reached under the wrong
+# category — are generated into dist/_redirects by the build, because they are
+# derived from the catalogue rather than written by hand.
 
 # The stylesheets and scripts keep the same filenames from one deploy to the
 # next, so they must not be cached by their name alone: a browser holding a

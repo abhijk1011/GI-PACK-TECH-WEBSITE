@@ -1,99 +1,78 @@
 # Putting the site live, free
 
-Follow these in order. Total time is about 15 minutes.
+The site is static. Every page is rendered to a file when you deploy, and
+Netlify serves those files from its CDN. There is no server, no database and no
+function behind it, so there is nothing that can be misconfigured, go to sleep,
+run out of credits, or fail to bundle.
 
-Everything below stays on free tiers. Nothing here asks for a card.
-
----
-
-## Step 1 — Create a free database (5 minutes)
-
-We use Neon directly rather than Netlify's built-in database. Both are the same
-Postgres engine, but a Neon account of your own is not affected by Netlify plan
-limits or credits — which is what stopped the earlier deploy.
-
-1. Go to **https://neon.com** and sign up (GitHub login is quickest).
-2. Create a project. Name it `gipacktech`. Any region is fine; pick the one
-   nearest India for the fastest queries.
-3. On the dashboard, find **Connection string** and press **Copy**.
-   - Make sure the **Pooled connection** toggle is ON. The string should have
-     `-pooler` in the hostname.
-   - It looks like:
-     `postgresql://neondb_owner:XXXX@ep-something-pooler.region.aws.neon.tech/neondb?sslmode=require`
-4. Keep that string on your clipboard for the next step.
-
-> Neon's free tier sleeps the database after a few minutes of no traffic and
-> wakes it automatically on the next visit, which adds a second or two. That is
-> normal and costs nothing.
+Total time is about ten minutes, and nothing here asks for a card.
 
 ---
 
-## Step 2 — Add four settings in Netlify (3 minutes)
+## Step 1 — Connect the repository (3 minutes)
 
-In your Netlify project: **Project configuration → Environment variables →
-Add a variable**. Add these four, one at a time.
+In Netlify: **Add new project → Import an existing project → GitHub**, and pick
+this repository.
 
-| Key | Value |
+Netlify reads `netlify.toml`, so the two settings it offers are already
+correct. Confirm they read:
+
+| Setting | Value |
 | --- | --- |
-| `DATABASE_URL` | The Neon connection string you copied |
-| `SESSION_SECRET` | Any long random text, 40+ characters. Mash the keyboard if you like — it is never typed again |
-| `ADMIN_PASSWORD` | The password you want for the admin panel. Choose it now |
+| Build command | `npm run build` |
+| Publish directory | `dist` |
 
-A prefix is fine: `GIPACK_DATABASE_URL` works as well as `DATABASE_URL`, and
-the build log names whichever it used. Just do not create two variables that
-both end in `_DATABASE_URL`, or it cannot tell which you meant.
-
-**Do not add `NODE_ENV`.** Setting it to `production` makes npm skip part of
-the install during the build, which can break the deploy. The site already
-detects Netlify and secures its cookies without it.
-
-Optionally also add `ADMIN_EMAIL` if you want to sign in with something other
-than `admin@gipacktech.com`.
-
-**`ADMIN_PASSWORD` matters now.** It is only read the first time the database
-is filled. Changing it here afterwards does nothing — you would change it from
-inside the admin panel instead.
-
----
-
-## Step 3 — Deploy (2 minutes)
-
-**Deploys → Trigger deploy → Deploy site.**
-
-Watch the build log. Near the top of the build step you should see:
+Press **Deploy**. The build log ends with a line like:
 
 ```
-Database: Postgres via DATABASE_URL -> ep-something-pooler.region.aws.neon.tech/neondb
-Schema ready.
-Seed complete: { categories: 7, products: 41, ... }
+Built 80 files into dist/  (74 URLs in the sitemap, 249 redirects)
 ```
 
-That line tells you the database was found and filled. If it says
-`in-process PGlite` or the build stops with **No database is configured**, then
-`DATABASE_URL` did not save in step 2 — go back and check it.
+That is the whole deploy. No environment variables are required.
 
 ---
 
-## Step 4 — Sign in (1 minute)
+## Step 2 — Turn on form submissions (2 minutes)
 
-Open `https://your-site-name.netlify.app/admin-panel`
+The contact form and the specification form are handled by **Netlify Forms**,
+which reads the forms out of the deployed HTML. It has to be switched on once:
 
-- Email: `admin@gipacktech.com` (or your `ADMIN_EMAIL`)
-- Password: the `ADMIN_PASSWORD` you set
+**Project configuration → Forms → Enable form detection**, then **redeploy**
+once so the forms are picked up.
+
+You should then see two forms listed, `contact` and `specification`.
+
+Set up the email alert while you are there:
+**Forms → Form notifications → Add notification → Email notification**, and use
+the address you actually read. Every enquiry then arrives in your inbox, and a
+copy is kept in Netlify under **Forms**, exportable to CSV.
+
+> The free tier covers **100 submissions a month**, with spam filtered out
+> before it counts. If real enquiries ever pass that, Netlify will tell you, and
+> at that volume the paid step is worth taking.
+
+Both forms carry a hidden honeypot field, so the obvious bots are dropped
+before they reach you.
 
 ---
 
-## Step 5 — Switch it on for the public (3 minutes)
+## Step 3 — Check the address (2 minutes)
 
-The site is deliberately hidden from Google until you say otherwise.
+Open `src/content/company.js` and find `site_url`:
 
-In the admin panel, go to **Settings & SEO**:
+```js
+{
+  key: 'site_url',
+  value: 'https://www.gipacktech.com',
+```
 
-1. **Site URL** — set to your full address, e.g.
-   `https://gipacktech.netlify.app`. This drives the sitemap, the canonical
-   links and the preview cards people see when the site is shared.
-2. **Allow search engines to index the site** — tick it.
-3. Press **Save settings**.
+This drives the canonical links, the sitemap and the preview cards people see
+when the site is shared. Set it to the address the site is actually served
+from, commit, and it takes effect on the next deploy.
+
+While the site is still being reviewed, set `robots_allow` in the same file to
+`'0'`. That serves `Disallow: /` to every crawler and marks each page
+`noindex`. Set it back to `'1'` when you want to be found.
 
 Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 74 pages.
 
@@ -101,13 +80,10 @@ Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 74 pages.
 
 ## Later: your own domain
 
-When you buy `gipacktech.com` or similar:
-
 1. Netlify: **Domain management → Add a domain** and follow the DNS steps.
    Netlify issues the HTTPS certificate free.
-2. Come back to **Settings & SEO** and change **Site URL** to the new address.
-3. Submit the sitemap to Google Search Console. Paste the verification tag into
-   **Custom head code** in the same settings page — no code change needed.
+2. Change `site_url` in `src/content/company.js` to the new address and commit.
+3. Submit the sitemap to Google Search Console.
 
 ---
 
@@ -116,33 +92,33 @@ When you buy `gipacktech.com` or similar:
 | Piece | Free tier | Runs out when |
 | --- | --- | --- |
 | Netlify hosting | 100 GB bandwidth a month | Far beyond what a B2B site uses |
-| Netlify Functions | 125,000 requests a month | Roughly 4,000 page views a day |
-| Neon database | 0.5 GB storage | This site uses a few megabytes |
-| Netlify Blobs | Included | Photograph uploads |
+| Netlify build minutes | 300 a month | This build takes about 20 seconds |
+| Netlify Forms | 100 submissions a month | 100 real enquiries in a month |
 
-For an industrial site with a long sales cycle, none of these are close to
-being reached.
+Page views cost nothing but bandwidth: no function runs when somebody reads the
+site, so traffic cannot generate a bill or a rate limit.
 
 ---
 
 ## If a deploy fails
 
-The build log names the cause on its own line now. The three you might see:
+The build is a single Node script with no network calls and no services behind
+it, so there are only two realistic failures.
 
-**`No database is configured`**
-`DATABASE_URL` is missing or misspelt in Netlify's environment variables.
+**`Cannot find module`** — dependencies did not install. Check the build log's
+install step; `NODE_VERSION` is pinned to 20 in `netlify.toml`.
 
-**`Connection failed: ... ENOTFOUND`**
-The hostname in the connection string is wrong. Copy it from Neon again.
+**A content file has a typo** — the build stops and names the file and the
+problem, for instance `Product "x" names an unknown category "y"`. Fix it in
+`src/content/` and push.
 
-**`Connection failed: ... password authentication failed`**
-The password portion is wrong or truncated. Copy the whole string again.
-
-You can test any connection string from your own machine before deploying:
+You can always reproduce a deploy exactly, on your own machine:
 
 ```bash
-DATABASE_URL="postgresql://..." npm run db:check
+npm install
+npm run smoke     # builds, then checks every page, redirect and schema
+npm start         # builds and serves dist/ on http://localhost:3000
 ```
 
-It reports whether it connected, which Postgres it reached, and how much
-content is loaded.
+`npm run smoke` is the same check that would catch a broken deploy, and it runs
+in a couple of seconds.
