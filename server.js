@@ -11,6 +11,7 @@ const db = require('./src/db');
 const h = require('./src/lib/helpers');
 const storage = require('./src/lib/storage');
 const env = require('./src/lib/env');
+const { createAssetUrl } = require('./src/lib/assets');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,11 @@ function resolveDir(name) {
 
 const VIEWS_DIR = resolveDir('views');
 const PUBLIC_DIR = resolveDir('public');
+
+// Appends a version to /css and /js URLs so a deploy is never served with a
+// browser's stale stylesheet. See src/lib/assets.js.
+const assetUrl = createAssetUrl(PUBLIC_DIR);
+app.locals.assetUrl = assetUrl;
 
 // Behind Netlify's edge (or any reverse proxy) so secure cookies work.
 app.set('trust proxy', 1);

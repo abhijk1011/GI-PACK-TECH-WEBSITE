@@ -41,15 +41,21 @@
   to = "/.netlify/functions/server"
   status = 200
 
+# The stylesheets and scripts keep the same filenames from one deploy to the
+# next, so they must not be cached by their name alone: a browser holding a
+# week-old site.css would pair it with freshly rendered markup. The pages
+# request them with a ?v= that changes per deploy (see src/lib/assets.js), and
+# these headers let the CDN cache them while browsers revalidate — a 304 on
+# every hit, and the new file the moment the version changes.
 [[headers]]
   for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/js/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/img/*"
