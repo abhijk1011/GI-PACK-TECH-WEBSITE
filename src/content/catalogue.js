@@ -157,12 +157,6 @@ const products = [
       'We developed the spout fitment as a factory-sealed joint, not a field-fitted add-on. The seal around the spout is the weak point in this kind of product, so it is welded under controlled conditions on our own line and tested before dispatch. We have run this fitment across PE, EVOH, aluminium laminate and conductive films, which means you do not have to give up barrier or static protection to get a spout.',
     customise:
       'Spout size and type\nSpout position\nLiner diameter and height\nGusset shape\nBottom shape\nFilm structure and layer count\nPrinting and batch coding',
-    images: [
-      { path: '/img/drum-liner-spout-1.jpg', alt: 'Round drum liner with integrated dispensing spout, filled', caption: 'Filled liner with the factory-fitted spout in place.' },
-      { path: '/img/drum-liner-spout-2.jpg', alt: 'Drum liner with dispensing spout shown fitted inside a drum', caption: 'The liner fitted inside the drum. Product never touches the drum wall.' },
-      { path: '/img/drum-liner-spout-3.jpg', alt: 'Close view of the factory-welded spout fitment on a drum liner', caption: 'The spout fitment is welded and tested on our own line before dispatch.' },
-    ],
-    image_brief: '',
     related: ['round-drum-liner-any-diameter', 'aluminium-barrier-drum-liner', 'conductive-round-drum-liner'],
     seo_title: 'Drum Liner with Integrated Dispensing Spout | GI PackTech',
     seo_description:
@@ -193,12 +187,6 @@ const products = [
       'The 6 to 100 inch capability is a plant investment, not a claim. It comes from our own lamination, extrusion, cutting and heat-sealing lines and from tooling built up over years of one-off jobs. Very few manufacturers can quote the small diameters and the very large diameters from the same shop floor.\n\nSend us the drum drawing, or one sample drum, and we will make a trial liner to it.',
     customise:
       'Diameter and height\nBottom shape\nGusset arrangement\nLayer structure and thickness\nPrinting and identification\nPacking format for your filling line',
-    images: [
-      { path: '/img/round-drum-liner-1.jpg', alt: 'Round drum liner fitted to a steel drum', caption: 'Every liner is built to the measured internal diameter of the drum.' },
-      { path: '/img/round-drum-liner-2.jpg', alt: 'Round drum liners in a range of diameters', caption: 'From small laboratory containers to large open-top bulk containers.' },
-      { path: '/img/round-drum-liner-3.png', alt: 'Drum liner construction detail', caption: 'Bottom shape and gusset are made to suit the discharge method.' },
-    ],
-    image_brief: '',
     related: ['drum-liner-with-integrated-dispensing-spout', 'pvc-round-drum-liner', 'aluminium-barrier-drum-liner'],
     seo_title: 'Round Drum Liners 6 to 100 Inch Diameter, Made to Your Drum | GI PackTech',
     seo_description:
@@ -227,9 +215,6 @@ const products = [
       'Our work has focused on combining static control with barrier performance in one liner. A plant that needs both usually double-lines, which is slow and expensive. We can supply a single conductive aluminium construction that does both jobs.\n\nWe will bring the grounding arrangement drawing to the first technical discussion.',
     customise:
       'Film type and resistivity class\nGrounding tab position and type\nDiameter and height\nCombination with aluminium barrier layers',
-    images: [],
-    image_brief:
-      'A conductive drum liner fitted inside a steel drum, with the grounding tab visible and connected to an earth point, shot in a clean industrial setting.',
     related: ['conductive-aluminium-liner', 'aluminium-barrier-drum-liner', 'conductive-type-d-jumbo-bag'],
     seo_title: 'Conductive Static-Dissipative Round Drum Liner | GI PackTech',
     seo_description:
@@ -260,9 +245,6 @@ const products = [
       'Our development work has been on the seal. A barrier film is only as good as its weakest seal, and most barrier failures happen there rather than through the film. Our 5-layer and 6-layer structures are built and sealed so that permeation at the seal stays minimal, which is what makes the barrier claim real over a long voyage.',
     customise:
       'Layer count\nFoil thickness\nSeal structure\nDiameter and height\nConductive variant\nDesiccant pocket\nPrinting',
-    images: [],
-    image_brief:
-      'A silver aluminium laminate drum liner, partly open to show the layer structure at the cut edge, next to a sealed filled liner. Studio lighting on a light grey background.',
     related: ['aluminium-5-and-6-layer-liner', 'conductive-round-drum-liner', 'drum-liner-with-integrated-dispensing-spout'],
     seo_title: 'Aluminium Barrier Drum Liner, 5 and 6 Layer | GI PackTech',
     seo_description:
@@ -291,9 +273,6 @@ const products = [
       'Material compatibility work is done case by case against your product data sheet before anything is quoted. We would rather refuse a job than supply a film that will fail. Send the data sheet first and we will tell you whether PVC is the right answer for your product, including when it is not.',
     customise:
       'Film thickness\nClear or pigmented\nDiameter and height\nBottom shape\nFitment arrangement',
-    images: [],
-    image_brief:
-      'A clear PVC round drum liner fitted inside a drum, contents visible through the wall, showing the flexibility and clarity of the material.',
     related: ['pvc-bulk-bag-liner', 'round-drum-liner-any-diameter', 'spill-containment-bund-and-drip-tray'],
     seo_title: 'PVC Round Drum Liner for Aggressive Chemicals | GI PackTech',
     seo_description:
@@ -324,9 +303,6 @@ const products = [
       'Our development work has been on where the vents are placed and how many are needed for a given fill rate and product density. Vents in the wrong place do very little. We work this out from your fill rate rather than copying a standard pattern.',
     customise:
       'Loop type\nFabric grade and safe working load\nVent panel size and position\nCoated or uncoated fabric\nSpout arrangement\nLiner fitment\nPrinting',
-    images: [],
-    image_brief:
-      'A filled single-loop FIBC standing square on a pallet, with the vent panels clearly visible on the side, in a clean warehouse setting.',
     related: ['net-baffle-jumbo-bag', 'multilayer-plastic-liner', 'pe-box-type-liner'],
     seo_title: 'Vented FIBC Bulk Bags, Single and Double Loop | GI PackTech',
     seo_description:
@@ -355,9 +331,6 @@ const products = [
       'We advise on the choice rather than pushing whichever bag we would rather sell. Where a process cannot guarantee grounding at every transfer, we recommend Type D even though it changes the order. That advice is why customers come back to us.',
     customise:
       'Fabric grade and safe working load\nLoop arrangement\nGrounding tab position and type\nLiner fitment\nPrinting',
-    images: [],
-    image_brief:
-      'A Type C FIBC showing the conductive thread grid in the fabric, with the grounding tab clipped to an earth point during filling.',
     related: ['conductive-type-d-jumbo-bag', 'conductive-liner', 'conductive-aluminium-liner'],
     seo_title: 'Conductive Type C Groundable Jumbo Bag FIBC | GI PackTech',
     seo_description:
@@ -385,9 +358,6 @@ const products = [
       'Our position is that operator-independent safety is worth paying for. We would rather quote Type D and explain the reason than supply a Type C bag whose protection depends on a step nobody can supervise once the bag has left your gate.',
     customise:
       'Fabric grade and safe working load\nLoop arrangement\nLiner fitment\nDischarge arrangement\nPrinting',
-    images: [],
-    image_brief:
-      'A Type D antistatic FIBC being filled with powder, with no grounding cable attached, in a clean process area.',
     related: ['conductive-type-c-jumbo-bag', 'conductive-liner', 'conductive-round-drum-liner'],
     seo_title: 'Conductive Type D Antistatic Jumbo Bag FIBC | GI PackTech',
     seo_description:
@@ -416,9 +386,6 @@ const products = [
       'We work out the baffle arrangement from your container plan and product density, so the shape gain is real for your load. A baffle bag designed for the wrong density does not hold its shape when filled.\n\nSend us your load plan and we will work out bags per container before and after.',
     customise:
       'Baffle type and position\nFabric grade and safe working load\nVented fabric\nLiner fitment\nLoop arrangement\nPrinting',
-    images: [],
-    image_brief:
-      'A filled baffle FIBC holding a square shape next to a filled standard FIBC bulging round, side by side on the same pallet, so the difference in footprint is obvious.',
     related: ['baffle-and-gambo-liner', 'fibc-bag-with-air-releasing-vent', 'dunnage-air-bag'],
     seo_title: 'Net Baffle Jumbo Bag for Container Efficiency | GI PackTech',
     seo_description:
@@ -448,9 +415,6 @@ const products = [
       'Our co-extrusion work is aimed at getting more strength from less material. Show us the liner you are using now and we will tell you whether a thinner multilayer structure would outperform it.',
     customise:
       'Layer structure\nFilm thickness\nDimensions\nFitment type\nDischarge arrangement\nPrinting',
-    images: [],
-    image_brief:
-      'A multilayer PE liner being fitted inside an FIBC, and a second shot of the same liner filled and holding a square shape.',
     related: ['pe-box-type-liner', 'evoh-barrier-liner', 'baffle-and-gambo-liner'],
     seo_title: 'Multilayer Co-Extruded FIBC Liner for Bulk Bags | GI PackTech',
     seo_description:
@@ -478,8 +442,6 @@ const products = [
     difference_body:
       'Compatibility is checked against your product data before anything is quoted. We turn down work where PVC is not the right answer, and we say so. That is why chemical customers come back.',
     customise: 'Thickness\nClear or pigmented\nDimensions\nFitment\nDischarge arrangement',
-    images: [],
-    image_brief: 'A clear PVC bulk bag liner fitted inside an FIBC, with the contents visible through the wall.',
     related: ['pvc-round-drum-liner', 'multilayer-plastic-liner', 'conductive-liner'],
     seo_title: 'PVC Bulk Bag Liner for FIBC | GI PackTech',
     seo_description:
@@ -509,9 +471,6 @@ const products = [
       'We have built EVOH into box type and baffle constructions, not just plain tube liners. This means you can have oxygen protection and shape control together instead of choosing between them, which is where most suppliers stop.\n\nWe will run a side-by-side trial with you: one batch in your current liner, one in EVOH, checked at the same interval.',
     customise:
       'EVOH layer thickness\nTotal layer count\nBox type or baffle construction\nDimensions and fitment\nFood-grade material declaration',
-    images: [],
-    image_brief:
-      'An EVOH liner cut to show the co-extruded layer structure at the edge, alongside a filled liner in an FIBC.',
     related: ['pe-box-type-liner', 'baffle-and-gambo-liner', 'aluminium-5-and-6-layer-liner'],
     seo_title: 'EVOH Oxygen Barrier Liner for Bulk Bags | GI PackTech',
     seo_description:
@@ -540,10 +499,6 @@ const products = [
       'Our box type liners are made across the full material range, including EVOH and conductive films. Most suppliers offer box type only in plain PE, which forces you to give up barrier or static protection to get the shape. We do not make you choose.',
     customise:
       'Box dimensions\nFilm structure\nSpout type and position\nTop and bottom arrangement\nFitment loops\nPrinting',
-    images: [
-      { path: '/img/pe-box-type-liner-1.jpg', alt: 'PE box type liner holding a square profile with a fitted top spout', caption: 'Box type liner holding a square profile, with a fitted top spout for controlled filling and discharge.' },
-    ],
-    image_brief: '',
     related: ['evoh-barrier-liner', 'baffle-and-gambo-liner', 'multilayer-plastic-liner'],
     seo_title: 'PE Box Type Liner for FIBC and Bulk Bags | GI PackTech',
     seo_description:
@@ -571,9 +526,6 @@ const products = [
       'Building baffles into barrier and conductive films is difficult, because every baffle joint is a potential weak point in the barrier. Solving that is what makes this product ours rather than a commodity.',
     customise:
       'Baffle arrangement\nFilm structure\nDimensions\nFitment\nSpout arrangement\nDischarge type',
-    images: [],
-    image_brief:
-      'A baffle liner filled and holding a square shape, with the internal baffles visible through a cut-away or from the open top.',
     related: ['net-baffle-jumbo-bag', 'evoh-barrier-liner', 'pe-box-type-liner'],
     seo_title: 'Baffle and Gambo Liner for FIBC | GI PackTech',
     seo_description:
@@ -602,9 +554,6 @@ const products = [
       'We look at the bag and the liner together as one system rather than selling the liner in isolation. Where your existing bag is Type C, we check that the liner and the grounding path actually work with it.',
     customise:
       'Film resistivity\nThickness\nGrounding arrangement\nDimensions\nCombination with barrier layers',
-    images: [],
-    image_brief:
-      'A conductive liner fitted inside an FIBC with the grounding arrangement visible, in a chemical plant filling area.',
     related: ['conductive-aluminium-liner', 'conductive-type-c-jumbo-bag', 'conductive-type-d-jumbo-bag'],
     seo_title: 'Conductive Static-Dissipative FIBC Liner | GI PackTech',
     seo_description:
@@ -632,9 +581,6 @@ const products = [
       'Combining a conductive layer with an aluminium barrier in one working structure is genuinely difficult, and it is one of the clearest examples of our development work. Very few suppliers in India can offer it.',
     customise:
       'Layer structure\nFoil thickness\nResistivity class\nGrounding arrangement\nDimensions',
-    images: [],
-    image_brief:
-      'A silver conductive aluminium liner showing the foil surface and the grounding tab, fitted inside a bulk bag.',
     related: ['conductive-liner', 'aluminium-5-and-6-layer-liner', 'conductive-round-drum-liner'],
     seo_title: 'Conductive Aluminium Barrier Liner | GI PackTech',
     seo_description:
@@ -663,9 +609,6 @@ const products = [
       'Layer counts are not a marketing number for us. Each layer is specified for a job, and we can explain what every layer does. We will walk your technical team through the structure, layer by layer, before you sample.',
     customise:
       '5 or 6 layers\nFoil thickness\nNylon and polyester layer choice\nSeal structure\nDimensions\nDesiccant pockets',
-    images: [],
-    image_brief:
-      'A macro shot of the cut edge of a 6-layer aluminium laminate showing the separate layers, next to a full liner.',
     related: ['aluminium-barrier-drum-liner', 'multilayer-aluminium-laminated-liner-for-powders', 'conductive-aluminium-liner'],
     seo_title: 'Aluminium 5 and 6 Layer Barrier Liner for Export | GI PackTech',
     seo_description:
@@ -694,9 +637,6 @@ const products = [
       'The same base structure is engineered for both powder and liquid duty, which means a mixed product range can standardise on one supplier and one specification instead of managing several.',
     customise:
       'Layer structure\nDimensions\nFitment\nFilling and discharge arrangement\nDesiccant capacity',
-    images: [],
-    image_brief:
-      'An aluminium laminated liner filled with a fine white powder, sealed, sitting inside a bulk bag.',
     related: ['aluminium-5-and-6-layer-liner', 'aluminium-multilayer-liner-for-water-based-fertilisers', 'aluminium-barrier-drum-liner'],
     seo_title: 'Multilayer Aluminium Laminated Liner for Hygroscopic Powders | GI PackTech',
     seo_description:
@@ -723,9 +663,6 @@ const products = [
     difference_body:
       'This construction was developed for this product group specifically, rather than being a general barrier liner sold into fertiliser. Water-based fertilisers behave differently from other hygroscopic powders and the film has to be matched to them.',
     customise: 'Layer structure\nDimensions\nJumbo liner or bulk format\nFitment\nPrinting',
-    images: [],
-    image_brief:
-      'An aluminium multilayer liner filled with water-soluble fertiliser granules inside a jumbo bag, in a warehouse setting.',
     related: ['multilayer-aluminium-laminated-liner-for-powders', 'aluminium-5-and-6-layer-liner', 'fibc-bag-with-air-releasing-vent'],
     seo_title: 'Aluminium Liner for Water-Based Fertilisers | GI PackTech',
     seo_description:
@@ -757,9 +694,6 @@ const products = [
       'We build the outer holding assembly as part of the product rather than leaving you to find one. This is where flexi bag installations normally fail: the bag is fine but nothing holds it in shape and it is unusable in practice.',
     customise:
       'Capacity and shape\nFilm structure\nValve type and position\nOuter assembly design\nBarrier layers\nConductive construction',
-    images: [],
-    image_brief:
-      'A filled 1000 litre flexi bag in its outer supporting frame, with the inlet and discharge valves clearly visible, on a pallet.',
     related: ['collapsible-bladder-tank', 'multilayer-plastic-liner', 'spill-containment-bund-and-drip-tray'],
     seo_title: 'Liquid Flexi Bag 1000 to 1500 Litre with Valves | GI PackTech',
     seo_description:
@@ -788,10 +722,6 @@ const products = [
       'We supply the bladder and the frame together as one engineered system. Bladder tanks bought as a bare bag usually fail because the support is improvised at site. Designing both together is what makes the installation work.',
     customise:
       'Capacity\nFabric grade and colour\nFrame design and material\nFitting type and position\nFold pattern for transport',
-    images: [
-      { path: '/img/bladder-tank-1.jpg', alt: 'Collapsible PVC bladder tank in a knock-down steel support frame', caption: 'Collapsible PVC bladder tank supported in a knock-down steel frame for site storage.' },
-    ],
-    image_brief: '',
     related: ['liquid-flexi-bag', 'spill-containment-bund-and-drip-tray', 'pvc-pallet-cover-and-reusable-equipment-cover'],
     seo_title: 'Collapsible Bladder Tank with Support Frame | GI PackTech',
     seo_description:
@@ -825,9 +755,6 @@ const products = [
       'This is the product we have invested the most development into. The six-layer aluminium laminate with nylon and polyester, the VCI inner layer, and the vacuum and heat-seal process are all our own work.\n\nThe seal is where barrier covers usually fail, and our seal specification is the reason we can make a total barrier claim honestly. Send us one machine as a trial.',
     customise:
       'Layer count up to six\nVCI inner layer\nVacuum or non-vacuum\nDesiccant capacity\nHumidity indicator\nCover shape to any machine profile\nLifting and handling reinforcement\nPrinting',
-    images: [],
-    image_brief:
-      'A precision machine sealed inside a silver aluminium vacuum laminate cover, film drawn tight to the machine profile, with the seal line and a humidity indicator visible.',
     related: ['cnc-machine-and-large-machinery-cover', 'vci-machine-cover', 'electrical-panel-packaging-cover'],
     seo_title: 'Aluminium Vacuum Laminate Machine Cover, 6 Layer VCI | GI PackTech',
     seo_description:
@@ -856,12 +783,6 @@ const products = [
       'We design the cover around the canopy shape, the exhaust projection and the base, so it seals properly instead of being a loose bag thrown over the top. We have built covers for the major generator brands and know how each canopy behaves.',
     customise:
       'Cover shape to the set profile\nFilm grade and thickness\nVCI layer\nDesiccant capacity\nBase sealing method\nPrinted branding\nHandling reinforcement',
-    images: [
-      { path: '/img/generator-cover-1.jpg', alt: 'Generator set sealed in a protective cover for dispatch', caption: 'Generator sets sealed for dispatch and export.' },
-      { path: '/img/generator-cover-2.jpg', alt: 'Silent canopy generator set in a protective cover', caption: 'Covers are made to each set\'s dimensions, including the canopy and exhaust projections.' },
-      { path: '/img/generator-cover-3.jpg', alt: 'Generator protective cover sealed around the base', caption: 'The cover seals around the base rather than hanging loose over the top.' },
-    ],
-    image_brief: '',
     related: ['transformer-protective-cover', 'electrical-panel-packaging-cover', 'aluminium-vacuum-laminate-cover'],
     seo_title: 'Generator Protective Covers for Dispatch and Export | GI PackTech',
     seo_description:
@@ -889,9 +810,6 @@ const products = [
       'We treat humidity control inside the cover as the design problem, not just sealing. That means matching the desiccant capacity to the enclosed volume and the expected transit time, so the humidity actually stays where it should for the whole journey.\n\nThe humidity indicator option turns an invisible benefit into a visible one.',
     customise:
       'Cover dimensions\nFilm grade\nDesiccant capacity\nHumidity indicator window\nSealing method',
-    images: [],
-    image_brief:
-      'A control panel or switchgear cabinet sealed in a barrier cover with a humidity indicator card visible through the film.',
     related: ['aluminium-vacuum-laminate-cover', 'transformer-protective-cover', 'battery-charger-and-component-cover'],
     seo_title: 'Electrical Panel and Switchgear Packaging Cover | GI PackTech',
     seo_description:
@@ -919,9 +837,6 @@ const products = [
       'The difficulty is the shape. Bushings and radiators are exactly where a loose cover tears and where water collects. We build the cover around those projections and add reinforcement where crane slings and forklift forks make contact.',
     customise:
       'Cover profile to the unit\nFilm grade and thickness\nUV grade\nReinforcement at lifting points\nVent arrangement',
-    images: [],
-    image_brief:
-      'A distribution transformer in a heavy duty cover fitted around the bushings and radiators, standing in an outdoor yard.',
     related: ['generator-protective-cover', 'electrical-panel-packaging-cover', 'woven-laminated-pallet-cover'],
     seo_title: 'Transformer Protective Covers for Yard and Site Storage | GI PackTech',
     seo_description:
@@ -948,9 +863,6 @@ const products = [
       'Combining protection with identification is the useful part here. We size to each component and print or label the cover so the part is identified without being opened.',
     customise:
       'Size to each component\nFilm type\nVCI layer\nPrinted or labelled identification\nPacking format',
-    images: [],
-    image_brief:
-      'A set of individually sealed machine components and a battery charger, each in its own labelled cover, packed together in a crate.',
     related: ['vci-machine-cover', 'cnc-machine-and-large-machinery-cover', 'aluminium-vacuum-laminate-cover'],
     seo_title: 'Battery Charger and Machine Component Covers | GI PackTech',
     seo_description:
@@ -978,9 +890,6 @@ const products = [
       'The challenge is size and exposure duration together. We fabricate to very large and irregular profiles and specify UV and tear grades for the actual storage period rather than for a short transit.',
     customise:
       'Any size and profile\nFilm grade\nUV resistance\nReinforcement\nTie-down points\nVent arrangement',
-    images: [],
-    image_brief:
-      'A large turbine component wrapped in heavy duty barrier film, stored outdoors on stands at a laydown yard.',
     related: ['cnc-machine-and-large-machinery-cover', 'shrink-wrap-cover', 'aluminium-vacuum-laminate-cover'],
     seo_title: 'Wind and Gas Turbine Component Covers | GI PackTech',
     seo_description:
@@ -1007,9 +916,6 @@ const products = [
       'VCI works by releasing a vapour inside a sealed space, so the cover has to actually hold that vapour in. We match the VCI type and the cover seal together, which is what makes the protection work rather than just look right.',
     customise:
       'Cover size to the skid\nVCI type and loading\nFilm grade\nDesiccant\nSealing method',
-    images: [],
-    image_brief:
-      'A screw compressor package sealed in a barrier cover with VCI, in a despatch bay ready for shipping.',
     related: ['vci-machine-cover', 'aluminium-vacuum-laminate-cover', 'cnc-machine-and-large-machinery-cover'],
     seo_title: 'Screw Compressor and Process Skid Covers with VCI | GI PackTech',
     seo_description:
@@ -1039,9 +945,6 @@ const products = [
       'There is no standard size in this work at all. Every cover is fabricated from the machine drawing. Our ability to work to any size and shape, and to combine that with VCI and vacuum laminate, is the core capability of this whole section.\n\nSend a general arrangement drawing and we will quote from it.',
     customise:
       'Any size and shape\nVCI layer\nVacuum sealing\nDesiccant\nHumidity indicator\nReinforcement at contact points\nPrinted identification',
-    images: [],
-    image_brief:
-      'A CNC machining centre fully sealed in a barrier cover in a factory despatch area, with the machine outline visible through the film.',
     related: ['aluminium-vacuum-laminate-cover', 'vci-machine-cover', 'battery-charger-and-component-cover'],
     seo_title: 'CNC Machine and Large Machinery Covers, Made to Drawing | GI PackTech',
     seo_description:
@@ -1071,10 +974,6 @@ const products = [
       'We work on getting the right shrink ratio and thickness for the shape, so the film pulls tight without splitting at the tight radius. Getting this wrong is the usual reason shrink covers fail in the field.',
     customise:
       'Film thickness\nShrink ratio\nUV grade\nVCI combination\nColour\nPrinted branding',
-    images: [
-      { path: '/img/shrink-wrap-cover-1.jpg', alt: 'Large round component fully shrink wrapped and sealed', caption: 'Large round component fully shrink wrapped and sealed for storage and transport.' },
-    ],
-    image_brief: '',
     related: ['pallet-shrink-hood', 'wind-turbine-component-cover', 'vci-machine-cover'],
     seo_title: 'Shrink Wrap Covers for Coils, Reels and Round Components | GI PackTech',
     seo_description:
@@ -1104,9 +1003,6 @@ const products = [
       'The correct VCI formulation depends on the metal, and using the wrong one does nothing at all. We match the formulation to your material, and we combine VCI with aluminium barrier and vacuum construction where the storage period is long.',
     customise:
       'VCI formulation for the metal type\nFilm thickness\nCover, bag or sheet format\nCombination with barrier layers\nPrinting',
-    images: [],
-    image_brief:
-      'A machined steel part being wrapped in VCI film, with a close-up of a bright uncorroded machined surface after unwrapping.',
     related: ['vci-pallet-cover', 'aluminium-vacuum-laminate-cover', 'cnc-machine-and-large-machinery-cover'],
     seo_title: 'VCI Machine Covers and Corrosion Inhibiting Film | GI PackTech',
     seo_description:
@@ -1135,9 +1031,6 @@ const products = [
       'We make to your actual pallet and stack height. A standard-size hood is either a struggle to pull down or hangs loose and tears. Getting the size right is what makes this product work day after day on a real despatch line.',
     customise:
       'Pallet size and stack height\nFilm thickness\nColour\nUV grade\nGusset type\nPerforation\nPrinting',
-    images: [],
-    image_brief:
-      'A loaded pallet with a clear LDPE pallet hood pulled down over the full stack and tucked under the pallet edge, in a warehouse.',
     related: ['pallet-top-sheet-and-liner', 'pallet-shrink-hood', 'woven-laminated-pallet-cover'],
     seo_title: 'LDPE Pallet Covers and Pallet Hoods, Made to Size | GI PackTech',
     seo_description:
@@ -1165,9 +1058,6 @@ const products = [
     difference_body:
       'The film has to shrink enough to grip firmly without splitting at the corners of the load. We work out the shrink ratio and thickness against your load shape and weight instead of supplying one general grade.\n\nWe will run a trial on your worst route, where the improvement will be most visible.',
     customise: 'Load size\nFilm thickness\nShrink ratio\nUV grade\nColour\nPrinting',
-    images: [],
-    image_brief:
-      'A pallet shrink hood being heat-shrunk tight around a stacked load, film pulled tight to the load edges.',
     related: ['ldpe-pallet-cover-and-hood', 'shrink-wrap-cover', 'dunnage-air-bag'],
     seo_title: 'Pallet Shrink Hoods for Export and Open Transport | GI PackTech',
     seo_description:
@@ -1198,10 +1088,6 @@ const products = [
       'We build in the practical fittings that decide whether a reusable cover actually gets reused: eyelets, tie-downs, closures and access flaps. A cover that is awkward to refit gets left off, and then it protects nothing.\n\nPrinted with your branding, it also carries your name around your own yard for years.',
     customise:
       'Pallet size and stack height\nFabric grade and colour\nUV grade\nEyelets and tie-downs\nVelcro or zip closures\nAccess flaps\nPrinted branding',
-    images: [
-      { path: '/img/woven-laminated-pallet-cover-1.jpg', alt: 'Woven laminated pallet cover fitted over a full pallet load', caption: 'Woven laminated pallet cover fitted over a full pallet load for outdoor and long-term storage.' },
-    ],
-    image_brief: '',
     related: ['pvc-pallet-cover-and-reusable-equipment-cover', 'ldpe-pallet-cover-and-hood', 'transformer-protective-cover'],
     seo_title: 'Woven Laminated Reusable Pallet Covers | GI PackTech',
     seo_description:
@@ -1230,10 +1116,6 @@ const products = [
       'We make these to any size and shape, and we design the handles and closures around how you actually use them. A cover that takes two people to fit will not be used, no matter how good the fabric is.',
     customise:
       'Any size and shape\nFabric weight\nColour\nHandle type and position\nClosure type\nReinforcement\nPrinted branding',
-    images: [
-      { path: '/img/pvc-pallet-cover-1.jpg', alt: 'Reusable PVC covers with handles and closures in a range of sizes', caption: 'Reusable PVC covers made in a range of sizes with handles and closures for repeated daily use.' },
-    ],
-    image_brief: '',
     related: ['woven-laminated-pallet-cover', 'collapsible-bladder-tank', 'spill-containment-bund-and-drip-tray'],
     seo_title: 'Reusable PVC Pallet and Equipment Covers | GI PackTech',
     seo_description:
@@ -1262,9 +1144,6 @@ const products = [
       'The vapour has to be held under the cover to work, so the cover design and the VCI loading are worked out together against the pallet volume and the expected storage time.',
     customise:
       'Pallet size and stack height\nVCI formulation for the metal\nFilm thickness\nBarrier combination\nPrinting',
-    images: [],
-    image_brief:
-      'A pallet of machined metal components covered with a VCI pallet hood, with a close-up of clean bright metal after removal.',
     related: ['vci-machine-cover', 'ldpe-pallet-cover-and-hood', 'battery-charger-and-component-cover'],
     seo_title: 'VCI Pallet Covers for Metal Components | GI PackTech',
     seo_description:
@@ -1292,9 +1171,6 @@ const products = [
     difference_body:
       'We supply in the format that fits your line, whether that is flat, folded or on a roll. A product that slows the packing line down will be dropped within a week, however cheap it is.',
     customise: 'Sheet size\nFilm thickness\nColour\nSupply format\nPerforation\nPrinting',
-    images: [],
-    image_brief:
-      'A pallet top sheet being laid over a stacked load before stretch wrapping, and a pallet liner placed on the deck boards under the load.',
     related: ['ldpe-pallet-cover-and-hood', 'pallet-shrink-hood', 'vci-pallet-cover'],
     seo_title: 'Pallet Top Sheets and Pallet Liners | GI PackTech',
     seo_description:
@@ -1323,10 +1199,6 @@ const products = [
       'The right bag size for the gap is what makes this work. An undersized bag does nothing and an oversized one bursts. We size against your actual load plan rather than selling one general size.\n\nSend a load plan and photographs of a loaded container and we will size it.',
     customise:
       'Bag size for the gap width\nPly strength\nValve type\nSingle-use or reusable grade\nPrinting',
-    images: [
-      { path: '/img/dunnage-air-bag-1.jpg', alt: 'Inflatable dunnage bag filling the void between container loads', caption: 'Inflatable dunnage bag used to fill the void between loads and stop movement in transit.' },
-    ],
-    image_brief: '',
     related: ['pallet-shrink-hood', 'net-baffle-jumbo-bag', 'ldpe-pallet-cover-and-hood'],
     seo_title: 'Dunnage Air Bags for Container and Truck Loads | GI PackTech',
     seo_description:
@@ -1356,9 +1228,6 @@ const products = [
       'We build to your own method statement rather than offering a fixed product. That means reading the documents, understanding the regulation being worked to, and fabricating to it. Very few packaging suppliers will engage at this level.',
     customise:
       'Site dimensions and layout\nMaterial grade\nAirlock arrangement\nNegative pressure connections\nViewing panels\nWaste transfer arrangement',
-    images: [],
-    image_brief:
-      'A sealed containment enclosure erected around a work area, with an airlock entry and viewing panel, on a demolition site.',
     related: ['nuclear-and-hazardous-waste-site-enclosure', 'spill-containment-bund-and-drip-tray', 'round-drum-liner-any-diameter'],
     seo_title: 'Asbestos Removal and Demolition Containment Chambers | GI PackTech',
     seo_description:
@@ -1385,9 +1254,6 @@ const products = [
       'Being able to work to an issued engineering specification, with documentation and traceability, is itself the capability. This is the highest technical and regulatory barrier of anything we do.',
     customise:
       'Everything is to the site specification: material, construction, sealing, penetrations, testing and documentation.',
-    images: [],
-    image_brief:
-      'A containment enclosure with sealed penetrations and a transfer port, in a controlled industrial environment.',
     related: ['asbestos-demolition-containment-chamber', 'round-drum-liner-any-diameter', 'spill-containment-bund-and-drip-tray'],
     seo_title: 'Nuclear and Hazardous Waste Site Containment Enclosures | GI PackTech',
     seo_description:
@@ -1417,10 +1283,6 @@ const products = [
       'The walls standing without a frame is the practical difference. A bund that needs assembling gets left folded in a corner. Ours is placed and it is ready, which is what makes it actually get used.',
     customise:
       'Any size and capacity\nFabric weight and colour\nDrain fitting\nLifting handles\nFolding pattern',
-    images: [
-      { path: '/img/spill-containment-bund-1.jpg', alt: 'Flexible PVC spill containment bund with self-supporting walls', caption: 'Flexible PVC spill containment bund. Folds flat for storage and holds its walls when deployed.' },
-    ],
-    image_brief: '',
     related: ['collapsible-bladder-tank', 'pvc-pallet-cover-and-reusable-equipment-cover', 'asbestos-demolition-containment-chamber'],
     seo_title: 'Flexible Spill Containment Bunds and Drip Trays | GI PackTech',
     seo_description:

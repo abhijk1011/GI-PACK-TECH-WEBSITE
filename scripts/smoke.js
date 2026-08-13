@@ -130,6 +130,60 @@ for (const type of ['Organization', 'Product', 'BreadcrumbList']) {
 }
 log(productHtml.includes('rel="canonical"'), 'product page has a canonical URL');
 
+console.log('\nImage panel');
+{
+  const yaml = require('js-yaml');
+  const Ajv = require('ajv');
+  const addFormats = require('ajv-formats');
+
+  for (const f of ['/admin/index.html', '/admin/config.yml', '/admin/sveltia-cms.js']) {
+    log(Boolean(fileFor(f)), `${f} is published`);
+  }
+  log((fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8')).includes('Disallow: /admin'),
+    'the panel is excluded from robots.txt');
+
+  // A config the CMS rejects leaves the panel showing an error instead of the
+  // images, and nothing else in the build would notice.
+  const config = yaml.load(fs.readFileSync(path.join(ROOT, 'public/admin/config.yml'), 'utf8'));
+  const ajv = new Ajv({ strict: false, allErrors: true });
+  addFormats(ajv);
+  // Read rather than required: the package does not export its schema path.
+  const schema = JSON.parse(
+    fs.readFileSync(path.join(ROOT, 'node_modules/@sveltia/cms/schema/sveltia-cms.json'), 'utf8')
+  );
+  const validate = ajv.compile(schema);
+  log(validate(config), 'config.yml matches the CMS schema',
+    validate.errors ? validate.errors[0].instancePath + ' ' + validate.errors[0].message : '');
+
+  log(config.backend.repo === 'abhijk1011/GI-PACK-TECH-WEBSITE', 'the panel points at this repository');
+  for (const c of config.collections) {
+    const target = c.folder || c.files[0].file;
+    log(fs.existsSync(path.join(ROOT, target)), `${c.name} edits ${target}`);
+  }
+
+  // Every product needs a file, or it cannot be picked in the panel.
+  const dir = path.join(ROOT, 'content/products');
+  const files = new Set(fs.readdirSync(dir));
+  const without = model.products.filter((p) => !files.has(`${p.slug}.yml`));
+  log(without.length === 0, 'every product has an entry in the panel',
+    without.length ? `missing: ${without.map((p) => p.slug).join(', ')}` : `${files.size} entries`);
+  log(files.size === model.products.length, 'no entry is left over from a deleted product',
+    `${files.size} files, ${model.products.length} products`);
+}
+
+console.log('\nEvery referenced photograph exists');
+{
+  const referenced = new Set(model.products.flatMap((p) => p.images.map((i) => i.path)));
+  referenced.add(model.settings.logo_path);
+  referenced.add(model.settings.og_image);
+  const hero = model.page('home').blocks.hero_image;
+  if (hero) referenced.add(hero);
+
+  const broken = [...referenced].filter((p) => !fs.existsSync(path.join(DIST, p)));
+  log(broken.length === 0, `${referenced.size} photographs resolve to a file`,
+    broken.length ? `missing: ${broken.join(', ')}` : '');
+}
+
 console.log('\nNothing dynamic leaked into the output');
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 log(

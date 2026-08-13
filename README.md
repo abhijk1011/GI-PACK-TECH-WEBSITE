@@ -39,6 +39,7 @@ npm start
 | `npm run serve` | Serves `dist/` the way Netlify will, redirects and all |
 | `npm start` | Both of the above |
 | `npm run smoke` | Builds, then checks every page, redirect, form and schema |
+| `npm run images:sync` | Gives any newly added product an entry in the image panel |
 
 `npm run smoke` is the check to run before pushing. It takes a couple of
 seconds and needs no network.
@@ -58,6 +59,9 @@ rebuilds.
 | `company.js` | Contact details, addresses, the settings that drive SEO, and the headings and paragraphs of the home, about, contact and specify pages |
 | `faqs.js` | The 35 questions and answers, in 7 groups |
 
+Photographs are the exception: they live in `content/`, because the image panel
+writes them. See below.
+
 Two files sit alongside them:
 
 - `copy-updates.js` — wording revisions, each guarded on the exact text it
@@ -72,21 +76,41 @@ print minimums. Fill in the real figures and drop the flag.
 
 ---
 
-## Photographs
+## Photographs — the image panel
 
-Photographs live in `public/img/` and are attached to products in
-`catalogue.js`:
+Photographs are the one thing that changes without touching code, so they have
+a panel of their own at **`/admin`**.
 
-```js
-images: [{ path: '/img/drum-liner-spout-1.jpg', alt: '…', caption: '…' }]
+It lists all 41 products, grouped by category. Open one, drag a photograph onto
+its slot, write a line describing what is in the picture, and save. Saving
+commits the file to this repository, which starts a Netlify build, so the new
+photograph is live a minute or two later — and the old one stays in the
+repository's history, so nothing is ever lost.
+
+There is no server behind it: the panel is a single file served from the site,
+and it talks to GitHub from the browser. Sign in with a GitHub access token
+(see [DEPLOY.md](DEPLOY.md)).
+
+The same panel holds the three pictures that are not tied to a product: the
+home page hero, the logo mark, and the picture used when a page is shared.
+
+**Where it writes.** Photographs go to `public/img/`. The assignments live in
+`content/`:
+
+```
+content/site-images.yml        hero, logo, share picture
+content/products/<slug>.yml    one file per product
 ```
 
-16 real photographs ship with the site. The remaining products show a neutral
+16 real photographs ship with the site. The rest of the products show a neutral
 *"photograph to follow"* panel rather than a broken image, so every page still
-looks finished. Each of those products carries the **shot brief** written for it
-in the catalogue — hand it to a photographer, or use it as an image prompt.
+looks finished. Each of those carries a **brief** describing the shot that
+belongs there — it is shown in the panel above the upload slot, and can be
+handed to a photographer or used as an image prompt.
 
-To add one: drop the file into `public/img/`, add the `images` entry, and push.
+When a product is added to `catalogue.js`, run `npm run images:sync` to give it
+an entry in the panel. It creates what is missing and refreshes the labels,
+and never touches a photograph you have set.
 
 ---
 
@@ -136,16 +160,19 @@ are real HTML, which is both fast and good for search. The only JavaScript
 shipped is the navigation and the product gallery.
 
 ```
-netlify.toml           build settings and cache headers
-scripts/build.js       renders every page into dist/
-scripts/serve.js       serves dist/ locally the way Netlify does
-scripts/smoke.js       builds, then checks the output
-src/content/           the site's content, and the model built from it
-src/lib/text.js        the view helpers
-src/lib/assets.js      the ?v= that stops a stale stylesheet being served
-src/lib/icons.js       inline SVG icons
-views/                 templates
-public/                CSS, JavaScript, webfonts and photographs, copied as-is
+netlify.toml             build settings and cache headers
+scripts/build.js         renders every page into dist/
+scripts/serve.js         serves dist/ locally the way Netlify does
+scripts/smoke.js         builds, then checks the output
+scripts/sync-image-files.js  keeps content/products in step with the catalogue
+src/content/             the site's content, and the model built from it
+src/lib/text.js          the view helpers
+src/lib/assets.js        the ?v= that stops a stale stylesheet being served
+src/lib/icons.js         inline SVG icons
+content/                 photograph assignments, written by the image panel
+views/                   templates
+public/                  CSS, JavaScript, webfonts and photographs, copied as-is
+public/admin/            the image panel's page and configuration
 ```
 
 `dist/` is generated and not committed.

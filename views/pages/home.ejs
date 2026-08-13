@@ -62,8 +62,7 @@
       %>
       <figure class="hero__figure">
         <% if (b.hero_image) { %>
-          <img class="hero__art" src="<%= b.hero_image %>"
-               alt="Drum liners, FIBC liners and film manufactured and inspected at the <%= s.company_name %> plant"
+          <img class="hero__art" src="<%= b.hero_image %>" alt="<%= b.hero_image_alt %>"
                fetchpriority="high" decoding="async">
         <% } else { %>
           <div class="hero__artslot">

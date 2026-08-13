@@ -33,17 +33,6 @@ const settings = [
     group_name: 'Identity',
     sort: 5,
   },
-  { key: 'logo_path', value: '/img/logo.svg', label: 'Logo', input_type: 'image', group_name: 'Identity', sort: 6 },
-  {
-    key: 'og_image',
-    value: '/img/generator-cover-1.jpg',
-    label: 'Default social share image',
-    hint: 'Used when a page has no image of its own',
-    input_type: 'image',
-    group_name: 'Identity',
-    sort: 7,
-  },
-
   // --- Contact ------------------------------------------------------------
   { key: 'contact_person', value: 'Mr. Alpesh Desai', label: 'Contact person', group_name: 'Contact', sort: 1 },
   { key: 'contact_title', value: 'Chief Executive Officer', label: 'Contact title', group_name: 'Contact', sort: 2 },
@@ -246,15 +235,6 @@ const pages = [
         value:
           'A liner decides whether a lubricant arrives clean. A cover decides whether a machine tool arrives ready to run. Either way, the packaging costs a fraction of what it protects.',
       },
-      {
-        block_key: 'hero_image',
-        label: 'Hero artwork',
-        hint:
-          'Shown beside the headline, and reused as the picture that appears when the home page is shared on WhatsApp or LinkedIn. Upload at about 1536x1024 or wider. A PNG with a transparent background sits best — the artwork is shown unframed, so a white background would read as a white box against the page.',
-        input_type: 'image',
-        value: '/img/generator-cover-1.jpg',
-      },
-
       { block_key: 'value_eyebrow', label: 'Value section eyebrow', value: 'The arithmetic' },
       {
         block_key: 'value_heading',

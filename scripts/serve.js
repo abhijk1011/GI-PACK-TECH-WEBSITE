@@ -30,6 +30,7 @@ const TYPES = {
   '.json': 'application/json',
   '.xml': 'application/xml',
   '.txt': 'text/plain; charset=utf-8',
+  '.yml': 'text/yaml; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',

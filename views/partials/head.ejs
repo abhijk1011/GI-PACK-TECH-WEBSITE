@@ -9,7 +9,7 @@
    */
   const description = h.truncate(seo.description || s.default_seo_description || '', 158);
   const canonical = h.absUrl(seo.path || currentPath);
-  const image = h.absUrl(seo.image || s.og_image || '/img/logo-mark.svg');
+  const image = h.absUrl(seo.image || s.og_image || s.logo_path);
   const noindex = seo.noindex || s.robots_allow !== '1';
 %>
 <meta charset="utf-8">
@@ -48,7 +48,7 @@
   '@type': 'Organization',
   name: s.company_name,
   url: h.absUrl('/'),
-  logo: h.absUrl('/img/logo-mark.svg'),
+  logo: h.absUrl(s.logo_path),
   description: s.default_seo_description,
   foundingDate: s.established_year,
   telephone: s.phone,

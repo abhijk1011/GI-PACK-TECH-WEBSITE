@@ -1,0 +1,133 @@
+# The image panel.
+#
+# Sveltia CMS reads this, shows a form for each file below, and commits the
+# result straight to the repository. A commit triggers a Netlify build, so a
+# replaced photograph is live a minute or two after it is saved — and every
+# version stays in the repository's history, so nothing is ever lost.
+#
+# There is no server behind this. Signing in uses a GitHub access token you
+# create once; the panel talks to GitHub directly from the browser.
+
+backend:
+  name: github
+  repo: abhijk1011/GI-PACK-TECH-WEBSITE
+  # The branch is not set on purpose: the repository's default branch is
+  # detected, which is the branch Netlify publishes.
+  auth_methods:
+    - token
+  commit_messages:
+    update: Update {{collection}} “{{slug}}”
+    uploadMedia: Add photograph {{path}}
+    deleteMedia: Remove photograph {{path}}
+
+app_title: GI PackTech images
+site_url: https://www.gipacktech.com
+
+# Where uploaded photographs are written, and the address the site refers to
+# them by.
+media_folder: public/img
+public_folder: /img
+
+collections:
+  - name: products
+    label: Product photographs
+    label_singular: Product
+    icon: photo_camera
+    description: >-
+      Pick a product, then drop a photograph onto its slot. The first
+      photograph is the one used on cards, in search results and when the page
+      is shared, so put the clearest one first.
+    folder: content/products
+    extension: yml
+    format: yaml
+    # The 41 products come from the catalogue. Adding or removing one is a
+    # code change, so it cannot be done from here.
+    create: false
+    delete: false
+    identifier_field: name
+    summary: '{{name}}'
+    thumbnail: images.0.image
+    sortable_fields:
+      - name
+      - category
+    view_groups:
+      - label: Category
+        field: category
+    fields:
+      - name: name
+        label: Product
+        widget: string
+        readonly: true
+      - name: category
+        label: Category
+        widget: string
+        readonly: true
+      # Carried through untouched: the build matches a file to a product by it.
+      - name: slug
+        widget: hidden
+      - name: brief
+        label: What this photograph should show
+        widget: text
+        required: false
+        hint: >-
+          Written for the photographer. Hand it over as it is, or use it as the
+          prompt for a generated image.
+      - name: images
+        label: Photographs
+        label_singular: photograph
+        widget: list
+        required: false
+        summary: '{{fields.alt}}'
+        thumbnail: image
+        fields:
+          - name: image
+            label: Photograph
+            widget: image
+            hint: >-
+              About 1600px wide is plenty. JPEG for photographs, PNG when the
+              background needs to be transparent.
+          - name: alt
+            label: What is in the picture
+            widget: string
+            hint: >-
+              Describe it in a sentence, as if to somebody who cannot see it.
+              This is what search engines read, and what a screen reader says.
+          - name: caption
+            label: Caption
+            widget: string
+            required: false
+            hint: Shown under the photograph on the product page. Optional.
+
+  - name: site
+    label: Site-wide images
+    icon: imagesmode
+    files:
+      - name: images
+        label: Logo, hero and share picture
+        file: content/site-images.yml
+        icon: imagesmode
+        fields:
+          - name: hero
+            label: Home page picture
+            widget: object
+            hint: The picture beside the headline on the home page.
+            fields:
+              - name: image
+                label: Picture
+                widget: image
+                hint: >-
+                  About 1536x1024 or wider. A PNG with a transparent background
+                  sits best, because it is shown unframed.
+              - name: alt
+                label: What is in the picture
+                widget: string
+          - name: logo
+            label: Logo mark
+            widget: image
+            hint: Shown in the header and the footer. SVG or PNG, square-ish.
+          - name: social
+            label: Default share picture
+            widget: image
+            hint: >-
+              Used when a page has no picture of its own — for instance when
+              the FAQ is shared on WhatsApp or LinkedIn.

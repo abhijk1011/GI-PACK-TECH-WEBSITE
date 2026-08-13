@@ -87,6 +87,22 @@ function render(urlPath, template, locals) {
   written += 1;
 }
 
+/*
+ * The image panel at /admin is one file from node_modules. Copying it here
+ * rather than loading it from a CDN keeps the panel working whatever happens
+ * to somebody else's servers, and pins it to the version in package-lock.
+ */
+function copyImagePanel() {
+  const from = path.join(ROOT, 'node_modules', '@sveltia', 'cms', 'dist', 'sveltia-cms.mjs');
+  if (!fs.existsSync(from)) {
+    console.warn('Warning: @sveltia/cms is not installed, so /admin will not load.');
+    return;
+  }
+  fs.mkdirSync(path.join(OUT, 'admin'), { recursive: true });
+  fs.copyFileSync(from, path.join(OUT, 'admin', 'sveltia-cms.js'));
+  written += 1;
+}
+
 function copyDir(from, to) {
   fs.mkdirSync(to, { recursive: true });
   for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
@@ -361,7 +377,7 @@ function buildSitemap() {
   fs.writeFileSync(
     path.join(OUT, 'robots.txt'),
     allow
-      ? `User-agent: *\nAllow: /\nDisallow: /admin-panel\n\nSitemap: ${h.absUrl('/sitemap.xml')}\n`
+      ? `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${h.absUrl('/sitemap.xml')}\n`
       : 'User-agent: *\nDisallow: /\n'
   );
   written += 1;
@@ -375,6 +391,7 @@ function main() {
 
   // Stylesheets, scripts, fonts and photographs are served as they are.
   copyDir(PUBLIC, OUT);
+  copyImagePanel();
 
   buildHome();
   buildProducts();

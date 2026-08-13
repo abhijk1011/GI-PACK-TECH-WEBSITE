@@ -56,7 +56,31 @@ before they reach you.
 
 ---
 
-## Step 3 — Check the address (2 minutes)
+## Step 3 — Get into the image panel (3 minutes)
+
+The panel lives at `https://your-site.netlify.app/admin`. It has no server and
+no password of its own: it talks to GitHub from your browser, using a token you
+create once.
+
+1. On GitHub, go to **Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token**.
+2. Fill it in:
+   - **Token name**: `GI PackTech images`
+   - **Expiration**: a year is the longest GitHub allows. Put a reminder in
+     your calendar; renewing is the same three minutes.
+   - **Repository access**: *Only select repositories* → `GI-PACK-TECH-WEBSITE`
+   - **Permissions → Repository permissions → Contents**: *Read and write*
+     (leave everything else alone)
+3. **Generate token**, and copy it. GitHub shows it once.
+4. Open `/admin`, press **Sign In Using Access Token**, and paste it.
+
+The browser keeps it, so this is a one-time step per device. If a token is ever
+lost or shared by accident, revoke it on that same GitHub page and make a new
+one — it can only write to this one repository, and nothing else.
+
+---
+
+## Step 4 — Check the address (2 minutes)
 
 Open `src/content/company.js` and find `site_url`:
 
@@ -94,6 +118,8 @@ Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 74 pages.
 | Netlify hosting | 100 GB bandwidth a month | Far beyond what a B2B site uses |
 | Netlify build minutes | 300 a month | This build takes about 20 seconds |
 | Netlify Forms | 100 submissions a month | 100 real enquiries in a month |
+| The image panel | Free and open source | Never — it runs in your browser |
+| GitHub | Free | Never, at this size |
 
 Page views cost nothing but bandwidth: no function runs when somebody reads the
 site, so traffic cannot generate a bill or a rate limit.
