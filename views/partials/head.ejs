@@ -2,7 +2,12 @@
   const title = seo.title
     ? (seo.title.includes(s.company_name) ? seo.title : seo.title + (s.seo_title_suffix || ''))
     : (s.default_seo_title || s.company_name);
-  const description = seo.description || s.default_seo_description || '';
+  /*
+   * Search engines cut a description around 160 characters, mid-word, which
+   * looks careless in a result. Trimming at a word boundary here means no page
+   * can ship an over-long one whatever is typed into the admin panel.
+   */
+  const description = h.truncate(seo.description || s.default_seo_description || '', 158);
   const canonical = h.absUrl(seo.path || currentPath);
   const image = h.absUrl(seo.image || s.og_image || '/img/logo-mark.svg');
   const noindex = seo.noindex || s.robots_allow !== '1';
@@ -65,6 +70,55 @@
   }
 }) %>
 </script>
+
+<%# FAQPage markup is what lets a search result expand into the questions and
+    what an AI assistant reads when it answers from this site, so the answers
+    go in as plain text with no markup of their own. %>
+<% if (typeof faqSchema !== 'undefined' && faqSchema.length) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqSchema.map(function (f) {
+    return {
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer }
+    };
+  })
+}) %>
+</script>
+<% } %>
+
+<%# Breadcrumbs for any page that sits below the top level. Search results
+    render them in place of the raw URL, and they tell an assistant how the
+    catalogue is organised. Product pages emit their own, three levels deep. %>
+<% if (typeof crumbs !== 'undefined' && crumbs && crumbs.length) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.map(function (c, i) {
+    return { '@type': 'ListItem', position: i + 1, name: c.name, item: h.absUrl(c.path) };
+  })
+}) %>
+</script>
+<% } %>
+
+<%# An ItemList makes the shape of the catalogue explicit rather than leaving
+    it to be inferred from the markup. %>
+<% if (typeof itemList !== 'undefined' && itemList && itemList.length) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: itemList.length,
+  itemListElement: itemList.map(function (it, i) {
+    return { '@type': 'ListItem', position: i + 1, name: it.name, url: h.absUrl(it.path) };
+  })
+}) %>
+</script>
+<% } %>
 
 <% if (seo.type === 'product' && seo.product) { %>
 <script type="application/ld+json">

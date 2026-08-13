@@ -419,6 +419,16 @@ CREATE TABLE IF NOT EXISTS checklist_items (
   published  INTEGER NOT NULL DEFAULT 1
 );
 
+CREATE TABLE IF NOT EXISTS faqs (
+  id            SERIAL PRIMARY KEY,
+  slug          TEXT NOT NULL UNIQUE,
+  category      TEXT NOT NULL DEFAULT 'ordering',
+  question      TEXT NOT NULL,
+  answer        TEXT NOT NULL DEFAULT '',
+  sort          INTEGER NOT NULL DEFAULT 0,
+  published     INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE TABLE IF NOT EXISTS pages (
   id              SERIAL PRIMARY KEY,
   slug            TEXT NOT NULL UNIQUE,

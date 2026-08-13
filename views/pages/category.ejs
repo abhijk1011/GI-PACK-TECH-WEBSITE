@@ -24,6 +24,15 @@
 
   <section class="section section--tight">
     <div class="wrap">
+      <%# An h2 here keeps the outline h1 -> h2 -> h3; the cards below are h3. %>
+      <div class="shead">
+        <div class="shead__text">
+          <h2 class="h-section" style="font-size:var(--step-2);">
+            <%- h.dot(products.length + ' products in this range') %>
+          </h2>
+        </div>
+        <a class="tlink" href="/specify">Specify a requirement <%- icon('arrow', 15) %></a>
+      </div>
       <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>

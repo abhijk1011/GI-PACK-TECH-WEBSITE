@@ -17,6 +17,8 @@ const db = require('../src/db');
 const env = require('../src/lib/env');
 const { categories, products } = require('../src/content/catalogue');
 const { industries, roles, materials, checklist } = require('../src/content/taxonomy');
+const { faqs } = require('../src/content/faqs');
+const { applyCopyUpdates } = require('../src/content/copy-updates');
 const { settings, pages, valueRows } = require('../src/content/company');
 
 const reset = process.argv.includes('--reset');
@@ -54,6 +56,7 @@ async function main() {
       DELETE FROM roles;
       DELETE FROM materials;
       DELETE FROM checklist_items;
+      DELETE FROM faqs;
       DELETE FROM page_blocks;
       DELETE FROM pages;
       DELETE FROM value_rows;
@@ -286,6 +289,39 @@ async function main() {
       });
   }
 
+  // --- FAQ --------------------------------------------------------------
+  for (const [i, f] of faqs.entries()) {
+    await db
+      .prepare(
+        `INSERT INTO faqs (slug, category, question, answer, sort)
+         VALUES (@slug, @category, @question, @answer, @sort)
+         ON CONFLICT (slug) DO NOTHING`
+      )
+      .run({
+        slug: f.slug,
+        category: f.category,
+        question: f.question,
+        answer: f.answer,
+        sort: i + 1,
+      });
+  }
+
+  /*
+   * Improvements to default copy, applied only where a block still holds the
+   * exact wording this repository shipped — so anything edited in the admin
+   * panel is left alone. See src/content/copy-updates.js.
+   */
+  const copyChanged = await applyCopyUpdates(db);
+  if (copyChanged) console.log(`Copy updated: ${copyChanged} block(s) refreshed to the current default.`);
+
+  /*
+   * The capabilities page was removed — it restated the home page, the
+   * material reference and the category pages. Dropping the row takes its
+   * blocks with it, so an already-seeded database stops offering an editor
+   * for a page that no longer renders. /capabilities now 301s to /products.
+   */
+  await db.prepare("DELETE FROM pages WHERE slug = 'capabilities'").run();
+
   // --- Pages and blocks -------------------------------------------------
   for (const page of pages) {
     await db
@@ -376,6 +412,7 @@ async function main() {
     roles: 'roles',
     materials: 'materials',
     checklist: 'checklist_items',
+    faqs: 'faqs',
     pages: 'pages',
     blocks: 'page_blocks',
     settings: 'settings',

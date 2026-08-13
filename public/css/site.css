@@ -107,8 +107,6 @@
                   'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Inter Tight var', 'Inter var', -apple-system, BlinkMacSystemFont,
                   'Segoe UI Variable Display', 'Segoe UI', Roboto, sans-serif;
-  --font-mono:    ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', Menlo, Consolas,
-                  'Liberation Mono', monospace;
 
   --step--2: clamp(.6875rem, .68rem + .05vw, .75rem);
   --step--1: clamp(.8125rem, .8rem + .1vw, .875rem);
@@ -189,7 +187,15 @@ strong, b { font-weight: 600; color: var(--ink); }
 
 /* --------------------------------------------------------------- layout */
 .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
-.wrap-narrow { max-width: 1000px; }
+/* Every section on every page shares one container, so the left edge never
+   moves — not between sections, and not from page to page. Where content wants
+   a narrower measure, the column inside is narrowed rather than the container.
+   .wrap-narrow is kept as an alias for the same reason the colour tokens are:
+   so an old class name in a template cannot silently break the grid. */
+.wrap-narrow { max-width: var(--maxw); }
+.measure { max-width: 74ch; }
+.measure--tight { max-width: 62ch; }
+.measure--form { max-width: 900px; }
 .section { padding-block: clamp(3.5rem, 7.5vw, 7.5rem); position: relative; }
 .section--tight { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 /* The ground alternates between the page grey and pure white. Nothing
@@ -257,15 +263,16 @@ strong, b { font-weight: 600; color: var(--ink); }
 .prose p + p { margin-top: 1.1em; }
 .muted { color: var(--ink-3); }
 .accent { color: var(--brand); }
-/* Small tracked caps. Was a monospace label; now it matches the eyebrow. */
+/* Small tracked caps, matching the eyebrow. */
 .mono {
   font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
   text-transform: uppercase; color: var(--ink-3);
 }
-/* Genuine data — product codes and dimensions — keeps a monospace face. */
+/* Codes and dimensions. Figures are set tabular so they line up in a column
+   without reaching for a typewriter face. */
 .num {
-  font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-4);
-  letter-spacing: .01em; font-variant-numeric: tabular-nums;
+  font-size: var(--step--1); font-weight: 500; color: var(--ink-4);
+  letter-spacing: .02em; font-variant-numeric: tabular-nums;
 }
 
 /* Section header: heading on the left, a link on the right. */
@@ -326,7 +333,9 @@ strong, b { font-weight: 600; color: var(--ink); }
   border-bottom: 1px solid var(--hair);
 }
 .header__bar { display: flex; align-items: center; gap: 1.25rem; height: var(--header-h); }
-.brand { display: flex; align-items: center; gap: .7rem; flex: none; }
+/* min-height keeps the logo a comfortable tap target; the mark itself is only
+   26px tall, which is well under the 44px a thumb needs. */
+.brand { display: flex; align-items: center; gap: .7rem; flex: none; min-height: 44px; }
 .brand__mark { width: 36px; height: auto; }
 .brand__name {
   font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;
@@ -382,15 +391,17 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 .nav__panelitem:hover { background: var(--surface-2); }
 .nav__panelnum {
-  font-family: var(--font-mono); font-size: .68rem; color: var(--brand);
-  padding-top: .3rem; flex: none; font-variant-numeric: tabular-nums;
+  font-size: .7rem; font-weight: 600; color: var(--brand);
+  padding-top: .28rem; flex: none; font-variant-numeric: tabular-nums;
 }
 .nav__panelname { display: block; font-weight: 600; font-size: .94rem; color: var(--ink); letter-spacing: -0.01em; }
 .nav__paneldesc { display: block; font-size: .82rem; color: var(--ink-3); line-height: 1.45; margin-top: 2px; }
 
 .burger {
   display: none; margin-left: auto; background: transparent; border: 1px solid var(--hair-2);
-  padding: .5rem .6rem; cursor: pointer; border-radius: var(--r-sm);
+  cursor: pointer; border-radius: var(--r-sm);
+  min-width: 44px; min-height: 44px;
+  flex-direction: column; align-items: center; justify-content: center;
 }
 .burger span { display: block; width: 17px; height: 1.5px; background: var(--ink); border-radius: 2px; }
 .burger span + span { margin-top: 4px; }
@@ -411,7 +422,7 @@ strong, b { font-weight: 600; color: var(--ink); }
 
 @media (max-width: 1100px) {
   .nav { display: none; }
-  .burger { display: block; }
+  .burger { display: flex; }
 }
 
 /* --------------------------------------------------------------- hero */
@@ -531,8 +542,8 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 .card:hover { background: var(--surface-2); }
 .card__num {
-  font-family: var(--font-mono); font-size: var(--step--1); color: var(--brand);
-  font-variant-numeric: tabular-nums;
+  font-size: var(--step--1); font-weight: 600; color: var(--brand);
+  letter-spacing: .06em; font-variant-numeric: tabular-nums;
 }
 .card__title {
   font-family: var(--font-display); font-size: var(--step-1); font-weight: 700;
@@ -822,6 +833,28 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 .siblings a:hover { background: var(--surface-2); color: var(--ink); }
 .siblings a svg { color: var(--hair-3); flex: none; }
 
+/* --------------------------------------------------------------- FAQ */
+.faqlayout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+@media (max-width: 1000px) { .faqlayout { grid-template-columns: 1fr; } }
+
+.faqgroup + .faqgroup { margin-top: clamp(2.5rem, 4vw, 3.5rem); }
+.faqgroup__title {
+  font-size: var(--step-2); letter-spacing: -0.028em;
+  padding-bottom: 1rem; margin-bottom: .5rem; border-bottom: 2px solid var(--ink);
+}
+.qa { display: grid; }
+.qa__item { padding-block: clamp(1.25rem, 2vw, 1.6rem); border-bottom: 1px solid var(--hair); }
+.qa__q {
+  font-size: var(--step-1); font-weight: 700; letter-spacing: -0.022em; line-height: 1.3;
+  color: var(--ink); margin-bottom: .6rem; text-wrap: pretty;
+}
+.qa__a { color: var(--ink-2); line-height: 1.7; max-width: 68ch; }
+.qa__a p + p { margin-top: .8em; }
+/* Deep links land under the sticky header rather than behind it. */
+.qa__item:target { scroll-margin-top: calc(var(--header-h) + 4.5rem); }
+.qa__item:target .qa__q { color: var(--brand); }
+.faqgroup { scroll-margin-top: calc(var(--header-h) + 4.5rem); }
+
 /* --------------------------------------------------------------- tables */
 .dtable { width: 100%; border-collapse: collapse; font-size: .96rem; }
 .dtable th, .dtable td { text-align: left; padding: 1.05rem 1.35rem; border-bottom: 1px solid var(--hair); vertical-align: top; }
@@ -1004,6 +1037,10 @@ a.ctacard__value:hover { color: var(--brand); }
 }
 .anchor-nav a:hover { background: var(--surface-3); color: var(--ink); }
 .anchor-nav a[aria-current] { background: var(--ink); color: #fff; }
+@media (max-width: 900px) {
+  .anchor-nav ul { padding-block: .4rem; }
+  .anchor-nav a { min-height: 40px; display: inline-flex; align-items: center; }
+}
 
 /* The translucent bars rely on a blur to stay readable over content. Without
    one they need to be opaque instead. */

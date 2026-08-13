@@ -6,7 +6,7 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap wrap-narrow">
+    <div class="wrap">
       <p class="eyebrow"><%= b.hero_eyebrow %></p>
       <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(b.hero_heading) %></h1>
       <p class="lede"><%= b.intro %></p>
@@ -14,7 +14,8 @@
   </section>
 
   <section class="section section--tight">
-    <div class="wrap wrap-narrow">
+    <div class="wrap">
+      <div class="measure--form">
       <% if (sent) { %>
         <div class="notice" style="margin-bottom:2.5rem;">
           <strong>Received.</strong> <%= s.enquiry_thanks %>
@@ -141,6 +142,7 @@
           Answer what you know. The rest can follow.
         </p>
       </form>
+      </div>
     </div>
   </section>
 </main>

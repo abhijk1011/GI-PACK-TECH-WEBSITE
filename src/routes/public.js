@@ -3,6 +3,9 @@
 const express = require('express');
 const db = require('../db');
 const h = require('../lib/helpers');
+// Only the category order and labels; the questions themselves live in the
+// database so they stay editable from the admin panel.
+const { categories: faqCategories } = require('../content/faqs');
 
 const router = express.Router();
 
@@ -77,6 +80,10 @@ router.get(
     res.render('pages/products', {
       grouped,
       total,
+      crumbs: [{ name: 'Products', path: '/products' }],
+      itemList: grouped.flatMap((g) =>
+        g.products.map((p) => ({ name: p.name, path: `/products/${g.slug}/${p.slug}` }))
+      ),
       seo: {
         title: 'All Products — 41 Custom Packaging Solutions',
         description:
@@ -140,6 +147,10 @@ router.get(
     res.render('pages/industry', {
       industry,
       products,
+      crumbs: [
+        { name: 'Industries', path: '/industries' },
+        { name: industry.name, path: `/industries/${industry.slug}` },
+      ],
       others: await db
         .prepare('SELECT slug, name FROM industries WHERE published = 1 AND id != ? ORDER BY priority LIMIT 6')
         .all(industry.id),
@@ -204,18 +215,42 @@ router.get(
   })
 );
 
+/*
+ * The capabilities page restated what the home page, the material reference
+ * and the category pages already said, so it is gone. The URL is kept as a
+ * permanent redirect: it was linked and indexed, and the range is the nearest
+ * answer to what a visitor asking about capability actually wants.
+ */
+router.get('/capabilities', (req, res) => res.redirect(301, '/products'));
+
 router.get(
-  '/capabilities',
+  '/faq',
   wrap(async (req, res) => {
-    const p = await h.page('capabilities');
-    res.render('pages/capabilities', {
-      b: await h.blocks('capabilities'),
-      materials: await db.prepare('SELECT * FROM materials WHERE published = 1 ORDER BY sort').all(),
-      categories: await db.prepare('SELECT * FROM categories WHERE published = 1 ORDER BY sort').all(),
-      seo: { title: p.seo_title, description: p.seo_description, path: '/capabilities' },
+    const p = await h.page('faq');
+    const rows = await db.prepare('SELECT * FROM faqs WHERE published = 1 ORDER BY sort, id').all();
+
+    /*
+     * Grouped in the order the categories are declared, and only the groups
+     * that actually have questions — so unpublishing the last question in a
+     * category removes its heading and its anchor link too.
+     */
+    const grouped = faqCategories
+      .map((c) => ({ ...c, items: rows.filter((r) => r.category === c.slug) }))
+      .filter((c) => c.items.length);
+
+    res.render('pages/faq', {
+      b: await h.blocks('faq'),
+      grouped,
+      total: rows.length,
+      // Consumed by the FAQPage JSON-LD in the head partial.
+      faqSchema: rows.map((r) => ({ question: r.question, answer: r.answer })),
+      seo: { title: p.seo_title, description: p.seo_description, path: '/faq' },
     });
   })
 );
+
+// /faqs and /frequently-asked-questions are both things people type.
+router.get(['/faqs', '/frequently-asked-questions'], (req, res) => res.redirect(301, '/faq'));
 
 router.get(
   '/contact',
@@ -305,7 +340,7 @@ router.get(
       { loc: '/products', pri: '0.9' },
       { loc: '/industries', pri: '0.8' },
       { loc: '/materials', pri: '0.7' },
-      { loc: '/capabilities', pri: '0.7' },
+      { loc: '/faq', pri: '0.8' },
       { loc: '/about', pri: '0.6' },
       { loc: '/specify', pri: '0.8' },
       { loc: '/contact', pri: '0.6' },
@@ -358,6 +393,11 @@ router.get(
     res.render('pages/category', {
       category,
       products,
+      crumbs: [
+        { name: 'Products', path: '/products' },
+        { name: category.name, path: `/products/${category.slug}` },
+      ],
+      itemList: products.map((p) => ({ name: p.name, path: `/products/${category.slug}/${p.slug}` })),
       others: await db
         .prepare(
           'SELECT slug, name, short_name, number FROM categories WHERE published = 1 AND id != ? ORDER BY sort'

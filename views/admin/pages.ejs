@@ -16,7 +16,7 @@
         <% pages.forEach(function(p){ %>
           <tr>
             <td><a href="/admin-panel/pages/<%= p.slug %>" style="font-weight:500;"><%= p.title %></a></td>
-            <td style="font-family:var(--a-mono);font-size:.76rem;color:var(--a-ink-3);">
+            <td style="font-size:.8rem;color:var(--a-ink-3);">
               <%= p.slug === 'home' ? '/' : '/' + p.slug %>
             </td>
             <td><span class="tag"><%= p.block_count %></span></td>

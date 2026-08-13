@@ -6,10 +6,10 @@
 
 <main id="main">
   <section class="section gridbg">
-    <div class="wrap wrap-narrow phero--center" style="padding-block:3rem;">
+    <div class="wrap phero--center" style="padding-block:3rem;">
       <p class="eyebrow eyebrow--plain">Error 500</p>
       <h1 class="h-page" style="margin-bottom:1.35rem;"><%- h.dot('Something went wrong at our end.') %></h1>
-      <p class="lede">
+      <p class="lede measure--tight" style="margin-inline:auto;">
         If you were sending an enquiry, please call us on <a class="tlink tlink--brand" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a> and we will pick it up directly.
       </p>
       <div class="btn-row" style="justify-content:center;margin-top:2rem;">

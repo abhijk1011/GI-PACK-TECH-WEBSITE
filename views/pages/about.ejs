@@ -37,7 +37,8 @@
   </section>
 
   <section class="section section--paper section--rule">
-    <div class="wrap wrap-narrow">
+    <div class="wrap">
+      <div class="measure">
       <p class="eyebrow">What we believe</p>
       <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.belief_heading) %></h2>
       <div class="prose" style="max-width:none;">
@@ -46,15 +47,18 @@
       <blockquote class="quote">
         <p><%- h.dot(s.positioning_line) %></p>
       </blockquote>
+      </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="wrap wrap-narrow">
+    <div class="wrap">
+      <div class="measure">
       <p class="eyebrow">How we work</p>
       <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.refuse_heading) %></h2>
       <div class="prose" style="max-width:none;">
         <% h.paragraphs(b.refuse_body).forEach(function(para){ %><p><%= para %></p><% }) %>
+      </div>
       </div>
     </div>
   </section>

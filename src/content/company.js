@@ -229,9 +229,9 @@ const pages = [
     title: 'Home',
     seo_title: 'GI PackTech — We Protect the Value of What Is Inside',
     seo_description:
-      'Custom made industrial packaging: drum liners from 6 to 100 inches, FIBC liners, machine covers, pallet covers and hazardous containment. Manufacturer and exporter since 2006.',
+      'Custom industrial packaging: drum liners from 6 to 100 inches, FIBC liners, machine covers and pallet covers. Manufacturer and exporter since 2006.',
     blocks: [
-      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & Exporter · Established 2006 · Valsad, Gujarat' },
+      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & exporter · Valsad, since 2006' },
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
@@ -244,7 +244,7 @@ const pages = [
         label: 'Hero sub-heading',
         input_type: 'textarea',
         value:
-          'A drum liner decides whether a lubricant reaches your customer clean or contaminated. A machine cover decides whether a machine tool worth crores arrives ready to run. In every case the packaging is a tiny fraction of the value it is protecting.',
+          'A liner decides whether a lubricant arrives clean. A cover decides whether a machine tool arrives ready to run. Either way, the packaging costs a fraction of what it protects.',
       },
       { block_key: 'hero_image', label: 'Hero image', input_type: 'image', value: '/img/generator-cover-1.jpg' },
 
@@ -260,7 +260,7 @@ const pages = [
         label: 'Value section sub-heading',
         input_type: 'textarea',
         value:
-          'It is a loss that has moved to a different line in the accounts, where nobody is looking for it. Before any specification is quoted, two questions are worth asking.',
+          'The loss has only moved to a line nobody is watching. Two questions come before any specification.',
       },
       { block_key: 'value_q1', label: 'Question 1', value: 'What is the value of the product this packaging is protecting?' },
       { block_key: 'value_q2', label: 'Question 2', value: 'What does one failure cost you?' },
@@ -277,7 +277,7 @@ const pages = [
         label: 'Range section sub-heading',
         input_type: 'textarea',
         value:
-          'Every product is built to your drawing, your drum, your machine or your application. Forty one products across seven categories is what has been built so far. It is not the limit of what the plant can produce.',
+          'Built to your drawing, your drum, your machine. Forty-one products so far — and not the limit of what the plant can make.',
       },
 
       { block_key: 'diameter_eyebrow', label: 'Diameter section eyebrow', value: 'A capability, not a claim' },
@@ -292,7 +292,7 @@ const pages = [
         label: 'Diameter section sub-heading',
         input_type: 'textarea',
         value:
-          'Very few manufacturers anywhere can quote the small diameters and the very large diameters from the same shop floor. It comes from our own lamination, extrusion, cutting and heat-sealing lines, and from tooling built up over years of one-off jobs.',
+          'Few manufacturers quote both ends of that range from one shop floor. Ours comes from our own lamination, extrusion, cutting and sealing lines.',
       },
 
       { block_key: 'roles_eyebrow', label: 'Roles section eyebrow', value: 'Start where the problem is' },
@@ -300,7 +300,7 @@ const pages = [
         block_key: 'roles_heading',
         label: 'Roles section heading',
         input_type: 'textarea',
-        value: 'A packaging decision passes through four people, and each of them is measured on something different.',
+        value: 'A packaging decision passes through four people. Each is measured on something different.',
       },
 
       { block_key: 'proof_eyebrow', label: 'Proof section eyebrow', value: 'Real work' },
@@ -323,7 +323,7 @@ const pages = [
         label: 'Plant section body',
         input_type: 'textarea',
         value:
-          'The plant at Gundlav, Valsad runs modern lamination, extrusion, cutting and heat-sealing lines, supported by an in-house R&D and quality team. Technicians, engineers, procurement staff, quality associates and R&D specialists work in the same building, which means a specification moves from enquiry to sample to production without waiting on anybody outside.',
+          'Lamination, extrusion, cutting, heat sealing, R&D and quality all sit in one building at Gundlav, Valsad. A specification moves from enquiry to sample to production without waiting on anyone outside.',
       },
 
       { block_key: 'cta_eyebrow', label: 'Closing CTA eyebrow', value: 'Send us the problem' },
@@ -361,7 +361,7 @@ const pages = [
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'Established in 2006, GI PackTech is a Gujarat-based manufacturer and exporter of custom made packaging products for many industries. Every product we make is built to the customer\'s drawing, drum, machine or application. Nothing is sold from a fixed standard range.\n\nThe plant at Gundlav, Valsad runs modern lamination, extrusion, cutting and heat-sealing lines, supported by an in-house R&D and quality team. The team is made up of technicians, engineers, procurement staff, quality associates, R&D experts, and sales and marketing professionals. This means a specification can move from enquiry to sample to production inside one organisation, without waiting on anybody outside.',
+          'A Gujarat manufacturer and exporter of custom industrial packaging since 2006. Every product is built to a drawing, a drum, a machine or an application. Nothing is sold from a fixed standard range.\n\nLamination, extrusion, cutting, heat sealing, R&D and quality all run in one building at Gundlav, Valsad — so a specification moves from enquiry to sample to production without waiting on anyone outside.',
       },
       {
         block_key: 'belief_heading',
@@ -392,25 +392,25 @@ const pages = [
     ],
   },
   {
-    slug: 'capabilities',
-    title: 'Capabilities',
-    seo_title: 'Manufacturing Capabilities — Lamination, Extrusion, Sealing | GI PackTech',
+    slug: 'faq',
+    title: 'FAQ',
+    seo_title: 'Industrial Packaging FAQ — Drum Liners & FIBC | GI PackTech',
     seo_description:
-      'In-house lamination, extrusion, cutting and heat-sealing lines at Gundlav, Valsad, with R&D and quality. Custom fabrication from 6 inch to 100 inch and to any machine drawing.',
+      'Straight answers on drum liner sizes, materials, minimum quantities, lead times, samples and antistatic grades — from the manufacturer, not a reseller.',
     blocks: [
-      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Made to your drawing' },
+      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Answers' },
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
         input_type: 'textarea',
-        value: 'If a requirement is not listed, it can almost certainly still be made.',
+        value: 'Questions we are asked every week.',
       },
       {
         block_key: 'intro',
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'The range on this site is what has been built to date. It is not the limit of what the plant can produce. Send a drawing, a method statement, a drum or a product data sheet, and the answer comes back as a specification.',
+          'Sizes, materials, minimum quantities, lead times and samples. Answered by the people who run the line.',
       },
     ],
   },
@@ -433,7 +433,7 @@ const pages = [
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'Send the drawing, the drum dimensions, the machine general arrangement or the product data sheet. We will come back with a specification and, where it helps, a sample for trial fitment before bulk production.',
+          'Send the drawing, the drum dimensions or the product data sheet. What comes back is a specification, and a sample for trial fitment.',
       },
     ],
   },
@@ -456,7 +456,7 @@ const pages = [
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'Giving the following information allows a firm specification and quotation to be issued without a second round of questions, and allows a sample to be made for trial fitment. Answer what you know — the rest can follow.',
+          'These answers let us issue a firm specification and quotation without a second round of questions. Answer what you know — the rest can follow.',
       },
     ],
   },

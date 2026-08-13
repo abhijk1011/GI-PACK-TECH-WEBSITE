@@ -93,6 +93,34 @@ const resources = {
     ],
   },
 
+  faqs: {
+    label: 'FAQ',
+    singular: 'Question',
+    table: 'faqs',
+    order: 'sort, id',
+    listColumns: ['question', 'category', 'sort', 'published'],
+    publicPath: (row) => `/faq#${row.slug}`,
+    fields: [
+      { key: 'question', label: 'Question', type: 'text', required: true, hint: 'Phrase it the way a customer would type or say it' },
+      {
+        key: 'answer',
+        label: 'Answer',
+        type: 'textarea',
+        required: true,
+        hint: 'Open with the answer itself, and keep it under about 70 words. Search results and AI assistants quote the first sentence, so it has to make sense on its own.',
+      },
+      { key: 'slug', label: 'URL slug', type: 'text', required: true, hint: 'Used as the link anchor: /faq#your-slug' },
+      {
+        key: 'category',
+        label: 'Category',
+        type: 'select',
+        options: ['ordering', 'drum-liners', 'fibc', 'machine-covers', 'materials', 'specifying', 'company'],
+      },
+      { key: 'sort', label: 'Sort order', type: 'number' },
+      { key: 'published', label: 'Published', type: 'bool' },
+    ],
+  },
+
   value_rows: {
     label: 'Value equation',
     singular: 'Row',

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="phero gridbg">
+    <div class="wrap">
+      <p class="eyebrow"><%= b.hero_eyebrow %></p>
+      <h1 class="h-page phero__title"><%- h.dot(b.hero_heading) %></h1>
+      <p class="lede"><%= b.intro %></p>
+    </div>
+  </section>
+
+  <div class="anchor-nav">
+    <div class="wrap">
+      <ul>
+        <% grouped.forEach(function(g){ %>
+          <li><a href="#<%= g.slug %>"><%= g.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="faqlayout">
+        <div>
+          <% grouped.forEach(function(g){ %>
+            <section class="faqgroup" id="<%= g.slug %>">
+              <h2 class="faqgroup__title"><%= g.name %></h2>
+              <div class="qa">
+                <% g.items.forEach(function(f){ %>
+                  <article class="qa__item" id="<%= f.slug %>">
+                    <h3 class="qa__q"><%= f.question %></h3>
+                    <div class="qa__a">
+                      <% h.paragraphs(f.answer).forEach(function(para){ %><p><%= para %></p><% }) %>
+                    </div>
+                  </article>
+                <% }) %>
+              </div>
+            </section>
+          <% }) %>
+        </div>
+
+        <aside>
+          <div class="rail">
+            <h2 class="rail__title">Not answered here?</h2>
+            <p class="rail__body">
+              Send the drum dimensions, the machine drawing or the data sheet. The reply is a
+              specification, not a price list.
+            </p>
+            <a class="btn btn--primary" href="/specify">
+              <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <div class="rail__contact">
+              <span class="rail__row">
+                <%- icon('phone', 15) %>
+                <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+              </span>
+              <span class="rail__row">
+                <%- icon('mail', 15) %>
+                <a href="mailto:<%= s.email %>"><%= s.email %></a>
+              </span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../partials/cta', {
+    ctaEyebrow: 'Still deciding',
+    ctaHeading: 'Send the drawing, the drum, or the data sheet.',
+    ctaBody: 'Every product is built to order, so the conversation starts with your specification. A sample is supplied for trial fitment before bulk production begins.'
+  }) %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

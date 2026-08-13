@@ -30,7 +30,7 @@
         <% } %>
         <% enquiries.forEach(function(e){ %>
           <tr>
-            <td style="font-family:var(--a-mono);font-size:.74rem;color:var(--a-ink-3);"><%= e.created_at.slice(0, 10) %></td>
+            <td style="font-size:.78rem;color:var(--a-ink-3);font-variant-numeric:tabular-nums;"><%= e.created_at.slice(0, 10) %></td>
             <td>
               <a href="/admin-panel/enquiries/<%= e.id %>" style="font-weight:500;"><%= e.name || 'Unnamed' %></a>
               <div style="font-size:.75rem;color:var(--a-ink-3);"><%= e.email %></div>

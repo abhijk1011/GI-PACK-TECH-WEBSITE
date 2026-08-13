@@ -33,7 +33,7 @@ async function check(pathname, expected = 200) {
 
   console.log('\nPublic pages');
   const fixed = [
-    '/', '/products', '/industries', '/materials', '/capabilities',
+    '/', '/products', '/industries', '/materials', '/faq',
     '/about', '/contact', '/specify', '/sitemap.xml', '/robots.txt',
   ];
   for (const p of fixed) await check(p);
@@ -70,6 +70,11 @@ async function check(pathname, expected = 200) {
 
   console.log('\nErrors and redirects');
   await check('/definitely-not-a-page', 404);
+  // The capabilities page was removed; its URL was indexed, so it must redirect
+  // rather than 404.
+  const gone = await check('/capabilities', 301);
+  log((gone.headers.get('location') || '').endsWith('/products'), '/capabilities redirects to the range');
+  await check('/faqs', 301);
   const wrongCat = await check('/products/pallet-covers-and-pallet-wraps/pvc-round-drum-liner', 301);
   log(
     (wrongCat.headers.get('location') || '').includes('/products/round-drum-liners/'),
@@ -100,6 +105,15 @@ async function check(pathname, expected = 200) {
     'rejected enquiry was not saved'
   );
   log(Boolean(token), 'specify form carries a CSRF token');
+
+  console.log('\nFAQ');
+  const faqHtml = await (await fetch(BASE + '/faq')).text();
+  const faqLd = /"@type":"FAQPage"/.test(faqHtml);
+  log(faqLd, 'FAQ page emits FAQPage JSON-LD');
+  const qCount = (faqHtml.match(/"@type":"Question"/g) || []).length;
+  log(qCount >= 20, `FAQPage carries every question`, `→ ${qCount}`);
+  const dbFaqs = (await db.prepare('SELECT COUNT(*)::int AS n FROM faqs WHERE published = 1').get()).n;
+  log(qCount === dbFaqs, 'every published question is in the markup', `→ ${qCount}/${dbFaqs}`);
 
   console.log('\nStructured data');
   const productHtml = await (
