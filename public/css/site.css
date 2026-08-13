@@ -426,10 +426,16 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 
 /* --------------------------------------------------------------- hero */
-.hero { padding-block: clamp(3rem, 7vw, 6rem) clamp(3rem, 6vw, 5.5rem); position: relative; }
-.hero__inner { max-width: 1080px; margin-inline: auto; text-align: center; }
-.hero__inner .eyebrow { text-align: center; }
-.hero__title { margin-bottom: 1.5rem; }
+.hero { padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5.5rem); position: relative; }
+
+/* Argument on the left, drawing on the right. Slightly wider on the text side:
+   the headline needs the room more than the diagram does. */
+.hero__grid {
+  display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: clamp(2rem, 4vw, 4.5rem); align-items: center;
+}
+.hero__col { min-width: 0; }
+.hero__title { margin-bottom: 1.35rem; }
 /* Direct children only — the coloured full stop is a nested span. */
 .hero__title > span { display: block; }
 
@@ -441,7 +447,7 @@ strong, b { font-weight: 600; color: var(--ink); }
  * at exactly the width where the contrast is doing the most work.
  */
 .hero__lead {
-  font-size: clamp(1.25rem, .95rem + 1.45vw, 2.25rem);
+  font-size: clamp(1.1875rem, .95rem + 1.15vw, 1.9375rem);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -450,7 +456,7 @@ strong, b { font-weight: 600; color: var(--ink); }
   text-wrap: balance;
 }
 .hero__payoff {
-  font-size: var(--step-5);
+  font-size: clamp(2.375rem, 1.85rem + 2.9vw, 4.25rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: .98;
@@ -458,53 +464,81 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 .hero__sub {
   font-size: var(--step-1); color: var(--ink-3); line-height: 1.55;
-  letter-spacing: -0.011em; max-width: 60ch; margin: 0 auto 2.25rem;
-}
-.hero__inner .btn-row { justify-content: center; }
-
-.hero__media {
-  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
-  max-width: 1120px; position: relative;
-}
-.hero__media img {
-  /* height:auto matters: the markup carries width/height attributes to reserve
-     space and avoid a layout shift, and a definite height would win over
-     aspect-ratio and pin the image to whatever the attribute says. */
-  width: 100%; height: auto; aspect-ratio: 3/2;
-  object-fit: cover; object-position: center;
-  border-radius: var(--r-xl); box-shadow: var(--lift-2);
-}
-.hero__media .slot { position: relative; aspect-ratio: 3/2; border-radius: var(--r-xl); }
-/* A 3:2 frame takes too much off the top and bottom of a portrait photograph
-   once the column is phone-width. Square keeps the subject in shot whichever
-   way round the uploaded image happens to be. */
-@media (max-width: 700px) {
-  .hero__media img, .hero__media .slot { aspect-ratio: 1/1; }
+  letter-spacing: -0.011em; max-width: 46ch; margin: 0 0 2rem;
 }
 
+/* Figures under the call to action, divided by hairlines. */
 .hero__stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem 1rem; margin-top: clamp(2.5rem, 4vw, 3.5rem);
-  padding-top: clamp(1.75rem, 3vw, 2.5rem); border-top: 1px solid var(--hair);
+  display: grid; grid-template-columns: repeat(3, auto); justify-content: start;
+  gap: 0; margin: clamp(2.25rem, 4vw, 3rem) 0 0;
+  border-top: 1px solid var(--hair); padding-top: clamp(1.5rem, 2.5vw, 2rem);
 }
-.stat { text-align: center; }
+.stat + .stat { border-left: 1px solid var(--hair); padding-left: clamp(1.25rem, 2.5vw, 2rem); margin-left: clamp(1.25rem, 2.5vw, 2rem); }
 .stat__value {
-  font-family: var(--font-display); font-size: var(--step-2); font-weight: 800;
-  letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+  margin: 0;
+  font-family: var(--font-display); font-size: clamp(1.75rem, 1.4rem + 1.1vw, 2.375rem);
+  font-weight: 800; letter-spacing: -0.032em; color: var(--ink); line-height: 1;
 }
 .stat__label {
-  font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
+  font-size: var(--step--1); font-weight: 600; letter-spacing: .075em;
   text-transform: uppercase; color: var(--ink-4); margin-top: .5rem;
 }
-@media (max-width: 620px) {
-  .hero__stats { grid-template-columns: repeat(2, 1fr); }
+
+/* ------------------------------------------------------- hero diagram */
+.hero__figure { min-width: 0; }
+.diagram {
+  width: 100%; height: auto; display: block;
+  /* Line weights are set once here and scale with the drawing. */
+  --dl-line: var(--hair-3);
+  --dl-detail: var(--hair-2);
+  --dl-accent: var(--brand);
 }
-/* Centred body copy stops helping once it runs past a few lines, and buttons
-   read better full width at this size. */
+.diagram [class^='dl-'] { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.diagram .dl-o     { stroke: var(--dl-line); stroke-width: 1.5; }
+.diagram .dl-d     { stroke: var(--dl-detail); stroke-width: 1.1; }
+.diagram .dl-a     { stroke: var(--dl-accent); stroke-width: 1.8; }
+.diagram .dl-dash  { stroke-dasharray: 7 5; }
+.diagram .dl-crop  { stroke: var(--dl-detail); stroke-width: 1; fill: none; }
+.diagram .dl-fill  { fill: var(--surface); }
+
+/* Names the drawing, and routes into the range. */
+.legend {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px; background: var(--surface);
+  border: 1px solid var(--hair); border-radius: var(--r-lg); overflow: hidden;
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+.legend__item { background: var(--surface); box-shadow: 0 0 0 1px var(--hair); }
+.legend__item > a, .legend__item > span { display: block; padding: .9rem 1.1rem; height: 100%; }
+.legend__item > a { transition: background .2s var(--ease); }
+.legend__item > a:hover { background: var(--surface-2); }
+.legend__name {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--font-display); font-size: .98rem; font-weight: 700;
+  letter-spacing: -0.018em; color: var(--ink);
+}
+.legend__name::before {
+  content: ''; width: 8px; height: 8px; flex: none;
+  background: var(--brand); border-radius: 1px;
+}
+.legend__note { display: block; font-size: .82rem; color: var(--ink-3); line-height: 1.4; margin-top: .2rem; padding-left: 1rem; }
+
+@media (max-width: 1000px) {
+  /* One column. The drawing follows the argument rather than leading it. */
+  .hero__grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 6vw, 3.5rem); }
+  .hero__figure { max-width: 620px; }
+  .hero__sub { max-width: 56ch; }
+}
 @media (max-width: 560px) {
-  .hero__sub { text-align: left; }
-  .btn-row { flex-direction: column; align-items: stretch; }
-  .btn-row > .btn { width: 100%; }
+  .hero__sub { max-width: none; }
+  .hero__stats { grid-template-columns: 1fr; justify-content: stretch; }
+  .stat + .stat {
+    border-left: 0; border-top: 1px solid var(--hair);
+    padding-left: 0; margin-left: 0; padding-top: 1rem; margin-top: 1rem;
+  }
+  .stat { display: flex; align-items: baseline; gap: .75rem; }
+  .stat__label { margin-top: 0; }
+  .legend { grid-template-columns: 1fr; }
 }
 
 /* Page hero — interior pages. Left aligned, breadcrumb above the title. */

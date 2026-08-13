@@ -246,7 +246,13 @@ const pages = [
         value:
           'A liner decides whether a lubricant arrives clean. A cover decides whether a machine tool arrives ready to run. Either way, the packaging costs a fraction of what it protects.',
       },
-      { block_key: 'hero_image', label: 'Hero image', input_type: 'image', value: '/img/generator-cover-1.jpg' },
+      {
+        block_key: 'hero_image',
+        label: 'Social share image',
+        hint: 'The picture shown when the home page is shared on WhatsApp, LinkedIn or in a search result. The hero itself is a drawing, so this no longer appears on the page.',
+        input_type: 'image',
+        value: '/img/generator-cover-1.jpg',
+      },
 
       { block_key: 'value_eyebrow', label: 'Value section eyebrow', value: 'The arithmetic' },
       {

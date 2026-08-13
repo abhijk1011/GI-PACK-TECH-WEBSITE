@@ -8,8 +8,8 @@
 
   <!-- ============================================ hero: the one idea -->
   <section class="hero gridbg">
-    <div class="wrap">
-      <div class="hero__inner">
+    <div class="wrap hero__grid">
+      <div class="hero__col">
         <p class="eyebrow"><%= b.hero_eyebrow %></p>
         <%#
           The headline is set in two registers rather than one block. Every line
@@ -35,35 +35,47 @@
           </a>
           <a class="btn btn--ghost" href="/products">See the range</a>
         </div>
+
+        <dl class="hero__stats">
+          <div class="stat">
+            <dd class="stat__value"><%= s.stat_products %></dd>
+            <dt class="stat__label">Products</dt>
+          </div>
+          <div class="stat">
+            <dd class="stat__value"><%= s.stat_diameter %></dd>
+            <dt class="stat__label">Drum diameter</dt>
+          </div>
+          <div class="stat">
+            <dd class="stat__value"><%= new Date().getFullYear() - Number(s.established_year || 2006) %> yrs</dd>
+            <dt class="stat__label">Manufacturing</dt>
+          </div>
+        </dl>
       </div>
 
-      <figure class="hero__media">
-        <% if (b.hero_image) { %>
-          <img src="<%= b.hero_image %>" alt="Industrial packaging manufactured by <%= s.company_name %>" width="1600" height="900">
-        <% } else { %>
-          <div class="slot">
-            <div><%- icon('image', 30) %><span class="slot__label">Hero photograph</span></div>
-          </div>
-        <% } %>
-      </figure>
+      <%#
+        The diagram, with a legend that names what is drawn. The names are
+        links, so the hero routes straight into the four biggest categories
+        instead of only describing them.
+      %>
+      <div class="hero__figure">
+        <%- include('../partials/liner-diagram') %>
 
-      <div class="hero__stats">
-        <div class="stat">
-          <div class="stat__value"><%= s.stat_products %></div>
-          <div class="stat__label">Products</div>
-        </div>
-        <div class="stat">
-          <div class="stat__value"><%= s.stat_categories %></div>
-          <div class="stat__label">Categories</div>
-        </div>
-        <div class="stat">
-          <div class="stat__value"><%= s.stat_diameter %></div>
-          <div class="stat__label">Drum diameter</div>
-        </div>
-        <div class="stat">
-          <div class="stat__value"><%= new Date().getFullYear() - Number(s.established_year || 2006) %> yrs</div>
-          <div class="stat__label">Manufacturing</div>
-        </div>
+        <ul class="legend">
+          <% [
+            { slug: 'round-drum-liners', label: 'Drum liners', note: 'Fitted to the measured drum' },
+            { slug: 'bulk-bag-and-fibc-liners', label: 'FIBC liners', note: 'The liner decides the barrier' },
+            { slug: 'machine-covers-and-protective-packaging', label: 'Machine covers', note: 'Built to the drawing' },
+            { slug: 'pallet-covers-and-pallet-wraps', label: 'Pallet covers', note: 'Where damage starts' }
+          ].forEach(function(item){ %>
+            <% var cat = categories.find(function(c){ return c.slug === item.slug; }); %>
+            <li class="legend__item">
+              <% if (cat) { %><a href="/products/<%= cat.slug %>"><% } %>
+                <span class="legend__name"><%= item.label %></span>
+                <span class="legend__note"><%= item.note %></span>
+              <% if (cat) { %></a><% } %>
+            </li>
+          <% }) %>
+        </ul>
       </div>
     </div>
   </section>
