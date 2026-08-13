@@ -1,48 +1,50 @@
-<section class="section section--ink gridbg gridbg--dark">
+<section class="cta">
   <div class="wrap">
-    <div class="split">
-      <div>
-        <p class="eyebrow" style="color:rgba(255,255,255,.55);"><%= typeof ctaEyebrow !== 'undefined' ? ctaEyebrow : 'Send us the problem' %></p>
-        <h2 class="h-section" style="margin-bottom:1.25rem;">
-          <%= typeof ctaHeading !== 'undefined' ? ctaHeading : 'Send the drawing, the drum, or the data sheet.' %>
-        </h2>
-        <p style="color:rgba(255,255,255,.7);max-width:52ch;line-height:1.6;">
-          <%= typeof ctaBody !== 'undefined' ? ctaBody : 'Every product we make is built to order, so the conversation starts with your specification rather than with our price list. Sample liners and trial covers are supplied for fitment before bulk production begins.' %>
-        </p>
-        <div class="btn-row" style="margin-top:2rem;">
-          <a class="btn btn--primary" href="/specify">
-            <%= s.cta_primary || 'Specify your requirement' %>
-            <span class="btn__arrow"><%- icon('arrow', 16) %></span>
-          </a>
-          <a class="btn btn--onink" href="/contact">Talk to the technical team</a>
+    <div class="ctapanel">
+      <div class="ctapanel__grid">
+        <div>
+          <p class="eyebrow eyebrow--onink"><%= typeof ctaEyebrow !== 'undefined' ? ctaEyebrow : 'Send us the problem' %></p>
+          <h2 class="h-section">
+            <%- h.dot(typeof ctaHeading !== 'undefined' ? ctaHeading : 'Send the drawing, the drum, or the data sheet.') %>
+          </h2>
+          <p class="ctapanel__body">
+            <%= typeof ctaBody !== 'undefined' ? ctaBody : 'Every product we make is built to order, so the conversation starts with your specification rather than with our price list. Sample liners and trial covers are supplied for fitment before bulk production begins.' %>
+          </p>
+          <div class="btn-row" style="margin-top:2rem;">
+            <a class="btn btn--primary" href="/specify">
+              <%= s.cta_primary || 'Specify your requirement' %>
+              <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <a class="btn btn--onink" href="/contact">Talk to the technical team</a>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <ul style="display:grid;gap:1px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);">
-          <li style="background:#0E1319;padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;">
-            <span style="color:var(--orange);"><%- icon('phone', 20) %></span>
-            <span>
-              <span class="mono" style="color:rgba(255,255,255,.45);display:block;margin-bottom:.35rem;">CALL</span>
-              <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>" style="color:#fff;font-size:1.05rem;font-weight:500;"><%= s.phone %></a>
-              <span style="display:block;color:rgba(255,255,255,.5);font-size:.85rem;margin-top:.25rem;"><%= s.contact_person %>, <%= s.contact_title %></span>
-            </span>
-          </li>
-          <li style="background:#0E1319;padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;">
-            <span style="color:var(--orange);"><%- icon('mail', 20) %></span>
-            <span>
-              <span class="mono" style="color:rgba(255,255,255,.45);display:block;margin-bottom:.35rem;">EMAIL</span>
-              <a href="mailto:<%= s.email %>" style="color:#fff;font-size:1.05rem;font-weight:500;"><%= s.email %></a>
-            </span>
-          </li>
-          <li style="background:#0E1319;padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;">
-            <span style="color:var(--orange);"><%- icon('factory', 20) %></span>
-            <span>
-              <span class="mono" style="color:rgba(255,255,255,.45);display:block;margin-bottom:.35rem;">PLANT</span>
-              <span style="color:rgba(255,255,255,.8);font-size:.9rem;line-height:1.55;"><%= s.plant_address %></span>
-            </span>
-          </li>
-        </ul>
+        <div>
+          <ul class="ctacards">
+            <li class="ctacard">
+              <%- icon('phone', 20) %>
+              <span>
+                <span class="ctacard__label">Call</span>
+                <a class="ctacard__value" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+                <span class="ctacard__note"><%= s.contact_person %>, <%= s.contact_title %></span>
+              </span>
+            </li>
+            <li class="ctacard">
+              <%- icon('mail', 20) %>
+              <span>
+                <span class="ctacard__label">Email</span>
+                <a class="ctacard__value" href="mailto:<%= s.email %>"><%= s.email %></a>
+              </span>
+            </li>
+            <li class="ctacard">
+              <%- icon('factory', 20) %>
+              <span>
+                <span class="ctacard__label">Plant</span>
+                <span class="ctacard__text"><%= s.plant_address %></span>
+              </span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

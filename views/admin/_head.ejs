@@ -6,9 +6,7 @@
   <title><%= seo.title %> · <%= s.company_name %> Admin</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
@@ -74,11 +72,9 @@
     <div class="side__foot">
       <a href="/" target="_blank" rel="noopener">View the website ↗</a>
       <a href="/admin-panel/account">Account &amp; password</a>
-      <form method="post" action="/admin-panel/logout" style="margin-top:.4rem;">
+      <form method="post" action="/admin-panel/logout" style="margin-top:.6rem;">
         <input type="hidden" name="_csrf" value="<%= csrf %>">
-        <button class="b b--ghost b--sm" type="submit" style="background:transparent;color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.2);">
-          Sign out
-        </button>
+        <button class="b b--onside b--sm" type="submit">Sign out</button>
       </form>
     </div>
   </aside>

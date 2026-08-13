@@ -5,11 +5,11 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:22ch;"><%= b.hero_heading %></h1>
-      <p class="lede" style="margin-top:1.5rem;"><%= b.intro %></p>
+      <h1 class="h-page phero__title"><%- h.dot(b.hero_heading) %></h1>
+      <p class="lede"><%= b.intro %></p>
       <div class="btn-row" style="margin-top:2rem;">
         <a class="btn btn--primary" href="/specify">
           <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
@@ -42,18 +42,18 @@
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div class="split" style="align-items:start;">
+      <div class="split split--top">
         <div>
           <p class="eyebrow">What we need from you</p>
           <h2 class="h-section" style="font-size:var(--step-2);margin-bottom:1.5rem;">
-            One drawing usually replaces three phone calls.
+            <%- h.dot('One drawing usually replaces three phone calls.') %>
           </h2>
-          <ul class="ticklist ticklist--orange">
-            <li><%- icon('doc', 16) %><span>A machine general arrangement drawing</span></li>
-            <li><%- icon('drum', 16) %><span>The drum's measured internal diameter and height, or one sample drum</span></li>
-            <li><%- icon('doc', 16) %><span>The product data sheet, so material compatibility can be confirmed</span></li>
-            <li><%- icon('doc', 16) %><span>A method statement, where the work is on a licensed site</span></li>
-            <li><%- icon('grid', 16) %><span>A container load plan, where the question is freight efficiency</span></li>
+          <ul class="featlist">
+            <li><span class="featlist__text">A machine general arrangement drawing</span></li>
+            <li><span class="featlist__text">The drum&rsquo;s measured internal diameter and height, or one sample drum</span></li>
+            <li><span class="featlist__text">The product data sheet, so material compatibility can be confirmed</span></li>
+            <li><span class="featlist__text">A method statement, where the work is on a licensed site</span></li>
+            <li><span class="featlist__text">A container load plan, where the question is freight efficiency</span></li>
           </ul>
           <div class="btn-row" style="margin-top:2rem;">
             <a class="btn btn--ink" href="/specify">Send it through <span class="btn__arrow"><%- icon('arrow', 16) %></span></a>
@@ -61,12 +61,12 @@
         </div>
         <div>
           <p class="eyebrow">Product families</p>
-          <div class="cards cards--2" style="grid-template-columns:1fr;">
+          <div class="cards" style="grid-template-columns:1fr;">
             <% categories.forEach(function(c){ %>
-              <a class="card" href="/products/<%= c.slug %>" style="padding:1.25rem 1.5rem;">
+              <a class="card" href="/products/<%= c.slug %>" style="padding:1.15rem 1.5rem;">
                 <span class="card__num"><%= c.number %></span>
-                <h3 class="card__title" style="font-size:1rem;"><%= c.name %></h3>
-                <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+                <h3 class="card__title" style="font-size:1.02rem;"><%= c.name %></h3>
+                <span class="card__meta" style="padding-top:.5rem;"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
               </a>
             <% }) %>
           </div>
@@ -94,7 +94,7 @@
           </tbody>
         </table>
       </div>
-      <p style="margin-top:1.25rem;"><a class="tlink" href="/materials">Full material reference <%- icon('arrow', 15) %></a></p>
+      <p style="margin-top:1.5rem;"><a class="tlink" href="/materials">Full material reference <%- icon('arrow', 15) %></a></p>
     </div>
   </section>
 

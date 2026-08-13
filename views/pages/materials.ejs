@@ -5,11 +5,11 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow">Reference</p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;">The material decides the performance.</h1>
-      <p class="lede" style="margin-top:1.5rem;">
+      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot('The material decides the performance.') %></h1>
+      <p class="lede">
         This table is a starting point for specification. The correct construction for any given product
         should always be confirmed against your product data, temperature range and handling method &mdash;
         which is what we do before quoting anything.
@@ -45,7 +45,7 @@
           <% if (m.detail) { %>
             <div class="card">
               <span class="card__num"><%= m.main_property %></span>
-              <h2 class="card__title" style="font-size:1.05rem;"><%= m.name %></h2>
+              <h2 class="card__title" style="font-size:1.08rem;"><%= m.name %></h2>
               <p class="card__desc"><%= m.detail %></p>
             </div>
           <% } %>

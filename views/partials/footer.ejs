@@ -3,16 +3,14 @@
     <div class="footer__grid">
       <div>
         <div class="footer__brand">
-          <img src="/img/logo-mark.svg" alt="" width="40" height="29" style="width:40px;height:auto;">
-          <span class="brand__text">
-            <span class="brand__name" style="color:#fff;"><%= s.company_name %></span>
-          </span>
+          <img src="/img/logo-mark.svg" alt="" width="34" height="24">
+          <span class="brand__name"><%= s.company_name %></span>
         </div>
         <p class="footer__line"><%= s.positioning_line %></p>
-        <div class="footer__creds" style="margin-top:1.5rem;">
-          <% if (s.show_iso === '1' && s.iso_text) { %><span><%= s.iso_text %></span><% } %>
-          <span><%= s.nature_of_business %></span>
-          <span>Est. <%= s.established_year %></span>
+        <div class="footer__creds">
+          <% if (s.show_iso === '1' && s.iso_text) { %><span class="footer__cred"><%= s.iso_text %></span><% } %>
+          <span class="footer__cred"><%= s.nature_of_business %></span>
+          <span class="footer__cred">Est. <%= s.established_year %></span>
         </div>
       </div>
 
@@ -47,7 +45,7 @@
           <% } %>
         </ul>
         <h2 class="footer__h" style="margin-top:1.75rem;">Plant</h2>
-        <p style="color:rgba(255,255,255,.6);font-size:.86rem;line-height:1.6;"><%= s.plant_address %></p>
+        <p class="footer__text"><%= s.plant_address %></p>
         <% if (s.linkedin_url || s.facebook_url || s.instagram_url || s.youtube_url) { %>
           <ul class="footer__list" style="margin-top:1.25rem;">
             <% if (s.linkedin_url) { %><li><a href="<%= s.linkedin_url %>" rel="noopener">LinkedIn</a></li><% } %>

@@ -5,13 +5,13 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow">Industries</p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:24ch;">
-        Different sectors, the same question: what is this protecting?
+      <h1 class="h-page phero__title" style="max-width:26ch;">
+        <%- h.dot('Different sectors, the same question: what is this protecting?') %>
       </h1>
-      <p class="lede" style="margin-top:1.5rem;">
+      <p class="lede">
         Every product is built to order, so the specification starts from your product, your container
         and your route &mdash; not from a standard range.
       </p>
@@ -25,7 +25,7 @@
           <a class="card" href="/industries/<%= i.slug %>">
             <h2 class="card__title"><%= i.name %></h2>
             <% if (i.problem_lead) { %>
-              <p style="color:var(--orange);font-size:.9rem;font-weight:500;line-height:1.45;"><%= i.problem_lead %></p>
+              <p style="color:var(--brand);font-size:.94rem;font-weight:600;line-height:1.45;"><%= i.problem_lead %></p>
             <% } %>
             <p class="card__desc"><%= i.applications %></p>
             <span class="card__meta">

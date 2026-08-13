@@ -5,17 +5,17 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:22ch;"><%= b.hero_heading %></h1>
+      <h1 class="h-page phero__title"><%- h.dot(b.hero_heading) %></h1>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="wrap">
-      <div class="split" style="align-items:start;">
-        <div class="prose" style="font-size:var(--step-1);line-height:1.55;">
+      <div class="split split--top">
+        <div class="prose" style="font-size:var(--step-1);line-height:1.6;">
           <% h.paragraphs(b.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
         </div>
         <div>
@@ -39,14 +39,12 @@
   <section class="section section--paper section--rule">
     <div class="wrap wrap-narrow">
       <p class="eyebrow">What we believe</p>
-      <h2 class="h-section" style="margin-bottom:1.75rem;"><%= b.belief_heading %></h2>
+      <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.belief_heading) %></h2>
       <div class="prose" style="max-width:none;">
         <% h.paragraphs(b.belief_body).forEach(function(para){ %><p><%= para %></p><% }) %>
       </div>
-      <blockquote style="margin:3rem 0 0;padding:2rem;border-left:3px solid var(--orange);background:var(--paper);">
-        <p style="font-family:var(--font-display);font-size:var(--step-2);font-weight:500;letter-spacing:-0.02em;line-height:1.25;">
-          <%= s.positioning_line %>
-        </p>
+      <blockquote class="quote">
+        <p><%- h.dot(s.positioning_line) %></p>
       </blockquote>
     </div>
   </section>
@@ -54,7 +52,7 @@
   <section class="section">
     <div class="wrap wrap-narrow">
       <p class="eyebrow">How we work</p>
-      <h2 class="h-section" style="margin-bottom:1.75rem;"><%= b.refuse_heading %></h2>
+      <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.refuse_heading) %></h2>
       <div class="prose" style="max-width:none;">
         <% h.paragraphs(b.refuse_body).forEach(function(para){ %><p><%= para %></p><% }) %>
       </div>

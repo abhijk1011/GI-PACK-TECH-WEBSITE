@@ -6,9 +6,7 @@
   <title>Sign in · <%= s.company_name %> Admin</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
@@ -17,8 +15,8 @@
       <div class="loginbox__brand">
         <img src="/img/logo-mark.svg" alt="">
         <span>
-          <span style="display:block;font-weight:700;font-size:1.05rem;letter-spacing:-.02em;"><%= s.company_name %></span>
-          <span style="font-family:var(--a-mono);font-size:.62rem;letter-spacing:.1em;color:var(--a-ink-3);text-transform:uppercase;">Admin panel</span>
+          <span class="side__brandname" style="display:block;color:var(--a-ink);"><%= s.company_name %></span>
+          <span class="side__brandsub" style="color:var(--a-ink-3);">Admin panel</span>
         </span>
       </div>
 

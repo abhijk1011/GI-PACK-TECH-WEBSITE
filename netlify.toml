@@ -1,7 +1,7 @@
 [build]
-  # `public` holds the CSS, JavaScript, logo and the catalogue photographs.
-  # Netlify serves those straight from its CDN; everything else falls through
-  # to the function below.
+  # `public` holds the CSS, JavaScript, webfonts, logo and the catalogue
+  # photographs. Netlify serves those straight from its CDN; everything else
+  # falls through to the function below.
   publish = "public"
   functions = "netlify/functions"
 
@@ -55,3 +55,10 @@
   for = "/img/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+# The font files are a fixed release of Inter, so the bytes behind these names
+# never change. Cache them for a year.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

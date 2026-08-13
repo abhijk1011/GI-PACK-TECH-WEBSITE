@@ -5,11 +5,11 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap wrap-narrow">
       <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= b.hero_heading %></h1>
-      <p class="lede" style="margin-top:1.5rem;"><%= b.intro %></p>
+      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(b.hero_heading) %></h1>
+      <p class="lede"><%= b.intro %></p>
     </div>
   </section>
 
@@ -23,15 +23,15 @@
 
       <div class="steps">
         <div class="step" data-active="true">
-          <div class="step__n">STEP 01</div>
+          <div class="step__n">Step 01</div>
           <div class="step__t">Your requirement</div>
         </div>
         <div class="step">
-          <div class="step__n">STEP 02</div>
+          <div class="step__n">Step 02</div>
           <div class="step__t">Conditions</div>
         </div>
         <div class="step">
-          <div class="step__n">STEP 03</div>
+          <div class="step__n">Step 03</div>
           <div class="step__t">Volume &amp; contact</div>
         </div>
       </div>
@@ -40,18 +40,18 @@
         <input type="hidden" name="_csrf" value="<%= csrf %>">
         <input type="hidden" name="source" value="specify">
         <!-- honeypot -->
-        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+        <div class="visually-hidden" aria-hidden="true">
           <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
         </div>
 
         <% [1,2,3].forEach(function(step){ %>
           <% var items = checklist.filter(function(c){ return c.step === step; }); %>
           <% if (items.length) { %>
-            <fieldset style="border:0;padding:0;margin:0 0 3rem;">
-              <legend style="padding:0;margin-bottom:1.75rem;width:100%;">
-                <span class="mono" style="color:var(--orange);letter-spacing:.12em;">STEP 0<%= step %></span>
-                <span style="display:block;font-family:var(--font-display);font-size:var(--step-2);font-weight:600;letter-spacing:-0.022em;margin-top:.4rem;">
-                  <%= step === 1 ? 'What are you packing?' : (step === 2 ? 'How is it handled?' : 'Volume and how to reach you') %>
+            <fieldset class="fset">
+              <legend class="fset__legend">
+                <span class="fset__step">Step 0<%= step %></span>
+                <span class="fset__title">
+                  <%- h.dot(step === 1 ? 'What are you packing?' : (step === 2 ? 'How is it handled?' : 'Volume and how to reach you')) %>
                 </span>
               </legend>
 
@@ -92,9 +92,9 @@
           <% } %>
         <% }) %>
 
-        <fieldset style="border:0;padding:0;margin:0 0 2rem;">
-          <legend style="padding:0;margin-bottom:1.75rem;width:100%;">
-            <span class="mono" style="color:var(--orange);letter-spacing:.12em;">YOUR DETAILS</span>
+        <fieldset class="fset">
+          <legend class="fset__legend">
+            <span class="fset__step">Your details</span>
           </legend>
           <div class="formgrid">
             <div class="field field--req">
@@ -137,7 +137,7 @@
           </button>
           <a class="btn btn--ghost" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>">Or call <%= s.phone %></a>
         </div>
-        <p class="mono" style="color:var(--ink-4);margin-top:1.25rem;">
+        <p class="field__why" style="margin-top:1.35rem;">
           Answer what you know. The rest can follow.
         </p>
       </form>

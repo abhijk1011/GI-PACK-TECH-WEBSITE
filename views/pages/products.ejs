@@ -5,13 +5,13 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow">The full range</p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:22ch;">
-        <%= total %> products across <%= s.stat_categories %> categories.
+      <h1 class="h-page phero__title">
+        <%- h.dot(total + ' products across ' + s.stat_categories + ' categories.') %>
       </h1>
-      <p class="lede" style="margin-top:1.5rem;">
+      <p class="lede">
         This is what has been built so far. It is not the limit of what the plant can produce &mdash;
         if a requirement is not listed here, it can almost certainly still be made.
       </p>
@@ -31,16 +31,16 @@
   <% grouped.forEach(function(g, gi){ %>
     <section class="section section--tight <%= gi % 2 === 1 ? 'section--paper section--rule' : '' %>" id="<%= g.slug %>">
       <div class="wrap">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:2rem;">
-          <div style="max-width:56ch;">
+        <div class="shead">
+          <div class="shead__text">
             <p class="eyebrow"><%= g.number %> / <%= s.stat_categories %></p>
-            <h2 class="h-section" style="font-size:var(--step-2);"><%= g.name %></h2>
-            <p style="color:var(--ink-3);margin-top:.75rem;"><%= g.tagline %></p>
+            <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot(g.name) %></h2>
+            <p style="color:var(--ink-3);margin-top:.85rem;"><%= g.tagline %></p>
           </div>
           <a class="tlink" href="/products/<%= g.slug %>">Category overview <%- icon('arrow', 15) %></a>
         </div>
 
-        <div class="cards cards--4">
+        <div class="cards cards--4 cards--loose">
           <% g.products.forEach(function(p){ %>
             <%- include('../partials/product-card', { p: p }) %>
           <% }) %>

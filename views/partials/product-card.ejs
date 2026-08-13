@@ -13,11 +13,7 @@
     <% } %>
   </div>
   <div class="pcard__body">
-    <h3 class="pcard__title">
-      <a href="/products/<%= p.category_slug %>/<%= p.slug %>" style="position:static;">
-        <%= p.name %>
-      </a>
-    </h3>
+    <h3 class="pcard__title"><%= p.name %></h3>
     <% if (p.tagline) { %><p class="pcard__tag"><%= p.tagline %></p><% } %>
     <div class="pcard__foot">
       <span class="num"><%= p.code %></span>

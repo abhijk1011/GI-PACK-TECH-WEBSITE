@@ -5,19 +5,19 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/industries">Industries</a><span>/</span>
-        <span style="color:var(--ink-3);"><%= industry.name %></span>
+        <span aria-current="page"><%= industry.name %></span>
       </nav>
       <p class="eyebrow">Industry</p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= industry.name %></h1>
+      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(industry.name) %></h1>
 
       <% if (industry.problem_lead) { %>
         <div class="problem" style="max-width:64ch;">
           <div class="problem__label">What this sector loses</div>
-          <h2 class="problem__head" style="font-size:var(--step-1);"><%= industry.problem_lead %></h2>
+          <h2 class="problem__head" style="font-size:var(--step-1);margin-bottom:0;"><%- h.dot(industry.problem_lead) %></h2>
         </div>
       <% } %>
 
@@ -29,11 +29,13 @@
 
   <section class="section section--tight">
     <div class="wrap">
-      <div style="max-width:52ch;margin-bottom:2rem;">
-        <p class="eyebrow">Specified here</p>
-        <h2 class="h-section" style="font-size:var(--step-2);">Products built for this sector.</h2>
+      <div class="shead">
+        <div class="shead__text">
+          <p class="eyebrow">Specified here</p>
+          <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot('Products built for this sector.') %></h2>
+        </div>
       </div>
-      <div class="cards cards--3">
+      <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
         <% }) %>
@@ -47,7 +49,7 @@
       <div class="cards cards--4" style="margin-top:1.5rem;">
         <% others.forEach(function(i){ %>
           <a class="card" href="/industries/<%= i.slug %>">
-            <h3 class="card__title" style="font-size:.98rem;"><%= i.name %></h3>
+            <h3 class="card__title" style="font-size:1rem;"><%= i.name %></h3>
             <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
           </a>
         <% }) %>

@@ -5,18 +5,16 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/products">Products</a><span>/</span>
-        <span style="color:var(--ink-3);"><%= category.name %></span>
+        <span aria-current="page"><%= category.name %></span>
       </nav>
       <p class="eyebrow"><%= category.number %> / <%= s.stat_categories %> &nbsp;·&nbsp; <%= products.length %> products</p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= category.name %></h1>
+      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(category.name) %></h1>
       <% if (category.problem_lead) { %>
-        <p class="lede" style="margin-top:1.5rem;color:var(--orange);font-weight:500;max-width:56ch;">
-          <%= category.problem_lead %>
-        </p>
+        <p class="subhead" style="margin-top:1.35rem;max-width:52ch;"><%= category.problem_lead %></p>
       <% } %>
       <div class="prose" style="margin-top:1.5rem;">
         <% h.paragraphs(category.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
@@ -26,7 +24,7 @@
 
   <section class="section section--tight">
     <div class="wrap">
-      <div class="cards cards--3">
+      <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
         <% }) %>
@@ -41,7 +39,7 @@
         <% others.forEach(function(c){ %>
           <a class="card" href="/products/<%= c.slug %>">
             <span class="card__num"><%= c.number %></span>
-            <h3 class="card__title" style="font-size:1rem;"><%= c.short_name || c.name %></h3>
+            <h3 class="card__title" style="font-size:1.02rem;"><%= c.short_name || c.name %></h3>
             <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
           </a>
         <% }) %>

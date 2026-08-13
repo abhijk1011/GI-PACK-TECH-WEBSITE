@@ -5,36 +5,36 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a><span>/</span>
-        <span style="color:var(--ink-3);">For <%= role.name %></span>
+        <span aria-current="page">For <%= role.name %></span>
       </nav>
       <p class="eyebrow">For the <%= role.name.toLowerCase() %></p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:24ch;"><%= role.headline %></h1>
-      <p class="lede" style="margin-top:1.5rem;"><%= role.intro %></p>
+      <h1 class="h-page phero__title" style="max-width:26ch;"><%- h.dot(role.headline) %></h1>
+      <p class="lede"><%= role.intro %></p>
 
-      <div style="margin-top:2rem;display:inline-flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border:1px solid var(--line-2);">
-        <span style="color:var(--purple);"><%- icon(role.icon || 'users', 18) %></span>
-        <span class="mono" style="color:var(--ink-3);">MEASURED ON: <%= role.cares_about.toUpperCase() %></span>
+      <div class="measured">
+        <%- icon(role.icon || 'users', 18) %>
+        <span class="mono">Measured on: <%= role.cares_about %></span>
       </div>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="wrap">
-      <div class="split" style="align-items:start;">
+      <div class="split split--top">
         <div>
           <p class="eyebrow">What changes</p>
-          <ul class="ticklist ticklist--orange" style="gap:1.15rem;">
+          <ul class="featlist">
             <% h.lines(role.points).forEach(function(pt){ %>
-              <li><%- icon('check', 17) %><span style="font-size:1.02rem;"><%= pt %></span></li>
+              <li><span class="featlist__text" style="font-size:1.02rem;"><%= pt %></span></li>
             <% }) %>
           </ul>
         </div>
         <div>
-          <div class="rail" style="position:static;">
+          <div class="rail rail--static">
             <h2 class="rail__title">Start from the problem</h2>
             <p class="rail__body">
               Send the product, the container dimensions and the handling conditions. We come back with a
@@ -51,11 +51,13 @@
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div style="max-width:52ch;margin-bottom:2rem;">
-        <p class="eyebrow">Relevant products</p>
-        <h2 class="h-section" style="font-size:var(--step-2);">Where this shows up in the range.</h2>
+      <div class="shead">
+        <div class="shead__text">
+          <p class="eyebrow">Relevant products</p>
+          <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot('Where this shows up in the range.') %></h2>
+        </div>
       </div>
-      <div class="cards cards--3">
+      <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
         <% }) %>
@@ -68,9 +70,9 @@
       <p class="eyebrow">A decision passes through four people</p>
       <div class="roles" style="margin-top:1.5rem;">
         <% roles.forEach(function(r){ %>
-          <a class="role" href="/for/<%= r.slug %>" <%= r.slug === role.slug ? 'aria-current="page" style="background:var(--purple-100);"' : '' %>>
+          <a class="role" href="/for/<%= r.slug %>" <%= r.slug === role.slug ? 'aria-current="page"' : '' %>>
             <span class="role__icon"><%- icon(r.icon || 'users', 28) %></span>
-            <h3 class="role__name" style="font-size:1.02rem;"><%= r.name %></h3>
+            <h3 class="role__name" style="font-size:1.05rem;"><%= r.name %></h3>
             <p class="role__cares"><%= r.cares_about %></p>
           </a>
         <% }) %>

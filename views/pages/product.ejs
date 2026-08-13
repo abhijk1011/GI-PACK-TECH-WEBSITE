@@ -9,7 +9,7 @@
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/products">Products</a><span>/</span>
       <a href="/products/<%= product.category_slug %>"><%= product.category_name %></a><span>/</span>
-      <span style="color:var(--ink-3);"><%= product.name %></span>
+      <span aria-current="page"><%= product.name %></span>
     </nav>
 
     <div class="pdp__layout">
@@ -19,16 +19,16 @@
           <span class="num"><%= product.code %></span>
           <% if (product.badge) { %><span class="badge badge--inline"><%= product.badge %></span><% } %>
         </div>
-        <h1 class="h-section" style="font-size:var(--step-4);margin-bottom:1rem;"><%= product.name %></h1>
+        <h1 class="h-page" style="margin-bottom:1rem;"><%- h.dot(product.name) %></h1>
         <% if (product.tagline) { %>
-          <p class="lede"><%= product.tagline %></p>
+          <p class="subhead"><%= product.tagline %></p>
         <% } %>
 
         <!-- The page opens with the loss, not the product. -->
         <% if (product.problem_headline) { %>
           <div class="problem">
             <div class="problem__label">The problem it prevents</div>
-            <h2 class="problem__head"><%= product.problem_headline %></h2>
+            <h2 class="problem__head"><%- h.dot(product.problem_headline) %></h2>
             <div class="problem__body">
               <% h.paragraphs(product.problem_body).forEach(function(para){ %>
                 <p><%= para %></p>
@@ -39,7 +39,7 @@
 
         <!-- Gallery -->
         <div style="margin-block:2rem;" data-gallery>
-          <figure class="gallery__main ticked" style="margin:0;">
+          <figure class="gallery__main" style="margin:0;">
             <% if (images.length) { %>
               <img src="<%= images[0].path %>" alt="<%= images[0].alt || product.name %>"
                    width="900" height="675" data-gallery-main>
@@ -58,6 +58,7 @@
               <% images.forEach(function(img, i){ %>
                 <button class="gallery__thumb" type="button" role="tab"
                         aria-selected="<%= i === 0 ? 'true' : 'false' %>"
+                        aria-label="View photograph <%= i + 1 %>"
                         data-src="<%= img.path %>"
                         data-alt="<%= img.alt || product.name %>"
                         data-caption="<%= img.caption || '' %>">
@@ -72,15 +73,13 @@
           <% } %>
 
           <% if (!images.length && product.image_brief) { %>
-            <p class="gallery__caption">
-              <span class="mono" style="color:var(--ink-4);">PHOTOGRAPH BRIEF ON FILE</span>
-            </p>
+            <p class="gallery__caption"><span class="mono">Photograph brief on file</span></p>
           <% } %>
         </div>
 
         <!-- What it is -->
-        <section style="margin-block:2.5rem;">
-          <h2 class="h-card" style="margin-bottom:1rem;">What it is</h2>
+        <section class="pdp__block">
+          <h2 class="h-card">What it is</h2>
           <div class="prose">
             <% h.paragraphs(product.description).forEach(function(para){ %>
               <p><%= para %></p>
@@ -90,19 +89,19 @@
 
         <!-- Key features -->
         <% var features = h.lines(product.features); if (features.length) { %>
-          <section style="margin-block:2.5rem;">
-            <h2 class="h-card" style="margin-bottom:1.25rem;">Key features</h2>
-            <ul class="ticklist">
+          <section class="pdp__block">
+            <h2 class="h-card">Key features</h2>
+            <ul class="featlist">
               <% features.forEach(function(f){ %>
-                <li><%- icon('check', 16) %><span><%= f %></span></li>
+                <li><span class="featlist__text"><%= f %></span></li>
               <% }) %>
             </ul>
           </section>
         <% } %>
 
         <!-- Specification -->
-        <section style="margin-block:2.5rem;">
-          <h2 class="h-card" style="margin-bottom:1.25rem;">Specification</h2>
+        <section class="pdp__block">
+          <h2 class="h-card">Specification</h2>
           <div class="spec">
             <% if (product.materials) { %>
               <div class="spec__row"><div class="spec__key">Materials</div><div class="spec__val"><%= product.materials %></div></div>
@@ -118,15 +117,15 @@
             <% } %>
             <div class="spec__row">
               <div class="spec__key">Category</div>
-              <div class="spec__val"><a class="tlink" href="/products/<%= product.category_slug %>"><%= product.category_name %></a></div>
+              <div class="spec__val"><a class="tlink" href="/products/<%= product.category_slug %>"><%= product.category_name %> <%- icon('arrow', 15) %></a></div>
             </div>
           </div>
         </section>
 
         <!-- How we build it -->
         <% if (product.difference_body) { %>
-          <section style="margin-block:2.5rem;">
-            <h2 class="h-card" style="margin-bottom:1rem;">How we build it</h2>
+          <section class="pdp__block">
+            <h2 class="h-card">How we build it</h2>
             <div class="prose">
               <% h.paragraphs(product.difference_body).forEach(function(para){ %>
                 <p><%= para %></p>
@@ -137,9 +136,9 @@
 
         <!-- Customisation: the upsell surface -->
         <% var options = h.lines(product.customise); if (options.length) { %>
-          <section style="margin-block:2.5rem;padding:1.75rem;border:1px solid var(--line);background:var(--paper-2);">
+          <section class="optionbox">
             <h2 class="h-card" style="margin-bottom:.75rem;">Built to your specification</h2>
-            <p style="color:var(--ink-3);font-size:.92rem;margin-bottom:1.25rem;max-width:60ch;">
+            <p>
               Nothing here is sold from a fixed standard range. Every one of these can be changed for your
               application, and a sample is supplied for trial fitment before bulk production.
             </p>
@@ -153,8 +152,8 @@
 
         <!-- Industries -->
         <% if (industries.length) { %>
-          <section style="margin-block:2.5rem;">
-            <h2 class="h-card" style="margin-bottom:1rem;">Specified in</h2>
+          <section class="pdp__block">
+            <h2 class="h-card">Specified in</h2>
             <div class="optionchips">
               <% industries.forEach(function(i){ %>
                 <a class="optionchip" href="/industries/<%= i.slug %>"><%= i.name %></a>
@@ -166,7 +165,7 @@
 
       <!-- ------------------------------------------------ sticky rail -->
       <aside>
-        <div class="rail ticked">
+        <div class="rail">
           <h2 class="rail__title">Specify this product</h2>
           <p class="rail__body">
             Tell us what you are packing and the dimensions you are working to. We come back with a
@@ -181,32 +180,29 @@
             <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
           </a>
           <div class="rail__contact">
-            <div style="display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem;">
+            <span class="rail__row">
               <%- icon('phone', 15) %>
               <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
-            </div>
-            <div style="display:flex;gap:.6rem;align-items:center;">
+            </span>
+            <span class="rail__row">
               <%- icon('mail', 15) %>
               <a href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Enquiry: ' + product.name) %>"><%= s.email %></a>
-            </div>
+            </span>
           </div>
         </div>
 
         <!-- Same-category navigation keeps buyers inside the range -->
         <% if (siblings.length) { %>
-          <div style="margin-top:1.5rem;border:1px solid var(--line);">
-            <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--line);background:var(--paper-2);">
-              <span class="mono" style="color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase;">
-                More in <%= product.category_short || product.category_name %>
-              </span>
+          <div class="siblings">
+            <div class="siblings__head">
+              <span class="mono">More in <%= product.category_short || product.category_name %></span>
             </div>
             <ul>
               <% siblings.forEach(function(sib){ %>
                 <li>
-                  <a href="/products/<%= product.category_slug %>/<%= sib.slug %>"
-                     style="display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.85rem 1.25rem;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--ink-2);">
+                  <a href="/products/<%= product.category_slug %>/<%= sib.slug %>">
                     <span><%= sib.name %></span>
-                    <span style="color:var(--ink-4);flex:none;"><%- icon('arrow', 14) %></span>
+                    <%- icon('arrow', 14) %>
                   </a>
                 </li>
               <% }) %>
@@ -221,13 +217,15 @@
   <% if (related.length) { %>
     <section class="section section--paper section--rule">
       <div class="wrap">
-        <div style="max-width:52ch;margin-bottom:2rem;">
-          <p class="eyebrow">Commonly specified with</p>
-          <h2 class="h-section" style="font-size:var(--step-2);">
-            These are usually part of the same conversation.
-          </h2>
+        <div class="shead">
+          <div class="shead__text">
+            <p class="eyebrow">Commonly specified with</p>
+            <h2 class="h-section" style="font-size:var(--step-2);">
+              <%- h.dot('These are usually part of the same conversation.') %>
+            </h2>
+          </div>
         </div>
-        <div class="cards cards--3">
+        <div class="cards cards--3 cards--loose">
           <% related.forEach(function(p){ %>
             <%- include('../partials/product-card', { p: p }) %>
           <% }) %>

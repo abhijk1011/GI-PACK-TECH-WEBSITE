@@ -5,17 +5,17 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <section class="section section--tight gridbg">
+  <section class="phero gridbg">
     <div class="wrap">
       <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-hero" style="font-size:var(--step-4);max-width:20ch;"><%= b.hero_heading %></h1>
-      <p class="lede" style="margin-top:1.5rem;"><%= b.intro %></p>
+      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(b.hero_heading) %></h1>
+      <p class="lede"><%= b.intro %></p>
     </div>
   </section>
 
   <section class="section section--tight">
     <div class="wrap">
-      <div class="split" style="align-items:start;">
+      <div class="split split--top">
         <div>
           <% if (sent) { %>
             <div class="notice" style="margin-bottom:2rem;">
@@ -26,7 +26,7 @@
           <form method="post" action="/enquiry" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrf %>">
             <input type="hidden" name="source" value="contact">
-            <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <div class="visually-hidden" aria-hidden="true">
               <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
             </div>
 
@@ -70,16 +70,16 @@
             </div>
             <div class="spec__row">
               <div class="spec__key">Phone</div>
-              <div class="spec__val"><a class="tlink" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a></div>
+              <div class="spec__val"><a class="tlink tlink--brand" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a></div>
             </div>
             <div class="spec__row">
               <div class="spec__key">Email</div>
-              <div class="spec__val"><a class="tlink" href="mailto:<%= s.email %>"><%= s.email %></a></div>
+              <div class="spec__val"><a class="tlink tlink--brand" href="mailto:<%= s.email %>"><%= s.email %></a></div>
             </div>
             <% if (s.whatsapp) { %>
               <div class="spec__row">
                 <div class="spec__key">WhatsApp</div>
-                <div class="spec__val"><a class="tlink" href="https://wa.me/<%= s.whatsapp %>" rel="noopener">Message us</a></div>
+                <div class="spec__val"><a class="tlink tlink--brand" href="https://wa.me/<%= s.whatsapp %>" rel="noopener">Message us</a></div>
               </div>
             <% } %>
             <div class="spec__row">

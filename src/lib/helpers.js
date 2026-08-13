@@ -29,6 +29,19 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+/*
+ * Headings carry a brand-coloured full stop. Escapes the text, then wraps the
+ * closing punctuation so CSS can colour it. Returns HTML, so templates must
+ * use <%- %> rather than <%= %>.
+ */
+function dot(str) {
+  const text = String(str ?? '').trimEnd();
+  const match = text.match(/([.?!]+)$/);
+  if (!match) return escapeHtml(text);
+  const head = text.slice(0, text.length - match[1].length);
+  return escapeHtml(head) + '<span class="dot">' + escapeHtml(match[1]) + '</span>';
+}
+
 function slugify(str) {
   return String(str ?? '')
     .toLowerCase()
@@ -132,6 +145,7 @@ module.exports = {
   lines,
   paragraphs,
   escapeHtml,
+  dot,
   slugify,
   truncate,
   settings,
