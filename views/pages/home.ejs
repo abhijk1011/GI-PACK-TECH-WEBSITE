@@ -53,30 +53,27 @@
       </div>
 
       <%#
-        The diagram, with a legend that names what is drawn. The names are
-        links, so the hero routes straight into the four biggest categories
-        instead of only describing them.
+        The hero artwork, set from the admin panel so it can be replaced
+        without a deploy. It is deliberately unframed — no border, no shadow —
+        because the artwork this is built for is a composite illustration on a
+        transparent ground, and a frame around it would read as a mistake.
+        A photograph still looks right here: the rounding is harmless on a
+        transparent PNG and tidies a square-cropped photo.
       %>
-      <div class="hero__figure">
-        <%- include('../partials/liner-diagram') %>
-
-        <ul class="legend">
-          <% [
-            { slug: 'round-drum-liners', label: 'Drum liners', note: 'Fitted to the measured drum' },
-            { slug: 'bulk-bag-and-fibc-liners', label: 'FIBC liners', note: 'The liner decides the barrier' },
-            { slug: 'machine-covers-and-protective-packaging', label: 'Machine covers', note: 'Built to the drawing' },
-            { slug: 'pallet-covers-and-pallet-wraps', label: 'Pallet covers', note: 'Where damage starts' }
-          ].forEach(function(item){ %>
-            <% var cat = categories.find(function(c){ return c.slug === item.slug; }); %>
-            <li class="legend__item">
-              <% if (cat) { %><a href="/products/<%= cat.slug %>"><% } %>
-                <span class="legend__name"><%= item.label %></span>
-                <span class="legend__note"><%= item.note %></span>
-              <% if (cat) { %></a><% } %>
-            </li>
-          <% }) %>
-        </ul>
-      </div>
+      <figure class="hero__figure">
+        <% if (b.hero_image) { %>
+          <img class="hero__art" src="<%= b.hero_image %>"
+               alt="Drum liners, FIBC liners and film manufactured and inspected at the <%= s.company_name %> plant"
+               fetchpriority="high" decoding="async">
+        <% } else { %>
+          <div class="hero__artslot">
+            <div>
+              <%- icon('image', 30) %>
+              <span class="slot__label">Hero artwork</span>
+            </div>
+          </div>
+        <% } %>
+      </figure>
     </div>
   </section>
 

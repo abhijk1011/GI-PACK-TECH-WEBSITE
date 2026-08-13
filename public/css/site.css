@@ -429,10 +429,10 @@ strong, b { font-weight: 600; color: var(--ink); }
 .hero { padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5.5rem); position: relative; }
 
 /* Argument on the left, drawing on the right. Slightly wider on the text side:
-   the headline needs the room more than the diagram does. */
+   the artwork carries the detail, so it gets the wider half. */
 .hero__grid {
-  display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
-  gap: clamp(2rem, 4vw, 4.5rem); align-items: center;
+  display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  gap: clamp(2rem, 4vw, 4rem); align-items: center;
 }
 .hero__col { min-width: 0; }
 .hero__title { margin-bottom: 1.35rem; }
@@ -484,49 +484,39 @@ strong, b { font-weight: 600; color: var(--ink); }
   text-transform: uppercase; color: var(--ink-4); margin-top: .5rem;
 }
 
-/* ------------------------------------------------------- hero diagram */
-.hero__figure { min-width: 0; }
-.diagram {
-  width: 100%; height: auto; display: block;
-  /* Line weights are set once here and scale with the drawing. */
-  --dl-line: var(--hair-3);
-  --dl-detail: var(--hair-2);
-  --dl-accent: var(--brand);
+/* ------------------------------------------------------- hero artwork */
+.hero__figure { min-width: 0; margin: 0; }
+/*
+ * No border and no shadow. The artwork is a composite illustration on a
+ * transparent ground, so a frame would box in something that has no edges.
+ * The rounding is invisible on a transparent PNG and tidies a photograph,
+ * which keeps this safe whichever kind of image is uploaded.
+ */
+/*
+ * The box is a fixed 3:2 and the image is contained inside it. The artwork is
+ * uploaded from the admin panel, so its shape is not guaranteed — and the two
+ * obvious alternatives both fail: width:100% with height:auto lets a portrait
+ * image run past a thousand pixels tall and push the headline off the screen,
+ * and capping the height while the width is still forced squashes it. A
+ * reserved box with object-fit sidesteps both, and reserves its own space, so
+ * nothing shifts as the image loads.
+ */
+.hero__art {
+  width: 100%; display: block;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  border-radius: var(--r-lg);
 }
-.diagram [class^='dl-'] { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.diagram .dl-o     { stroke: var(--dl-line); stroke-width: 1.5; }
-.diagram .dl-d     { stroke: var(--dl-detail); stroke-width: 1.1; }
-.diagram .dl-a     { stroke: var(--dl-accent); stroke-width: 1.8; }
-.diagram .dl-dash  { stroke-dasharray: 7 5; }
-.diagram .dl-crop  { stroke: var(--dl-detail); stroke-width: 1; fill: none; }
-.diagram .dl-fill  { fill: var(--surface); }
-
-/* Names the drawing, and routes into the range. */
-.legend {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px; background: var(--surface);
-  border: 1px solid var(--hair); border-radius: var(--r-lg); overflow: hidden;
-  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+.hero__artslot {
+  aspect-ratio: 3/2; display: grid; place-items: center; text-align: center;
+  background: var(--surface-2); border-radius: var(--r-lg);
 }
-.legend__item { background: var(--surface); box-shadow: 0 0 0 1px var(--hair); }
-.legend__item > a, .legend__item > span { display: block; padding: .9rem 1.1rem; height: 100%; }
-.legend__item > a { transition: background .2s var(--ease); }
-.legend__item > a:hover { background: var(--surface-2); }
-.legend__name {
-  display: flex; align-items: center; gap: .5rem;
-  font-family: var(--font-display); font-size: .98rem; font-weight: 700;
-  letter-spacing: -0.018em; color: var(--ink);
-}
-.legend__name::before {
-  content: ''; width: 8px; height: 8px; flex: none;
-  background: var(--brand); border-radius: 1px;
-}
-.legend__note { display: block; font-size: .82rem; color: var(--ink-3); line-height: 1.4; margin-top: .2rem; padding-left: 1rem; }
+.hero__artslot svg { margin: 0 auto .55rem; color: var(--hair-3); }
 
 @media (max-width: 1000px) {
-  /* One column. The drawing follows the argument rather than leading it. */
-  .hero__grid { grid-template-columns: 1fr; gap: clamp(2.5rem, 6vw, 3.5rem); }
-  .hero__figure { max-width: 620px; }
+  /* One column. The artwork follows the argument rather than leading it. */
+  .hero__grid { grid-template-columns: 1fr; gap: clamp(2rem, 5vw, 3rem); }
+  .hero__figure { max-width: 640px; }
   .hero__sub { max-width: 56ch; }
 }
 @media (max-width: 560px) {
@@ -538,7 +528,6 @@ strong, b { font-weight: 600; color: var(--ink); }
   }
   .stat { display: flex; align-items: baseline; gap: .75rem; }
   .stat__label { margin-top: 0; }
-  .legend { grid-template-columns: 1fr; }
 }
 
 /* Page hero — interior pages. Left aligned, breadcrumb above the title. */

@@ -248,8 +248,9 @@ const pages = [
       },
       {
         block_key: 'hero_image',
-        label: 'Social share image',
-        hint: 'The picture shown when the home page is shared on WhatsApp, LinkedIn or in a search result. The hero itself is a drawing, so this no longer appears on the page.',
+        label: 'Hero artwork',
+        hint:
+          'Shown beside the headline, and reused as the picture that appears when the home page is shared on WhatsApp or LinkedIn. Upload at about 1536x1024 or wider. A PNG with a transparent background sits best — the artwork is shown unframed, so a white background would read as a white box against the page.',
         input_type: 'image',
         value: '/img/generator-cover-1.jpg',
       },
