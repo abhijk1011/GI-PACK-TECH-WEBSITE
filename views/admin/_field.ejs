@@ -35,24 +35,12 @@ var val = value == null ? '' : String(value);
       <input type="number" id="<%= fid %>" name="<%= fname %>" value="<%= val %>">
 
     <% } else if (f.type === 'image') { %>
-      <input type="text" id="<%= fid %>" name="<%= fname %>" value="<%= val %>"
-             placeholder="/uploads/your-image.jpg" data-imagefield>
-      <% if (val) { %>
-        <img src="<%= val %>" alt="" style="margin-top:.5rem;max-width:190px;border:1px solid var(--a-line);">
-      <% } %>
-      <% if (typeof media !== 'undefined' && media.length) { %>
-        <details style="margin-top:.5rem;">
-          <summary style="cursor:pointer;font-size:.8rem;color:var(--a-ink-3);">Choose from the media library</summary>
-          <div class="picker" style="margin-top:.5rem;">
-            <% media.forEach(function(m){ %>
-              <label>
-                <input type="radio" name="<%= fname %>" value="<%= m.path %>" <%= val === m.path ? 'checked' : '' %>>
-                <img src="<%= m.path %>" alt="<%= m.alt %>" loading="lazy">
-              </label>
-            <% }) %>
-          </div>
-        </details>
-      <% } %>
+      <%- include('_image-field', {
+        id: fid,
+        name: fname,
+        value: val,
+        media: typeof media !== 'undefined' ? media : []
+      }) %>
 
     <% } else { %>
       <input type="text" id="<%= fid %>" name="<%= fname %>" value="<%= val %>"

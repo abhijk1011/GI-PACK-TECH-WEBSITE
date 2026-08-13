@@ -26,7 +26,7 @@ def.fields.forEach(function(f){
             <div class="fgroup">
               <div class="fgroup__h"><%= g.name %></div>
               <% g.fields.forEach(function(f){ %>
-                <%- include('_field', { f: f, value: row[f.key], media: [] }) %>
+                <%- include('_field', { f: f, value: row[f.key], media: media }) %>
               <% }) %>
             </div>
           <% }) %>

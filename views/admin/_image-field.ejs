@@ -1,0 +1,47 @@
+<%#
+  One image field, used everywhere a picture is set: product fields, resource
+  fields, settings and page sections. It lived in three places before, which is
+  why the uploader is a partial now rather than a fourth copy.
+
+  The picture is set here rather than by a trip to the media library and back:
+  drop a file on the box, or press the button. Anything uploaded is still filed
+  in the library, so it stays reusable. The path field remains for pasting a
+  repository asset such as /img/logo.svg, and the grid is still there for
+  picking something already uploaded.
+
+  Params: id, name, value, media (array, may be empty).
+%>
+<div class="imgset" data-imgset>
+  <div class="imgset__drop" data-imgdrop>
+    <img class="imgset__preview" src="<%= value %>" alt="" data-imgpreview <%= value ? '' : 'hidden' %>>
+    <div class="imgset__empty" data-imgempty <%= value ? 'hidden' : '' %>>
+      <%- icon('image', 22) %>
+      <span>Drop an image here</span>
+    </div>
+    <div class="imgset__bar">
+      <label class="b b--ghost b--sm">
+        <%= value ? 'Replace' : 'Upload a file' %>
+        <input type="file" accept="image/*" hidden data-imgpick>
+      </label>
+      <button class="b b--ghost b--sm" type="button" data-imgclear <%= value ? '' : 'hidden' %>>Remove</button>
+      <span class="imgset__status" data-imgstatus role="status"></span>
+    </div>
+  </div>
+
+  <input type="text" id="<%= id %>" name="<%= name %>" value="<%= value %>"
+         placeholder="/uploads/your-image.jpg" data-imagefield>
+
+  <% if (media && media.length) { %>
+    <details>
+      <summary>Or choose one already uploaded</summary>
+      <div class="picker">
+        <% media.forEach(function(m){ %>
+          <label>
+            <input type="radio" name="<%= name %>" value="<%= m.path %>" <%= value === m.path ? 'checked' : '' %>>
+            <img src="<%= m.path %>" alt="<%= m.alt %>" loading="lazy">
+          </label>
+        <% }) %>
+      </div>
+    </details>
+  <% } %>
+</div>

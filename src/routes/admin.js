@@ -31,6 +31,20 @@ const upload = multer({
   },
 });
 
+/*
+ * Collapses a repeated field to a single string.
+ *
+ * An image field submits both a text input and, when one is picked, a radio
+ * from the media grid — both under the same name, which arrives as an array.
+ * String() on that yields "/a.jpg,/a.jpg". The last non-empty entry is the
+ * one the operator chose most recently, so that is the one that wins.
+ */
+function singleValue(value) {
+  if (!Array.isArray(value)) return String(value ?? '');
+  const filled = value.filter((v) => String(v ?? '').trim());
+  return String(filled.length ? filled[filled.length - 1] : '');
+}
+
 function keyFor(originalname) {
   const ext = (path.extname(originalname) || '').toLowerCase();
   const base = h.slugify(path.basename(originalname, ext)) || 'image';
@@ -46,6 +60,36 @@ function verifyUploadCsrf(req, res, next) {
   if (sent && sent === req.session.csrf) return next();
   res.status(403).send('Form expired. Please go back, reload the page and try again.');
 }
+
+/*
+ * Upload endpoint for the image fields on every admin form.
+ *
+ * Setting a picture used to mean leaving the page for the media library,
+ * uploading there, coming back and picking it out of a grid. This lets the
+ * field itself take the file: it stores what it is given, records it in the
+ * library so it is reusable, and answers with the paths. It returns JSON
+ * rather than a redirect because the caller is mid-edit and must not lose the
+ * rest of the form.
+ */
+router.post(
+  '/upload',
+  upload.array('images', 20),
+  verifyUploadCsrf,
+  wrap(async (req, res) => {
+    const saved = [];
+    for (const file of req.files || []) {
+      const key = keyFor(file.originalname);
+      const webPath = await storage.save(key, file.buffer, file.mimetype);
+      await db
+        .prepare(
+          'INSERT INTO media (filename, path, alt, size_bytes) VALUES (?, ?, ?, ?) ON CONFLICT (path) DO NOTHING'
+        )
+        .run(key, webPath, '', file.size);
+      saved.push({ path: webPath, filename: key, originalName: file.originalname });
+    }
+    res.json({ files: saved });
+  })
+);
 
 /* ---------------------------------------------------------------- auth */
 function requireAuth(req, res, next) {
@@ -367,6 +411,7 @@ router.get(
       isNew: true,
       linked: [],
       allProducts: def.links ? await db.prepare('SELECT id, name FROM products ORDER BY sort').all() : [],
+      media: await db.prepare('SELECT * FROM media ORDER BY uploaded_at DESC LIMIT 60').all(),
       seo: { title: `New ${def.singular}`, noindex: true },
     });
   })
@@ -395,6 +440,7 @@ router.get(
       isNew: false,
       linked,
       allProducts: def.links ? await db.prepare('SELECT id, name FROM products ORDER BY sort').all() : [],
+      media: await db.prepare('SELECT * FROM media ORDER BY uploaded_at DESC LIMIT 60').all(),
       seo: { title: row.name || row.title || def.singular, noindex: true },
     });
   })
@@ -411,7 +457,7 @@ router.post(
     for (const f of def.fields) {
       if (f.type === 'bool') values[f.key] = req.body[f.key] ? 1 : 0;
       else if (f.type === 'number') values[f.key] = Number(req.body[f.key] || 0);
-      else values[f.key] = String(req.body[f.key] ?? '');
+      else values[f.key] = singleValue(req.body[f.key]);
     }
     if ('slug' in values && !values.slug) values.slug = h.slugify(values.name || values.title);
 
@@ -514,7 +560,7 @@ router.post(
       if (!key.startsWith('block_')) continue;
       await db
         .prepare('UPDATE page_blocks SET value = ? WHERE page_id = ? AND block_key = ?')
-        .run(String(value ?? ''), page.id, key.slice(6));
+        .run(singleValue(value), page.id, key.slice(6));
     }
 
     flash(req, 'ok', 'Page content saved.');
@@ -670,7 +716,7 @@ router.post(
       } else if (Object.prototype.hasOwnProperty.call(req.body, row.key)) {
         await db
           .prepare('UPDATE settings SET value = ? WHERE key = ?')
-          .run(String(req.body[row.key] ?? ''), row.key);
+          .run(singleValue(req.body[row.key]), row.key);
       }
     }
     h.clearSettingsCache();
@@ -720,7 +766,13 @@ router.post(
 /* Multer and other admin errors render inside the panel. */
 router.use((err, req, res, _next) => {
   console.error(err);
-  flash(req, 'error', err.message || 'Something went wrong.');
+  const message = err.message || 'Something went wrong.';
+  // The inline uploader is called from a page mid-edit and reads the reply, so
+  // it must get the reason back rather than a redirect it cannot follow.
+  if (req.path === '/upload' || (req.get('accept') || '').includes('application/json')) {
+    return res.status(400).json({ error: message });
+  }
+  flash(req, 'error', message);
   res.redirect(req.get('referer') || '/admin-panel');
 });
 

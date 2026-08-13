@@ -139,6 +139,13 @@
 
 /* --------------------------------------------------------------- reset */
 *, *::before, *::after { box-sizing: border-box; }
+/*
+ * The hidden attribute is only display:none in the UA stylesheet, so any author
+ * `display` on the same element silently beats it — which is how a preview and
+ * its own empty state ended up on screen together. Settle it once here.
+ */
+[hidden] { display: none !important; }
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;

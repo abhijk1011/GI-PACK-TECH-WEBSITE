@@ -65,6 +65,13 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/*
+ * The hidden attribute is only display:none in the UA stylesheet, so any author
+ * `display` on the same element silently beats it — which is how a preview and
+ * its own empty state ended up on screen together. Settle it once here.
+ */
+[hidden] { display: none !important; }
+
 body {
   margin: 0; background: var(--a-bg); color: var(--a-ink-2);
   font-family: var(--a-sans); font-size: 14px; line-height: 1.55;
@@ -267,6 +274,29 @@ strong, b { font-weight: 600; color: var(--a-ink); }
 }
 .imgrow img { width: 130px; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--a-r-sm); flex: none; background: var(--a-panel-2); }
 .imgrow__fields { flex: 1; min-width: 0; }
+
+/* ------------------------------------------------------- image field */
+.imgset { display: grid; gap: .6rem; }
+.imgset__drop {
+  border: 1px dashed var(--a-line-2); border-radius: var(--a-r);
+  background: var(--a-panel-2); padding: .85rem;
+  display: grid; gap: .7rem; justify-items: start;
+  transition: border-color .16s var(--a-ease), background .16s var(--a-ease);
+}
+.imgset__drop[data-over='true'] { border-color: var(--a-orange); background: #FFF7F3; }
+.imgset__drop[data-busy='true'] { opacity: .6; pointer-events: none; }
+.imgset__preview {
+  max-width: 100%; max-height: 190px; width: auto;
+  border: 1px solid var(--a-line); border-radius: var(--a-r-sm); background: #fff;
+}
+.imgset__empty { display: flex; align-items: center; gap: .55rem; font-size: .82rem; color: var(--a-ink-3); }
+.imgset__empty svg { color: var(--a-ink-4); flex: none; }
+.imgset__bar { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.imgset__bar label { margin: 0; cursor: pointer; }
+.imgset__status { font-size: .78rem; color: var(--a-ink-3); }
+.imgset__status[data-error='true'] { color: var(--a-red); }
+.imgset > details > summary { cursor: pointer; font-size: .8rem; color: var(--a-ink-3); }
+.imgset > details[open] > summary { margin-bottom: .5rem; }
 
 .picker {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(min(92px, 100%), 1fr)); gap: .5rem;

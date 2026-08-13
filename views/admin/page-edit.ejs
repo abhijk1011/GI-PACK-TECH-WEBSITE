@@ -21,23 +21,12 @@ var topActions = '<a class="b b--ghost b--sm" href="' + href + '" target="_blank
               <label class="f__label" for="blk_<%= b.block_key %>"><%= b.label %></label>
 
               <% if (b.input_type === 'image') { %>
-                <input type="text" id="blk_<%= b.block_key %>" name="block_<%= b.block_key %>" value="<%= b.value %>" placeholder="/uploads/your-image.jpg">
-                <% if (b.value) { %>
-                  <img src="<%= b.value %>" alt="" style="margin-top:.5rem;max-width:220px;border:1px solid var(--a-line);">
-                <% } %>
-                <% if (media.length) { %>
-                  <details style="margin-top:.5rem;">
-                    <summary style="cursor:pointer;font-size:.8rem;color:var(--a-ink-3);">Choose from the media library</summary>
-                    <div class="picker" style="margin-top:.5rem;">
-                      <% media.forEach(function(m){ %>
-                        <label>
-                          <input type="radio" name="block_<%= b.block_key %>" value="<%= m.path %>" <%= b.value === m.path ? 'checked' : '' %>>
-                          <img src="<%= m.path %>" alt="<%= m.alt %>" loading="lazy">
-                        </label>
-                      <% }) %>
-                    </div>
-                  </details>
-                <% } %>
+                <%- include('_image-field', {
+                  id: 'blk_' + b.block_key,
+                  name: 'block_' + b.block_key,
+                  value: b.value,
+                  media: media
+                }) %>
 
               <% } else if (b.input_type === 'textarea') { %>
                 <textarea id="blk_<%= b.block_key %>" name="block_<%= b.block_key %>"><%= b.value %></textarea>
