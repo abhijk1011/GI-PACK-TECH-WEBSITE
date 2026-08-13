@@ -19,10 +19,19 @@
  */
 
 const copyUpdates = [
-  // Shorter, and still carries the location for local search.
+  /*
+   * The hero eyebrow, shortened twice. Both earlier wordings are listed so a
+   * database sitting at either one lands on the current text in a single pass.
+   * The town still appears in the footer, the about page, the FAQ and the
+   * Organization markup, so dropping it here costs no local-search signal.
+   */
   {
     from: 'Manufacturer & Exporter · Established 2006 · Valsad, Gujarat',
-    to: 'Manufacturer & exporter · Valsad, since 2006',
+    to: 'Manufacturer & exporter · Since 2006',
+  },
+  {
+    from: 'Manufacturer & exporter · Valsad, since 2006',
+    to: 'Manufacturer & exporter · Since 2006',
   },
   // 43 words to 28.
   {

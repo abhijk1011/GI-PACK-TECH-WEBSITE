@@ -231,7 +231,7 @@ const pages = [
     seo_description:
       'Custom industrial packaging: drum liners from 6 to 100 inches, FIBC liners, machine covers and pallet covers. Manufacturer and exporter since 2006.',
     blocks: [
-      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & exporter · Valsad, since 2006' },
+      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & exporter · Since 2006' },
       {
         block_key: 'hero_heading',
         label: 'Hero heading',

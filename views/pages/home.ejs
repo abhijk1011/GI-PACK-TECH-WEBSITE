@@ -11,10 +11,21 @@
     <div class="wrap">
       <div class="hero__inner">
         <p class="eyebrow"><%= b.hero_eyebrow %></p>
+        <%#
+          The headline is set in two registers rather than one block. Every line
+          but the last is the lead-in — around half the size, lighter, grey. The
+          last line is the payoff, at full size and weight, and it takes the
+          brand-coloured full stop. The size contrast is what gives the section
+          its impact, and it holds at the same ratio down to a phone.
+
+          A line break in the admin field is what separates them, so the split
+          stays editable. A single-line heading is all payoff.
+        %>
         <h1 class="h-hero hero__title">
-          <% var heroLines = (b.hero_heading || '').split('\n'); %>
+          <% var heroLines = (b.hero_heading || '').split('\n').filter(function(l){ return l.trim(); }); %>
           <% heroLines.forEach(function(line, i){ %>
-            <span><%- i === heroLines.length - 1 ? h.dot(line) : h.escapeHtml(line) %></span>
+            <% var isPayoff = i === heroLines.length - 1; %>
+            <span class="<%= isPayoff ? 'hero__payoff' : 'hero__lead' %>"><%- isPayoff ? h.dot(line) : h.escapeHtml(line) %></span>
           <% }) %>
         </h1>
         <p class="hero__sub"><%= b.hero_sub %></p>
