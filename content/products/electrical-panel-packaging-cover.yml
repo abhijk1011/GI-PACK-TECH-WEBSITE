@@ -4,4 +4,13 @@ slug: electrical-panel-packaging-cover
 brief: >-
   A control panel or switchgear cabinet sealed in a barrier cover with a humidity indicator card
   visible through the film.
-images: []
+images:
+  - image: /img/electrical-panel-packaging-cover1.webp
+    alt: Electrical control panel standing on the workshop floor before packing
+    caption: The panel that has to arrive dry, with its terminations clean.
+  - image: /img/electrical-panel-packaging-cover2.webp
+    alt: Humidity indicator card and desiccant sealed inside the barrier bag around an electrical panel
+    caption: Desiccant and an indicator inside the barrier, so the condition is known on arrival.
+  - image: /img/electrical-panel-packaging-cover3.webp
+    alt: Wrapped electrical panels on pallets in a works, one being lifted by crane
+    caption: Packed to be craned, stored and shipped without unwrapping.

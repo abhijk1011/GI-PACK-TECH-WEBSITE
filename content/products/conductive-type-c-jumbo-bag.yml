@@ -4,4 +4,15 @@ slug: conductive-type-c-jumbo-bag
 brief: >-
   A Type C FIBC showing the conductive thread grid in the fabric, with the grounding tab clipped to
   an earth point during filling.
-images: []
+images:
+  - image: /img/conductive-type-c-jumbo-bag1.webp
+    alt: Type C conductive FIBC suspended on a crane with an earth lead clipped to its bonding point
+    caption: Type C works only when it is earthed. The bonding point is built in.
+  - image: /img/conductive-type-c-jumbo-bag2.webp
+    alt: >-
+      Earth clamp attached to the bonding eyelet of a Type C FIBC, conductive threads visible in the
+      weave
+    caption: Conductive threads run through the whole fabric to the eyelet.
+  - image: /img/conductive-type-c-jumbo-bag3.webp
+    alt: Type C conductive FIBC, labelled and earthed at a discharge station while powder is discharged
+    caption: Marked Type C on the bag, so nobody has to guess which grade is in use.

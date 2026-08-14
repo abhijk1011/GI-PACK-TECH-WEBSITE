@@ -4,4 +4,13 @@ slug: wind-turbine-component-cover
 brief: >-
   A large turbine component wrapped in heavy duty barrier film, stored outdoors on stands at a
   laydown yard.
-images: []
+images:
+  - image: /img/wind-turbine-and-turbine-component-cover1.webp
+    alt: Turbine component under a fitted cover with an opening left for the shaft
+    caption: Cut around what has to stay accessible.
+  - image: /img/wind-turbine-and-turbine-component-cover2.webp
+    alt: Reinforced lifting loop welded into a turbine component cover
+    caption: Lifting points built into the cover, not improvised on site.
+  - image: /img/wind-turbine-and-turbine-component-cover3.webp
+    alt: Covered turbine components on transport frames in a laydown yard
+    caption: Made for components that stand in a yard until the crane is free.

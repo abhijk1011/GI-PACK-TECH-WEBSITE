@@ -4,4 +4,13 @@ slug: evoh-barrier-liner
 brief: >-
   An EVOH liner cut to show the co-extruded layer structure at the edge, alongside a filled liner in
   an FIBC.
-images: []
+images:
+  - image: /img/evoh-barrier-liner1.webp
+    alt: Bulk bag with an EVOH barrier liner, filled and closed at the spout
+    caption: EVOH is specified where oxygen is what spoils the product.
+  - image: /img/evoh-barrier-liner2.webp
+    alt: Cut edge of an EVOH barrier film showing the layers of the laminate
+    caption: The barrier layer sits between polyethylene skins that protect it.
+  - image: /img/evoh-barrier-liner3.webp
+    alt: Operator in a food plant filling an EVOH-lined bag from a stainless steel hopper
+    caption: Used where colour and aroma complaints trace back to oxygen ingress.

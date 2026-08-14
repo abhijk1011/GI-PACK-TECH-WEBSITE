@@ -4,4 +4,13 @@ slug: conductive-aluminium-liner
 brief: >-
   A silver conductive aluminium liner showing the foil surface and the grounding tab, fitted inside
   a bulk bag.
-images: []
+images:
+  - image: /img/conductive-aluminium-liner1.webp
+    alt: Conductive aluminium liner in a bulk bag with its dissipative layer visible at the neck
+    caption: Barrier and static control in one liner, rather than two bagged operations.
+  - image: /img/conductive-aluminium-liner2.webp
+    alt: Cut edge of a conductive aluminium laminate showing the dissipative layer between foil skins
+    caption: The conductive layer is inside the laminate, so it cannot be rubbed off.
+  - image: /img/conductive-aluminium-liner3.webp
+    alt: Operator heat-sealing a conductive aluminium liner in a clean room, the bag bonded to earth
+    caption: Sealed under clean conditions where the product requires it.

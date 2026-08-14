@@ -500,22 +500,25 @@ strong, b { font-weight: 600; color: var(--ink); }
  * which keeps this safe whichever kind of image is uploaded.
  */
 /*
- * The box is a fixed 3:2 and the image is contained inside it. The artwork is
- * uploaded from the image panel, so its shape is not guaranteed — and the two
- * obvious alternatives both fail: width:100% with height:auto lets a portrait
- * image run past a thousand pixels tall and push the headline off the screen,
- * and capping the height while the width is still forced squashes it. A
- * reserved box with object-fit sidesteps both, and reserves its own space, so
- * nothing shifts as the image loads.
+ * A fixed square, filled rather than fitted. The shape is not left to the
+ * photograph: width:100% with height:auto lets a portrait shot run past a
+ * thousand pixels tall and push the headline off the screen, and capping the
+ * height while the width is still forced squashes it. Reserving the box also
+ * means nothing shifts as the image loads.
+ *
+ * Square because the catalogue photographs are square, so the usual case
+ * crops nothing at all; and `cover` rather than `contain` because a
+ * photograph that does not fill its box leaves bars down both sides, which
+ * reads as a mistake beside a headline this large.
  */
 .hero__art {
   width: 100%; display: block;
-  aspect-ratio: 3 / 2;
-  object-fit: contain;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   border-radius: var(--r-lg);
 }
 .hero__artslot {
-  aspect-ratio: 3/2; display: grid; place-items: center; text-align: center;
+  aspect-ratio: 1/1; display: grid; place-items: center; text-align: center;
   background: var(--surface-2); border-radius: var(--r-lg);
 }
 .hero__artslot svg { margin: 0 auto .55rem; color: var(--hair-3); }

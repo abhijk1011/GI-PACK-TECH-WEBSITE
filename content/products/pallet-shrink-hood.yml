@@ -4,4 +4,13 @@ slug: pallet-shrink-hood
 brief: >-
   A pallet shrink hood being heat-shrunk tight around a stacked load, film pulled tight to the load
   edges.
-images: []
+images:
+  - image: /img/pallet-shrink-hood1.webp
+    alt: Operator shrinking a hood onto a pallet of cartons with a gas gun
+    caption: Shrunk on, so the load is held as one.
+  - image: /img/pallet-shrink-hood2.webp
+    alt: Shrink hood drawn tight around the corner of a palletised load
+    caption: Tight at the corners, which is where a loose wrap gives way.
+  - image: /img/pallet-shrink-hood3.webp
+    alt: Pallet of fragile cartons held together under a shrink hood
+    caption: Holds the stack square through handling.

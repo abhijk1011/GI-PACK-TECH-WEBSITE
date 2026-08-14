@@ -4,4 +4,13 @@ slug: conductive-liner
 brief: >-
   A conductive liner fitted inside an FIBC with the grounding arrangement visible, in a chemical
   plant filling area.
-images: []
+images:
+  - image: /img/conductive-liner1.webp
+    alt: Black conductive liner fitted inside a bulk bag
+    caption: A conductive liner inside a standard bag, where the bag itself cannot be changed.
+  - image: /img/conductive-liner2.webp
+    alt: Earth clamp gripping the grounding tab of a conductive liner
+    caption: The tab is placed where the operator can reach it.
+  - image: /img/conductive-liner3.webp
+    alt: Conductive-lined FIBC discharging into a hopper, bonded with an earth cable
+    caption: Bonded before discharge starts, as the procedure requires.

@@ -4,4 +4,17 @@ slug: conductive-round-drum-liner
 brief: >-
   A conductive drum liner fitted inside a steel drum, with the grounding tab visible and connected
   to an earth point, shot in a clean industrial setting.
-images: []
+images:
+  - image: /img/conductive-round-drum-liner-1.webp
+    alt: >-
+      Black conductive drum liner in a steel drum with an earthing clamp attached to the bonding
+      cable
+    caption: The liner is bonded to the same earth point the drum already uses.
+  - image: /img/conductive-round-drum-liner-2.webp
+    alt: Close view of the grounding tab welded into a conductive drum liner, clipped to an earth lead
+    caption: The tab is welded into the film, not taped on.
+  - image: /img/conductive-round-drum-liner-3.webp
+    alt: >-
+      Operator filling a drum lined with conductive film, earth bonded to a floor point beside a
+      flammable liquids warning sign
+    caption: Static control that fits the earthing procedure already in place.

@@ -4,4 +4,13 @@ slug: vci-pallet-cover
 brief: >-
   A pallet of machined metal components covered with a VCI pallet hood, with a close-up of clean
   bright metal after removal.
-images: []
+images:
+  - image: /img/vci-pallet-cover1.webp
+    alt: Stillage of steel components under a blue VCI cover
+    caption: The whole pallet protected, not each part separately.
+  - image: /img/vci-pallet-cover2.webp
+    alt: Gears and castings inside a blue VCI pallet liner
+    caption: Bright steel that comes out of store clean.
+  - image: /img/vci-pallet-cover3.webp
+    alt: Racking of VCI-covered pallets in a distribution warehouse
+    caption: Specified where stock sits for months before it moves.

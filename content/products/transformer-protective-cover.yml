@@ -4,4 +4,13 @@ slug: transformer-protective-cover
 brief: >-
   A distribution transformer in a heavy duty cover fitted around the bushings and radiators,
   standing in an outdoor yard.
-images: []
+images:
+  - image: /img/transformer-protective-cover1.webp
+    alt: Transformer bushings capped and taped against ingress before shipment
+    caption: The bushings are capped separately from the body.
+  - image: /img/transformer-protective-cover2.webp
+    alt: Distribution transformer with its radiator banks, ready for covering
+    caption: Covers are cut to the unit, radiators included.
+  - image: /img/transformer-protective-cover3.webp
+    alt: Transformers under protective covers and strapping, standing outdoors in the rain
+    caption: Made for units that wait outside before they are installed.

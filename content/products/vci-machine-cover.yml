@@ -4,4 +4,13 @@ slug: vci-machine-cover
 brief: >-
   A machined steel part being wrapped in VCI film, with a close-up of a bright uncorroded machined
   surface after unwrapping.
-images: []
+images:
+  - image: /img/vci-machine-cover1.webp
+    alt: Machine sealed in a blue VCI cover on its pallet with a do-not-open label
+    caption: VCI works only while the cover stays closed. The label says so.
+  - image: /img/vci-machine-cover2.webp
+    alt: Machined housing inside a blue VCI film, the bright surfaces left uncoated
+    caption: No oil to degrease before assembly.
+  - image: /img/vci-machine-cover3.webp
+    alt: Stores operator handling VCI-wrapped parts on warehouse racking
+    caption: Parts come out of store ready to fit.

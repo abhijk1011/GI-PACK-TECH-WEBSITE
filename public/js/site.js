@@ -82,29 +82,49 @@
     revealables.forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* --------------------------------- highlight the active anchor link */
+  /* --------------------------------- highlight the active anchor link
+   *
+   * Worked out from where the sections are rather than from intersection
+   * events. An observer only fires on a change, which left two visible faults:
+   * nothing was marked until the first scroll, and a section skipped past —
+   * by a jump to an anchor, or a flick of the wheel — never fired at all, so
+   * the highlight stayed on a heading that had long since scrolled away.
+   */
   var anchorNav = document.querySelector('.anchor-nav');
-  if (anchorNav && 'IntersectionObserver' in window) {
-    var links = {};
+  if (anchorNav) {
+    var anchors = [];
     anchorNav.querySelectorAll('a[href^="#"]').forEach(function (a) {
-      links[a.getAttribute('href').slice(1)] = a;
+      var section = document.getElementById(a.getAttribute('href').slice(1));
+      if (section) anchors.push({ link: a, section: section });
     });
-    var sectionObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          var link = links[entry.target.id];
-          if (!link) return;
-          if (entry.isIntersecting) {
-            Object.values(links).forEach(function (l) { l.removeAttribute('aria-current'); });
-            link.setAttribute('aria-current', 'true');
-          }
+
+    if (anchors.length) {
+      var current = null;
+      var queued = false;
+
+      var markActive = function () {
+        queued = false;
+        // The line a heading has to cross to count as the section being read.
+        var line = anchorNav.getBoundingClientRect().bottom + 8;
+        var active = anchors[0];
+        anchors.forEach(function (a) {
+          if (a.section.getBoundingClientRect().top <= line) active = a;
         });
-      },
-      { rootMargin: '-30% 0px -60% 0px' }
-    );
-    Object.keys(links).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) sectionObserver.observe(el);
-    });
+        if (active === current) return;
+        if (current) current.link.removeAttribute('aria-current');
+        active.link.setAttribute('aria-current', 'true');
+        current = active;
+      };
+
+      var onScroll = function () {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(markActive);
+      };
+
+      markActive();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+    }
   }
 })();

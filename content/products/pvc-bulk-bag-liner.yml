@@ -2,4 +2,13 @@ name: PVC Bulk Bag Liner
 category: Bulk Bag and FIBC Liners
 slug: pvc-bulk-bag-liner
 brief: A clear PVC bulk bag liner fitted inside an FIBC, with the contents visible through the wall.
-images: []
+images:
+  - image: /img/pvc-bulk-bag-liner1.webp
+    alt: Clear PVC liner fitted inside an open bulk bag
+    caption: Clear, so the fill level can be seen without opening anything.
+  - image: /img/pvc-bulk-bag-liner2.webp
+    alt: Welded seam on a clear PVC bulk bag liner
+    caption: Welded seams, tested on our line before the liner leaves.
+  - image: /img/pvc-bulk-bag-liner3.webp
+    alt: Operator in goggles and gloves tying off the liner neck on filled bulk bags
+    caption: Closed at the neck as soon as it is filled.
