@@ -28,6 +28,29 @@ site_url: https://www.gipacktech.com
 media_folder: public/img
 public_folder: /img
 
+media_libraries:
+  default:
+    config:
+      # A photograph from a phone arrives at 12 megapixels and several
+      # megabytes. Committing that to the repository would be permanent, and
+      # sending it to a visitor would be wasteful, so every upload is resized
+      # and re-encoded in the browser before it is saved. Nothing on the site
+      # is displayed wider than about 900 points, so 1800 covers a retina
+      # screen with room to spare.
+      transformations:
+        raster_image:
+          format: webp
+          quality: 82
+          width: 1800
+        svg:
+          optimize: true
+      # Generous, because the file is shrunk straight after this check. It is
+      # here to catch a video or a RAW file picked by mistake.
+      max_file_size: 26214400
+      # Phone and WhatsApp filenames carry spaces, brackets and capitals, none
+      # of which belong in a URL.
+      slugify_filename: true
+
 collections:
   - name: products
     label: Product photographs
