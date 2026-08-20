@@ -213,6 +213,35 @@
     </div>
   </div>
 
+  <!-- ------------------------------------------------ questions -->
+  <%# These are marked up as a FAQPage for this product, so an assistant
+      answering a question about this one item quotes this page rather than
+      the site-wide FAQ. Reuses the .qa styling from /faq. %>
+  <% if (typeof faqs !== 'undefined' && faqs.length) { %>
+    <section class="section section--tight" id="questions">
+      <div class="wrap">
+        <div class="shead">
+          <div class="shead__text">
+            <p class="eyebrow">Questions</p>
+            <h2 class="h-section" style="font-size:var(--step-2);">
+              <%- h.dot('What buyers ask about this one.') %>
+            </h2>
+          </div>
+        </div>
+        <div class="qa">
+          <% faqs.forEach(function(f){ %>
+            <article class="qa__item">
+              <h3 class="qa__q"><%= f.question %></h3>
+              <div class="qa__a">
+                <% h.paragraphs(f.answer).forEach(function(para){ %><p><%= para %></p><% }) %>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
   <!-- ------------------------------------------------ cross-sell -->
   <% if (related.length) { %>
     <section class="section section--paper section--rule">

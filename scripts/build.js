@@ -23,6 +23,7 @@ const ejs = require('ejs');
 const model = require('../src/content/model');
 const text = require('../src/lib/text');
 const icon = require('../src/lib/icons');
+const productFaqs = require('../src/content/product-faqs');
 const { createAssetUrl } = require('../src/lib/assets');
 
 const ROOT = path.join(__dirname, '..');
@@ -179,9 +180,14 @@ function buildCategories() {
 
 function buildProductPages() {
   for (const product of model.products) {
+    const faqs = productFaqs[product.slug] || [];
     render(`/products/${product.category_slug}/${product.slug}`, 'pages/product', {
       product,
       images: product.images,
+      faqs,
+      // head.ejs emits FAQPage from this, so a product page carries its own
+      // questions rather than pointing at the site-wide FAQ.
+      faqSchema: faqs,
       related: model.productsBySlugs(product.related),
       industries: model.industries
         .filter((i) => (i.products || []).includes(product.slug))
