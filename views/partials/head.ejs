@@ -198,32 +198,27 @@
   manufacturer: { '@id': h.absUrl('/') + '#organization' },
   material: seo.product.materials,
   /*
-   * Every item here is made to specification, so there is no list price to
-   * publish and none is invented: a fabricated figure would be both wrong and
-   * the kind of thing that gets structured data distrusted. What the offer
-   * does say is the part a machine cannot infer from prose — that this is
-   * something the company sells, who sells it, where they ship it, and that a
-   * quotation is the way to buy. Google will note the absent price; that is a
-   * fair description of a made-to-order business.
+   * There is deliberately no `offers` here. Declaring one obliges us to state
+   * a price, and every item on this site is made to a drawing, so no price
+   * exists to state. An offer without a price is not a partial answer to
+   * Google — it is an invalid Product, which is worse than a Product that
+   * simply never claimed to be purchasable off the shelf. Inventing a figure
+   * to satisfy the validator would be worse still.
+   *
+   * The commercial facts a machine actually needs — that this is made to
+   * order, sold by this company, quoted rather than listed, shipped
+   * worldwide — are below as properties instead, where an answer engine reads
+   * them just as readily and no validator is misled.
    */
-  offers: {
-    '@type': 'Offer',
-    url: canonical,
-    availability: 'https://schema.org/InStock',
-    itemCondition: 'https://schema.org/NewCondition',
-    businessFunction: 'http://purl.org/goodrelations/v1#Sell',
-    priceCurrency: 'INR',
-    seller: { '@id': h.absUrl('/') + '#organization' },
-    areaServed: [
-      { '@type': 'Country', name: 'India' },
-      { '@type': 'Place', name: 'Worldwide' }
-    ]
-  },
   additionalProperty: [
     seo.product.sizes ? { '@type': 'PropertyValue', name: 'Sizes', value: seo.product.sizes } : null,
     seo.product.applications ? { '@type': 'PropertyValue', name: 'Applications', value: seo.product.applications } : null,
     seo.product.materials ? { '@type': 'PropertyValue', name: 'Materials', value: seo.product.materials } : null,
-    seo.product.code ? { '@type': 'PropertyValue', name: 'Catalogue reference', value: seo.product.code } : null
+    seo.product.code ? { '@type': 'PropertyValue', name: 'Catalogue reference', value: seo.product.code } : null,
+    { '@type': 'PropertyValue', name: 'Availability', value: 'Made to order against your specification' },
+    { '@type': 'PropertyValue', name: 'Pricing', value: 'Quoted per requirement — no list price' },
+    { '@type': 'PropertyValue', name: 'Supplied by', value: s.company_name + ', Valsad, Gujarat, India' },
+    { '@type': 'PropertyValue', name: 'Ships to', value: 'India and export worldwide' }
   ].filter(Boolean)
 }) %>
 </script>
