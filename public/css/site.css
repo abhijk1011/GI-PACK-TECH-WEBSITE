@@ -418,12 +418,17 @@ strong, b { font-weight: 600; color: var(--ink); }
   max-height: 78vh; overflow-y: auto;
 }
 .mobilenav[data-open='true'] { display: block; }
-.mobilenav a {
+/* The `:not(.btn)` is load-bearing. This selector outweighs both .btn and
+   .btn--primary, so without it the menu's own link styling lands on the CTA
+   button and takes three properties with it: the text loses its centring to
+   space-between, its side padding to `0`, and its white to the ink colour —
+   a dark, left-hugging label on an orange pill. */
+.mobilenav a:not(.btn) {
   display: flex; align-items: center; justify-content: space-between;
   padding: .9rem 0; border-bottom: 1px solid var(--hair);
   font-weight: 500; color: var(--ink);
 }
-.mobilenav a:last-of-type { border-bottom: 0; }
+.mobilenav a:not(.btn):last-of-type { border-bottom: 0; }
 .mobilenav .mono { display: block; padding: 1.35rem 0 .5rem; color: var(--ink-4); }
 .mobilenav__cta { padding: 1.25rem 0 2rem; }
 
@@ -1059,6 +1064,10 @@ a.ctacard__value:hover { color: var(--brand); }
   text-transform: uppercase; color: var(--ink); margin-bottom: 1.1rem;
 }
 .footer__list { display: grid; gap: .65rem; }
+/* The studio credit reads as a link, not as more small print — an underline
+   is what separates the two at this size. */
+.footer__credit a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--hair-2); }
+.footer__credit a:hover { color: var(--brand); text-decoration-color: var(--brand); }
 .footer__social { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; list-style: none; padding: 0; }
 .footer__social-link {
   display: grid; place-items: center; width: 2.4rem; height: 2.4rem;
