@@ -12,6 +12,40 @@
           <span class="footer__cred"><%= s.nature_of_business %></span>
           <span class="footer__cred">Est. <%= s.established_year %></span>
         </div>
+
+        <%
+          /*
+           * The same profiles the structured data lists as sameAs. Linking them
+           * from a real page is what makes that claim checkable rather than
+           * merely asserted — rel="me" says outright that these are the same
+           * operator, which is the machine-readable half of the same statement.
+           * An unset profile is dropped rather than linked to nothing.
+           */
+          const socials = [
+            { url: s.linkedin_url,        key: 'linkedin',  name: 'LinkedIn' },
+            { url: s.instagram_url,       key: 'instagram', name: 'Instagram' },
+            { url: s.facebook_url,        key: 'facebook',  name: 'Facebook' },
+            { url: s.youtube_url,         key: 'youtube',   name: 'YouTube' },
+            { url: s.indiamart_url,       key: 'indiamart', name: 'IndiaMART' },
+            { url: s.google_business_url, key: 'google',    name: 'Google Business Profile' }
+          ].filter(function (x) { return x.url; });
+        %>
+        <% if (socials.length) { %>
+          <ul class="footer__social">
+            <% socials.forEach(function (x) { %>
+              <li>
+                <a class="footer__social-link"
+                   href="<%= x.url %>"
+                   target="_blank"
+                   rel="me noopener noreferrer"
+                   title="<%= x.name %>"
+                   aria-label="<%= s.company_name %> on <%= x.name %>">
+                  <%- icon.brand(x.key, 18) %>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
       </div>
 
       <div>
@@ -46,14 +80,6 @@
         </ul>
         <h2 class="footer__h" style="margin-top:1.75rem;">Plant</h2>
         <p class="footer__text"><%= s.plant_address %></p>
-        <% if (s.linkedin_url || s.facebook_url || s.instagram_url || s.youtube_url) { %>
-          <ul class="footer__list" style="margin-top:1.25rem;">
-            <% if (s.linkedin_url) { %><li><a href="<%= s.linkedin_url %>" rel="noopener">LinkedIn</a></li><% } %>
-            <% if (s.instagram_url) { %><li><a href="<%= s.instagram_url %>" rel="noopener">Instagram</a></li><% } %>
-            <% if (s.facebook_url) { %><li><a href="<%= s.facebook_url %>" rel="noopener">Facebook</a></li><% } %>
-            <% if (s.youtube_url) { %><li><a href="<%= s.youtube_url %>" rel="noopener">YouTube</a></li><% } %>
-          </ul>
-        <% } %>
       </div>
     </div>
 

@@ -1059,6 +1059,17 @@ a.ctacard__value:hover { color: var(--brand); }
   text-transform: uppercase; color: var(--ink); margin-bottom: 1.1rem;
 }
 .footer__list { display: grid; gap: .65rem; }
+.footer__social { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; list-style: none; padding: 0; }
+.footer__social-link {
+  display: grid; place-items: center; width: 2.4rem; height: 2.4rem;
+  background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r-pill);
+  color: var(--ink-3);
+  transition: color .18s var(--ease), border-color .18s var(--ease), transform .18s var(--ease);
+}
+.footer__social-link:hover { color: var(--brand); border-color: var(--brand); transform: translateY(-2px); }
+.footer__social-link:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.footer__social-link svg { display: block; }
+@media (prefers-reduced-motion: reduce) { .footer__social-link { transition: none; } .footer__social-link:hover { transform: none; } }
 .footer__text { line-height: 1.65; color: var(--ink-3); }
 .footer__bottom {
   margin-top: clamp(2.5rem, 4vw, 3.5rem); padding-top: 1.6rem; border-top: 1px solid var(--hair);
