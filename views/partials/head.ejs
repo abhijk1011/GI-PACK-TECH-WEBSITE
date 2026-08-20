@@ -42,17 +42,59 @@
 <link rel="stylesheet" href="<%= assetUrl('/css/site.css') %>">
 <script>document.documentElement.className += ' js';</script>
 
+<%
+  /*
+   * sameAs is the entity's passport. An answer engine reading this page has no
+   * way of knowing whether "GI PackTech" is a real manufacturer or a name
+   * somebody typed, until it can line this site up against profiles it already
+   * trusts. Every address below is one more corroboration, so an empty string
+   * is dropped rather than emitted — a sameAs pointing nowhere is worse than
+   * one fewer link.
+   */
+  const sameAs = [
+    s.linkedin_url,
+    s.indiamart_url,
+    s.instagram_url,
+    s.facebook_url,
+    s.youtube_url,
+    s.google_business_url
+  ].filter(Boolean);
+
+  // "51 to 100" is written for people; schema.org wants the two numbers.
+  const empRange = String(s.employees || '').match(/\d+/g);
+%>
 <script type="application/ld+json">
 <%- JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': h.absUrl('/') + '#organization',
   name: s.company_name,
+  legalName: s.company_name,
   url: h.absUrl('/'),
   logo: h.absUrl(s.logo_path),
+  image: h.absUrl(s.og_image || s.logo_path),
   description: s.default_seo_description,
+  slogan: s.positioning_line || s.company_descriptor || undefined,
   foundingDate: s.established_year,
   telephone: s.phone,
   email: s.email,
+  taxID: s.gst_number || undefined,
+  vatID: s.gst_number || undefined,
+  naics: '326112',
+  sameAs: sameAs.length ? sameAs : undefined,
+  numberOfEmployees: empRange && empRange.length === 2
+    ? { '@type': 'QuantitativeValue', minValue: Number(empRange[0]), maxValue: Number(empRange[1]) }
+    : undefined,
+  // The ISO registration is the single strongest trust signal a manufacturer
+  // has, and as free text in the footer it is invisible to a machine.
+  hasCredential: s.iso_text
+    ? {
+        '@type': 'EducationalOccupationalCredential',
+        credentialCategory: 'certification',
+        name: s.iso_text,
+        recognizedBy: { '@type': 'Organization', name: 'ISOQAR / UKAS' }
+      }
+    : undefined,
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Plot No. 608, New GIDC, Gundlav',
@@ -61,13 +103,35 @@
     postalCode: '396035',
     addressCountry: 'IN'
   },
+  areaServed: [
+    { '@type': 'Country', name: 'India' },
+    { '@type': 'Place', name: 'Worldwide' }
+  ],
+  knowsLanguage: ['en', 'hi', 'gu'],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: s.phone,
+    email: s.email,
     contactType: 'sales',
     areaServed: 'IN',
     availableLanguage: ['en', 'hi', 'gu']
   }
+}) %>
+</script>
+
+<%# Naming the site as its own entity, distinct from the company that runs it,
+    is what lets an assistant cite "the GI PackTech website" and attribute it
+    correctly rather than guessing at the publisher. %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': h.absUrl('/') + '#website',
+  url: h.absUrl('/'),
+  name: s.company_name,
+  description: s.default_seo_description,
+  inLanguage: 'en',
+  publisher: { '@id': h.absUrl('/') + '#organization' }
 }) %>
 </script>
 
@@ -131,11 +195,35 @@
   category: seo.product.category_name,
   image: seo.image ? [h.absUrl(seo.image)] : undefined,
   brand: { '@type': 'Brand', name: s.company_name },
-  manufacturer: { '@type': 'Organization', name: s.company_name },
+  manufacturer: { '@id': h.absUrl('/') + '#organization' },
   material: seo.product.materials,
+  /*
+   * Every item here is made to specification, so there is no list price to
+   * publish and none is invented: a fabricated figure would be both wrong and
+   * the kind of thing that gets structured data distrusted. What the offer
+   * does say is the part a machine cannot infer from prose — that this is
+   * something the company sells, who sells it, where they ship it, and that a
+   * quotation is the way to buy. Google will note the absent price; that is a
+   * fair description of a made-to-order business.
+   */
+  offers: {
+    '@type': 'Offer',
+    url: canonical,
+    availability: 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    businessFunction: 'http://purl.org/goodrelations/v1#Sell',
+    priceCurrency: 'INR',
+    seller: { '@id': h.absUrl('/') + '#organization' },
+    areaServed: [
+      { '@type': 'Country', name: 'India' },
+      { '@type': 'Place', name: 'Worldwide' }
+    ]
+  },
   additionalProperty: [
     seo.product.sizes ? { '@type': 'PropertyValue', name: 'Sizes', value: seo.product.sizes } : null,
-    seo.product.applications ? { '@type': 'PropertyValue', name: 'Applications', value: seo.product.applications } : null
+    seo.product.applications ? { '@type': 'PropertyValue', name: 'Applications', value: seo.product.applications } : null,
+    seo.product.materials ? { '@type': 'PropertyValue', name: 'Materials', value: seo.product.materials } : null,
+    seo.product.code ? { '@type': 'PropertyValue', name: 'Catalogue reference', value: seo.product.code } : null
   ].filter(Boolean)
 }) %>
 </script>

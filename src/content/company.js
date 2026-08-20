@@ -118,11 +118,56 @@ const settings = [
   },
 
   // --- Social -------------------------------------------------------------
-  { key: 'linkedin_url', value: '', label: 'LinkedIn URL', group_name: 'Social', sort: 1 },
-  { key: 'facebook_url', value: '', label: 'Facebook URL', group_name: 'Social', sort: 2 },
-  { key: 'instagram_url', value: '', label: 'Instagram URL', group_name: 'Social', sort: 3 },
+  // These are not decoration. Every one that is filled in becomes a sameAs
+  // link in the Organization structured data, and sameAs is how a search or
+  // answer engine confirms that "GI PackTech, Valsad" on this site is the same
+  // company it has already seen on LinkedIn and IndiaMART, rather than an
+  // unfamiliar name it has to treat with suspicion.
+  //
+  // Canonical addresses only. A profile reached with tracking parameters
+  // (?igsh=, ?srsltid=, ?utm_source=qr) is the same page, but it is a
+  // different URL, and matching a company across the web is exactly the
+  // comparison those parameters break. They are stripped here on purpose.
+  {
+    key: 'linkedin_url',
+    value: 'https://www.linkedin.com/company/gipacktech/',
+    label: 'LinkedIn URL',
+    group_name: 'Social',
+    sort: 1,
+  },
+  {
+    key: 'facebook_url',
+    value: 'https://www.facebook.com/profile.php?id=61557515887993',
+    label: 'Facebook URL',
+    group_name: 'Social',
+    sort: 2,
+  },
+  {
+    key: 'instagram_url',
+    value: 'https://www.instagram.com/gipacktech/',
+    label: 'Instagram URL',
+    group_name: 'Social',
+    sort: 3,
+  },
   { key: 'youtube_url', value: '', label: 'YouTube URL', group_name: 'Social', sort: 4 },
-  { key: 'indiamart_url', value: '', label: 'IndiaMART URL', group_name: 'Social', sort: 5 },
+  {
+    key: 'indiamart_url',
+    value: 'https://www.indiamart.com/glasnost-india/',
+    label: 'IndiaMART URL',
+    group_name: 'Social',
+    sort: 5,
+  },
+  {
+    key: 'google_business_url',
+    value: 'https://share.google/Ezv9LapLE6XEB5vSr',
+    label: 'Google Business Profile URL',
+    hint:
+      'A share.google address is a shortlink that redirects. Replace it with the ' +
+      'canonical listing URL (google.com/maps/place/… or maps.app.goo.gl/…) when ' +
+      'you have it — a stable address matches more reliably than a redirect.',
+    group_name: 'Social',
+    sort: 6,
+  },
 
   // --- SEO ----------------------------------------------------------------
   {

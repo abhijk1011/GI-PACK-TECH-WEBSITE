@@ -374,14 +374,127 @@ function buildSitemap() {
   written += 1;
 
   const allow = s.robots_allow === '1';
+
+  /*
+   * `User-agent: *` already permits every one of these, so naming them changes
+   * no crawler's behaviour — with one real exception. Google-Extended and
+   * Applebot-Extended are opt-out tokens that govern whether Gemini and Apple
+   * Intelligence may use the site to ground an answer, and they are read
+   * independently of the wildcard. Listing them is how the answer is recorded
+   * as deliberate rather than left to a default that can change.
+   *
+   * The rest are here as documentation: when somebody later wonders whether
+   * this site is open to AI assistants, the file says so in as many words,
+   * and refusing one becomes a one-line edit against a known name instead of
+   * research.
+   */
+  const aiAgents = [
+    'GPTBot',              // OpenAI — model training
+    'OAI-SearchBot',       // OpenAI — ChatGPT search index
+    'ChatGPT-User',        // OpenAI — fetches a page a user asked about
+    'ClaudeBot',           // Anthropic — crawler
+    'Claude-User',         // Anthropic — fetches a page a user asked about
+    'Claude-SearchBot',    // Anthropic — search index
+    'Google-Extended',     // Google — Gemini grounding and training
+    'Applebot-Extended',   // Apple — Apple Intelligence
+    'PerplexityBot',       // Perplexity — index
+    'Perplexity-User',     // Perplexity — fetches a cited page
+    'Amazonbot',           // Amazon — Alexa answers
+    'Meta-ExternalAgent',  // Meta AI
+    'cohere-ai',
+    'YouBot',
+    'CCBot'                // Common Crawl, which many models are trained from
+  ];
+
+  const openBody =
+    `User-agent: *\nAllow: /\nDisallow: /admin\n\n` +
+    `# Answer engines and AI assistants are welcome to read and cite this site.\n` +
+    aiAgents.map((a) => `User-agent: ${a}\nAllow: /\nDisallow: /admin\n`).join('\n') +
+    `\nSitemap: ${h.absUrl('/sitemap.xml')}\n`;
+
   fs.writeFileSync(
     path.join(OUT, 'robots.txt'),
-    allow
-      ? `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${h.absUrl('/sitemap.xml')}\n`
-      : 'User-agent: *\nDisallow: /\n'
+    allow ? openBody : 'User-agent: *\nDisallow: /\n'
   );
   written += 1;
   return urls.length;
+}
+
+/* ------------------------------------------------------------------ llms.txt */
+/*
+ * A language model reading this site pays for every page it opens, and the
+ * catalogue is 74 of them. llms.txt is the convention that answers the
+ * question it actually has — what does this company make, and which address
+ * covers each thing — in one plain-text file it can read in full before
+ * deciding what to fetch. Written from the same catalogue as the pages, so it
+ * cannot describe a product that is not there.
+ */
+function buildLlmsTxt() {
+  if (s.robots_allow !== '1') return 0;
+
+  const L = [];
+  L.push(`# ${s.company_name}`);
+  L.push('');
+  L.push(`> ${s.default_seo_description}`);
+  L.push('');
+  L.push(
+    `${s.company_name} is a ${(s.nature_of_business || 'Manufacturer and Exporter').toLowerCase()} ` +
+      `of industrial flexible packaging, established ${s.established_year} and based in Valsad, ` +
+      `Gujarat, India. ${s.iso_text}. Everything listed here is made to specification, so pages ` +
+      `give materials, sizes and applications rather than prices; a quotation is the way to buy.`
+  );
+  L.push('');
+  L.push(`- Contact: ${s.contact_person}, ${s.contact_title} — ${s.email} — ${s.phone}`);
+  L.push(`- Works: ${s.plant_address}`);
+  L.push(`- Office: ${s.office_address}`);
+  L.push(`- GST: ${s.gst_number}`);
+  L.push('');
+
+  L.push('## Key pages');
+  L.push('');
+  for (const [p, title, blurb] of [
+    ['/', 'Home', 'What the company makes and who it is for'],
+    ['/products', 'Products', 'Full catalogue, grouped into categories'],
+    ['/industries', 'Industries', 'The industries served, and what each one needs'],
+    ['/materials', 'Materials', 'How the material decides the performance'],
+    ['/faq', 'FAQ', 'Answers to the questions buyers ask most'],
+    ['/about', 'About', 'Company history, capability and certification'],
+    ['/specify', 'Specify a requirement', 'Send a specification and request a quotation'],
+    ['/contact', 'Contact', 'Contact details and enquiry form']
+  ]) {
+    L.push(`- [${title}](${h.absUrl(p)}): ${blurb}`);
+  }
+  L.push('');
+
+  for (const c of model.categories) {
+    const items = model.products.filter((p) => p.category_slug === c.slug);
+    if (!items.length) continue;
+    L.push(`## ${c.name}`);
+    L.push('');
+    if (c.tagline) {
+      L.push(String(c.tagline).replace(/\s+/g, ' ').trim());
+      L.push('');
+    }
+    for (const p of items) {
+      const blurb = (p.tagline || p.seo_description || p.description || '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 180);
+      L.push(`- [${p.name}](${h.absUrl(`/products/${p.category_slug}/${p.slug}`)})${blurb ? `: ${blurb}` : ''}`);
+    }
+    L.push('');
+  }
+
+  L.push('## Industries served');
+  L.push('');
+  for (const i of model.industries) {
+    L.push(`- [${i.name}](${h.absUrl(`/industries/${i.slug}`)})`);
+  }
+  L.push('');
+
+  fs.writeFileSync(path.join(OUT, 'llms.txt'), L.join('\n'));
+  written += 1;
+  return 1;
 }
 
 /* ------------------------------------------------------------------ main */
@@ -402,6 +515,7 @@ function main() {
   buildStaticPages();
   const redirectCount = buildRedirects();
   const urlCount = buildSitemap();
+  buildLlmsTxt();
 
   if (!SITE) {
     console.warn('Warning: site_url is not set, so canonical and sitemap URLs will be relative.');
