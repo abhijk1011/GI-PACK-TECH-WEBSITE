@@ -29,12 +29,16 @@ brief: |-
   tape texture, laminated matte finish, stitched and taped top. The difference in surface and in
   closure must be legible at a glance. No people, no legible text, no logos.
 images:
-  - image: ''
-    alt: Pallet of filled 25 kg block bottom heavy duty sacks stacked square in a warehouse
-    caption: Block bottom, so the stack is square and the pallet pattern actually holds.
-  - image: ''
-    alt: Close-up of a sack valve stretched over an automatic filling spout during filling
-    caption: The valve is made to your filling head, not the other way round.
-  - image: ''
-    alt: Co-extruded polyethylene sack beside a laminated woven polypropylene sack
-    caption: Welded on the left, stitched on the right. The product decides which one you need.
+  - image: /img/heavy-duty-bulk-bags1.webp
+    alt: Pallet of filled 25 kg sacks stacked six layers high and interlocked in a warehouse
+    caption: Stacked six high and interlocked. The sack has to hold its shape for the pattern to hold.
+  - image: /img/heavy-duty-bulk-bags2.webp
+    alt: Sack clamped onto a filling spout part way through filling, with powder dust in the air
+    caption: The neck is made to your filling head, not the other way round.
+  - image: /img/heavy-duty-bulk-bags3.webp
+    alt: >-
+      Smooth co-extruded polyethylene sack standing beside a woven polypropylene sack of the same
+      size
+    caption: >-
+      Polyethylene on the left, woven polypropylene on the right. The product decides which one you
+      need.
