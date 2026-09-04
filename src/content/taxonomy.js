@@ -70,7 +70,7 @@ const industries = [
   {
     slug: 'chemicals-and-specialty-chemicals',
     name: 'Chemicals and Specialty Chemicals',
-    applications: 'Drum liners, jumbo liners, barrier liners, flexi bags, spill bunds',
+    applications: 'Drum liners, jumbo liners, container liners, barrier liners, flexi bags',
     intro:
       'Chemical packaging is a compatibility question before it is a price question. The wrong film is attacked, softened or discoloured by the product inside it, and the loss is the batch, not the liner.',
     problem_lead:
@@ -81,6 +81,8 @@ const industries = [
       'pvc-bulk-bag-liner',
       'conductive-liner',
       'aluminium-5-and-6-layer-liner',
+      'container-liner-pp-woven-and-pe-film',
+      'heavy-duty-bulk-bags-25kg-and-50kg',
       'liquid-flexi-bag',
       'spill-containment-bund-and-drip-tray',
     ],
@@ -120,6 +122,7 @@ const industries = [
     products: [
       'evoh-barrier-liner',
       'pe-box-type-liner',
+      'container-liner-pp-woven-and-pe-film',
       'multilayer-plastic-liner',
       'baffle-and-gambo-liner',
       'pallet-top-sheet-and-liner',
@@ -131,7 +134,7 @@ const industries = [
   {
     slug: 'fertilisers-and-agrochemicals',
     name: 'Fertilisers and Agrochemicals',
-    applications: 'Aluminium liners for water-based fertilisers, FIBC and liners',
+    applications: 'Aluminium liners for water-based fertilisers, FIBC, 25 and 50 kg sacks',
     intro:
       'Fertiliser is a seasonal business, so stock sits through the worst of the humidity. Caked product is either reprocessed at a cost or sold at a discount, and the packaging is a small fraction of what that loss is worth.',
     problem_lead: 'Caking is not a fact of life. It is moisture coming through the packaging.',
@@ -139,6 +142,8 @@ const industries = [
     products: [
       'aluminium-multilayer-liner-for-water-based-fertilisers',
       'fibc-bag-with-air-releasing-vent',
+      'heavy-duty-bulk-bags-25kg-and-50kg',
+      'container-liner-pp-woven-and-pe-film',
       'net-baffle-jumbo-bag',
       'multilayer-aluminium-laminated-liner-for-powders',
     ],
@@ -149,13 +154,14 @@ const industries = [
   {
     slug: 'warehousing-exports-and-logistics',
     name: 'Warehousing, Exports and Logistics',
-    applications: 'Pallet covers, shrink hoods, top sheets, dunnage air bags',
+    applications: 'Container liners, pallet covers, shrink hoods, top sheets, dunnage air bags',
     intro:
       'A pallet is where a shipment is most exposed. The goods have left their cartons, they are stacked in the open, and they will be handled by people who did not pack them.',
     problem_lead:
       'Damage on the pallet is the most common damage in the supply chain, and the cheapest to prevent.',
     priority: 8,
     products: [
+      'container-liner-pp-woven-and-pe-film',
       'ldpe-pallet-cover-and-hood',
       'pallet-shrink-hood',
       'pallet-top-sheet-and-liner',
@@ -177,6 +183,7 @@ const industries = [
     products: [
       'conductive-round-drum-liner',
       'conductive-liner',
+      'container-liner-pp-woven-and-pe-film',
       'round-drum-liner-any-diameter',
       'conductive-aluminium-liner',
     ],
@@ -232,6 +239,7 @@ const industries = [
     problem_lead: 'When the project moves, a fixed tank cannot move with it.',
     priority: 13,
     products: [
+      'heavy-duty-bulk-bags-25kg-and-50kg',
       'collapsible-bladder-tank',
       'spill-containment-bund-and-drip-tray',
       'woven-laminated-pallet-cover',
@@ -279,6 +287,7 @@ const roles = [
     products: [
       'fibc-bag-with-air-releasing-vent',
       'pe-box-type-liner',
+      'heavy-duty-bulk-bags-25kg-and-50kg',
       'round-drum-liner-any-diameter',
       'net-baffle-jumbo-bag',
       'dunnage-air-bag',
@@ -343,6 +352,7 @@ const roles = [
       'Baffle constructions cost more per piece and less per tonne delivered\nReusable drum programmes turn a disposal cost into a returnable asset\nOne conductive aluminium liner replaces two liners and the labour of fitting both\nReusable woven and PVC covers replace a repeating film purchase\nFlexi bags remove IBC cleaning, tracking, repair and empty return freight',
     icon: 'calculator',
     products: [
+      'container-liner-pp-woven-and-pe-film',
       'net-baffle-jumbo-bag',
       'drum-liner-with-integrated-dispensing-spout',
       'conductive-aluminium-liner',
@@ -416,9 +426,25 @@ const materials = [
     slug: 'woven-laminated-fabric',
     name: 'Woven laminated fabric',
     main_property: 'High tear strength, reusable, weatherproof',
-    specified_for: 'Pallet covers, outdoor and long-term storage',
+    specified_for: 'Container liners, pallet covers, outdoor and long-term storage',
     detail:
       'The woven base gives tear strength plain film cannot reach, and the lamination makes it weatherproof. UV stabilised grades available.',
+  },
+  {
+    slug: 'unlaminated-woven-fabric',
+    name: 'Woven fabric, unlaminated',
+    main_property: 'Breathable, lets heat and moisture out',
+    specified_for: 'Container liners for grain, rice, coffee, seeds and warm cargo',
+    detail:
+      'Left uncoated on purpose. Air passes through the weave, so a cargo that ships warm or respires loses its heat instead of sweating inside a sealed liner.',
+  },
+  {
+    slug: 'co-extruded-pe-heavy-duty',
+    name: 'Co-extruded PE, heavy duty',
+    main_property: 'Impact strength and a welded, stitch-free seal',
+    specified_for: '25 and 50 kg sacks, FFS film, valve and block bottom bags',
+    detail:
+      'Layers are combined so the sack survives being dropped rather than merely lifted, and the closure is welded, so there is no line of needle holes for moisture to find.',
   },
   {
     slug: 'aluminium-vacuum-laminate',

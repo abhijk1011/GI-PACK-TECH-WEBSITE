@@ -127,6 +127,22 @@ const categories = [
       'Sealed containment chambers for asbestos removal and demolition, nuclear and hazardous waste site enclosures, and flexible PVC spill containment bunds built to your method statement.',
     sort: 7,
   },
+  {
+    slug: 'container-liners-and-sacks',
+    number: '08',
+    name: 'Container Liners and Heavy Duty Sacks',
+    short_name: 'Container Liners & Sacks',
+    tagline: 'The same tonne of product, shipped two very different ways',
+    intro:
+      'Dry bulk leaves a plant in one of three formats: loose inside a lined shipping container, in FIBCs, or in sacks of 25 or 50 kilograms. That choice is usually made once and then never revisited, even though it decides the packaging cost, the handling cost at both ends, the freight paid per tonne, and how much of the product arrives in saleable condition.\n\nThis category holds the two formats that sit either side of the jumbo bag. A container liner turns a standard 20 or 40 foot box into a sealed bulk vessel, so the cargo never touches the container wall and never needs a sack at all. A heavy duty sack does the opposite job, putting the product into a graded, printed, palletised unit a dealer or a distributor can handle. Both are made here, in the material the product actually needs rather than the one the line already runs.',
+    problem_lead:
+      'Most bulk cargo is packed the way it has always been packed, and nobody has priced the alternative.',
+    icon: 'container',
+    seo_title: 'Container Liners and Heavy Duty 25 & 50 kg Sacks | GI PackTech',
+    seo_description:
+      'Dry bulk container liners for 20 and 40 foot containers in woven PP and PE film, plus heavy duty 25 kg and 50 kg sacks in PE, woven PP and BOPP laminate.',
+    sort: 8,
+  },
 ];
 
 const products = [
@@ -1287,6 +1303,70 @@ const products = [
     seo_title: 'Flexible Spill Containment Bunds and Drip Trays | GI PackTech',
     seo_description:
       'Chemical resistant PVC spill containment bunds with self-supporting walls that fold flat for storage. Secondary containment for drums, IBCs, generators and refuelling points.',
+  },
+
+  // -------------------------------------- 8. Container liners and heavy duty sacks
+  {
+    category: 'container-liners-and-sacks',
+    code: '8.1',
+    slug: 'container-liner-pp-woven-and-pe-film',
+    name: 'Container Liner for Dry Bulk — PP Woven and PE Film',
+    tagline: 'Turns a standard shipping container into a sealed bulk vessel',
+    badge: '20ft & 40ft',
+    problem_headline: 'You pay to bag the product, pay to palletise it, and then pay to ship the bags.',
+    problem_body:
+      'A bagged cargo is handled several more times than a bulk one. It is filled into sacks, closed, stacked onto pallets, loaded, unloaded, de-palletised and emptied — and every one of those steps is labour paid for at both ends of the journey. The empty sacks are then a disposal problem at the destination, in somebody else’s waste stream.\n\nThe pallets and the shape of the stack also waste the corners of the container, so freight is being paid on air. Loading the same product loose into a lined container removes the sacks, most of the handling and about a fifth of the freight per tonne.',
+    description:
+      'A container liner is a single large bag fabricated to the inside of a standard 20 or 40 foot ISO shipping container. It is hung from the container’s own lashing rings and roof structure, filled through spouts at the top or through an opening at the door end, and the cargo travels loose inside it. The container provides the strength; the liner holds the product and keeps it away from a steel box that has carried something else before it, and that will sweat on a long voyage.\n\nAt the door end the liner carries a woven bulkhead with pockets for steel bars. That bulkhead is what takes the weight of the cargo when the doors are opened at the far end, so the load does not come out with them. Discharge is by gravity, by tilting the container, or through a bottom spout, depending on the product and the equipment waiting for it.',
+    features:
+      'Fits standard 20 and 40 foot ISO containers with no modification to the box\nLaminated, unlaminated breathable, or welded PE film construction\nWoven bulkhead with steel bar pockets holds the load when the doors open\nTop filling spouts, front loading opening, or both, positioned to your filling head\nGravity, tilt or bottom spout discharge to suit the receiving end\nNo container cleaning needed before loading or after unloading\nFitted by two people using the bars supplied, with no other equipment\nFood grade and antistatic constructions available\nOne liner replaces several hundred sacks and the pallets under them',
+    materials:
+      'Three constructions. Laminated woven PP/PE fabric, coated one side or both, for a full moisture and dust barrier. Unlaminated woven PP/PE fabric, which is breathable and lets a warm or respiring cargo lose its heat. PE film, welded rather than stitched, where neither of the first two is tight enough. Fabric GSM, film thickness and lamination are all specified against the cargo.',
+    sizes:
+      'Made for 20 foot and 40 foot ISO containers, and for other box sizes on request. Spout count and position, bulkhead height and discharge arrangement are all built to your loading and discharge method.',
+    applications:
+      'Petrochemical granules and resins, PVC and polymer powders, soda ash, fly ash, urea and fertilisers, malt, wheat, rice, sugar, coffee, oilseeds, pulses, minerals and ores.',
+    where_used:
+      'Exporters and bulk shippers moving a full container of a single dry product. It is strongest where the cargo is bagged only because that is how it has always moved — a plant filling soda ash or polymer granules into 25 and 50 kg sacks purely to get them into a container is buying packaging the liner removes entirely.',
+    difference_body:
+      'Which of the three materials you need is the whole decision, and it is the part most suppliers skip. A laminated liner is airtight, which is right for petrochemicals and malt and wrong for a cargo that respires or ships warm: seal a warm agro product into a non-breathable liner and the moisture it gives off has nowhere to go. Unlaminated woven fabric is breathable for exactly that reason, and it is why coffee, rice, wheat and seed move in it. PE film, welded so that not even air passes at the joints, is for the sensitive petrochemical and chemical cargoes where neither of the others is enough.\n\nWe make all three on our own lines, so the recommendation is not steered by what we happen to run. Tell us the cargo, whether it ships warm, the length of the voyage and how it will be discharged, and we will tell you which one it should be — including when the answer is the cheapest of the three.',
+    customise:
+      'Container size — 20 foot, 40 foot or other\nLaminated, unlaminated or PE film construction\nFabric GSM and film thickness\nNumber and position of filling spouts\nFront loading opening\nBulkhead height and bar arrangement\nDischarge spout size and position\nAntistatic or conductive construction\nFood grade material\nPrinting and identification',
+    related: ['heavy-duty-bulk-bags-25kg-and-50kg', 'liquid-flexi-bag', 'net-baffle-jumbo-bag'],
+    seo_title: 'Container Liners for 20ft and 40ft Containers | GI PackTech',
+    seo_description:
+      'Dry bulk container liners for 20 and 40 foot containers in laminated woven PP, breathable fabric and welded PE film. Bulkhead and spouts made to order.',
+  },
+  {
+    category: 'container-liners-and-sacks',
+    code: '8.2',
+    slug: 'heavy-duty-bulk-bags-25kg-and-50kg',
+    name: 'Heavy Duty Bulk Bags — 25 kg and 50 kg',
+    tagline: 'Built around the drop, not around the fill weight',
+    badge: '25 & 50 kg',
+    problem_headline: 'A sack that splits does not only lose the product. It loses the dealer’s confidence in it.',
+    problem_body:
+      'A 25 or 50 kilogram sack is thrown, dropped, stacked eight high, driven over bad roads and left in the sun on a dealer’s forecourt. It is handled by people who have no particular reason to be careful with it, several times over, long after it has left your control.\n\nWhen one bursts, the loss is rarely the material. It is the mess on somebody’s floor, the short delivery, the claim, and a dealer who now tells his customers that your bags split.',
+    description:
+      'Heavy duty sacks in 25 and 50 kilogram sizes, made in the material the product and the handling actually require rather than in whichever film the sack line already runs.\n\nThe two usual starting points are a heavy co-extruded polyethylene sack and a woven polypropylene sack, and they fail in different ways, so they suit different products. PE is welded shut, which gives a continuous moisture seal and no stitch holes anywhere in the bag. Woven PP has the tear strength that only a woven base gives, and takes a coated or BOPP-laminated outer where the sack has to look like a finished retail product on a shelf. Valve, open mouth, block bottom, side gusset and form-fill-seal formats are all made here.',
+    features:
+      '25 kg and 50 kg as standard, and any fill weight between or beyond\nValve, open mouth, block bottom, side gusset and FFS formats\nCo-extruded PE, woven PP, BOPP laminated woven, or woven with a fitted PE liner\nHeat sealed, stitched or ultrasonically sealed closure\nUV stabilised grades for outdoor and forecourt storage\nHigh and low temperature grades for hot fill and cold store\nValve openings made to your filling head, usually in the 10 to 18 cm range\nMulti-colour printing, batch coding and identification panels\nMono-material PE constructions that recycle back as a single polymer',
+    materials:
+      'Co-extruded LLDPE film for impact strength and a welded moisture seal. Woven polypropylene — plain, coated or BOPP laminated — where tear strength and print quality decide it. Woven PP with a fitted PE liner where the product needs a barrier the fabric cannot give on its own. Paper and PE combinations where a paper face is required. Film thickness, fabric GSM and layer structure are specified against the fill weight, the filling method and the handling.',
+    sizes:
+      '25 kg and 50 kg as standard. Bag width, gusset, length and fill weight are made to your filling equipment and your pallet pattern.',
+    applications:
+      'Cement and building materials, fertilisers and agrochemicals, polymer granules, masterbatch and additives, carbon black, minerals and ores, salt, sugar, flour, animal feed, and specialty chemicals.',
+    where_used:
+      'Producers packing to a fixed unit weight for dealers, distributors and export. It matters most where the sack is handled manually at the far end or stored outdoors, because those are the two conditions a lightweight sack is not built for.',
+    difference_body:
+      'We build the sack around the drop rather than around the fill weight. A sack of this size is normally proved by a drop test at 1.2 to 1.5 metres, which represents one careful person setting it down. That is not what happens to it in the field. Our heavy grade co-extruded film has been dropped from around 12 metres without bursting, and the reason for building that much margin in is that the handling downstream looks nothing like the handling in the test.\n\nThe other half of the work is the closure. A stitched sack has a line of needle holes across its top by design, so a product that has to stay dry is being asked to keep moisture out through a row of punctures. Where that matters we heat seal or ultrasonically seal instead, and the bag has no stitch line at all.',
+    customise:
+      'Fill weight and bag dimensions\nValve, open mouth, block bottom, gusset or FFS format\nFilm structure, thickness and layer count\nFabric GSM and lamination\nValve size and type\nClosure — heat seal, stitch or ultrasonic\nUV stabilisation\nTemperature grade\nPrinting, batch coding and identification\nAnti-slip coating, perforation and handle options',
+    related: ['container-liner-pp-woven-and-pe-film', 'fibc-bag-with-air-releasing-vent', 'pallet-shrink-hood'],
+    seo_title: 'Heavy Duty 25 kg and 50 kg Bulk Bags and Sacks | GI PackTech',
+    seo_description:
+      'Heavy duty 25 kg and 50 kg sacks in co-extruded PE, woven PP and BOPP laminate. Valve, open mouth, block bottom and FFS formats, built around the drop.',
   },
 ];
 

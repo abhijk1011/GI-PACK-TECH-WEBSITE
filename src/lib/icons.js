@@ -15,6 +15,8 @@ function icon(name, size = 16) {
     droplet: '<path d="M12 3s6 6.3 6 10a6 6 0 0 1-12 0c0-3.7 6-10 6-10Z"/>',
     shield: '<path d="M12 3 5 6v6c0 4.5 3 7.8 7 9 4-1.2 7-4.5 7-9V6l-7-3Z"/>',
     pallet: '<path d="M3 15h18M3 19h18M6 15v4M12 15v4M18 15v4"/><path d="M5 5h14v10H5z"/>',
+    container:
+      '<rect x="2" y="7" width="20" height="11" rx="1"/><path d="M6 7v11M10 7v11M14 7v11M18 7v11"/>',
     hazard: '<path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/>',
     gauge: '<path d="M12 21a9 9 0 1 1 9-9"/><path d="m12 12 5-3"/>',
     calculator: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01"/>',

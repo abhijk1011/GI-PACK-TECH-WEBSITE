@@ -106,6 +106,10 @@ collections:
           - name: image
             label: Photograph
             widget: image
+            # Not required, so a slot can be reserved with its caption written
+            # before the photograph exists. The build skips any slot with no
+            # file in it, so an empty one is invisible on the site.
+            required: false
             hint: >-
               About 1600px wide is plenty. JPEG for photographs, PNG when the
               background needs to be transparent.

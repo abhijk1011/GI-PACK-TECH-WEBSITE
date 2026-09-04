@@ -96,7 +96,7 @@ const settings = [
   { key: 'legal_status', value: 'Individual — Proprietor', label: 'Legal status', group_name: 'Credentials', sort: 4 },
   {
     key: 'stat_products',
-    value: '41',
+    value: '43',
     label: 'Number of products',
     hint: 'Shown in the headline statistics',
     group_name: 'Credentials',
@@ -104,7 +104,7 @@ const settings = [
   },
   {
     key: 'stat_categories',
-    value: '7',
+    value: '8',
     label: 'Number of categories',
     group_name: 'Credentials',
     sort: 6,
@@ -188,7 +188,7 @@ const settings = [
   {
     key: 'default_seo_description',
     value:
-      'Custom made drum liners, FIBC liners, machine covers, pallet covers and hazardous containment. Manufacturer and exporter since 2006, Valsad, Gujarat. Every product built to your drawing.',
+      'Custom drum liners, container liners, FIBC liners, heavy duty sacks, machine covers and pallet covers. Manufacturer and exporter since 2006, Valsad, Gujarat.',
     label: 'Default meta description',
     input_type: 'textarea',
     group_name: 'SEO',
@@ -266,7 +266,7 @@ const pages = [
     title: 'Home',
     seo_title: 'GI PackTech — We Protect the Value of What Is Inside',
     seo_description:
-      'Custom industrial packaging: drum liners from 6 to 100 inches, FIBC liners, machine covers and pallet covers. Manufacturer and exporter since 2006.',
+      'Custom industrial packaging: drum liners 6 to 100 inches, FIBC and container liners, heavy duty sacks and machine covers. Manufacturer since 2006.',
     blocks: [
       { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & exporter · Since 2006' },
       {
@@ -312,7 +312,7 @@ const pages = [
         label: 'Range section sub-heading',
         input_type: 'textarea',
         value:
-          'Built to your drawing, your drum, your machine. Forty-one products so far — and not the limit of what the plant can make.',
+          'Built to your drawing, your drum, your machine. Forty-three products so far — and not the limit of what the plant can make.',
       },
 
       { block_key: 'diameter_eyebrow', label: 'Diameter section eyebrow', value: 'A capability, not a claim' },

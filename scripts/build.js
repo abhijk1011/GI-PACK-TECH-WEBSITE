@@ -150,7 +150,7 @@ function buildProducts() {
     seo: {
       title: `All Products — ${model.products.length} Custom Packaging Solutions`,
       description:
-        'The full GI PackTech range: drum liners, FIBC and jumbo bags, bulk bag liners, liquid flexi bags, machine covers, pallet covers and hazardous containment.',
+        'The full GI PackTech range: drum liners, FIBC and jumbo bags, bulk bag liners, liquid flexi bags, machine covers, pallet covers, container liners and heavy duty sacks.',
       path: '/products',
     },
   });

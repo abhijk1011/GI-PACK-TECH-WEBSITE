@@ -22,6 +22,7 @@ const categories = [
   { slug: 'ordering', name: 'Ordering, samples and lead time' },
   { slug: 'drum-liners', name: 'Drum liners' },
   { slug: 'fibc', name: 'FIBC and jumbo bags' },
+  { slug: 'container-liners', name: 'Container liners and heavy duty sacks' },
   { slug: 'machine-covers', name: 'Machine covers and export packing' },
   { slug: 'materials', name: 'Materials and compliance' },
   { slug: 'specifying', name: 'Specifying and customisation' },
@@ -176,6 +177,29 @@ const faqs = [
     question: 'What does safe working load and 5:1 safety factor mean?',
     answer:
       'Safe working load is the maximum weight the bag is built to carry. The safety factor is how much more it is tested to withstand: a 5:1 bag holds five times its rated load before failure, and is intended for single-trip use, while 6:1 is specified for multi-trip service. Tell us the load and the number of trips and the construction follows from that.',
+  },
+
+  // ------------------------------------- container liners and sacks
+  {
+    slug: 'what-is-a-container-liner',
+    category: 'container-liners',
+    question: 'What is a container liner, and when is it better than shipping in bags?',
+    answer:
+      'A container liner is one large bag fabricated to the inside of a standard 20 or 40 foot shipping container, so dry bulk travels loose rather than in sacks. It is better whenever a full container of a single dry product is being moved: the sacks and pallets go, the filling and emptying labour largely goes with them, and around 20 per cent more product fits in the same box.',
+  },
+  {
+    slug: 'laminated-or-unlaminated-container-liner',
+    category: 'container-liners',
+    question: 'Does a container liner need to be breathable?',
+    answer:
+      'If the cargo respires or is loaded warm, yes. An unlaminated woven liner lets air through the weave, which is what grain, rice, coffee and seed need. A laminated liner is effectively airtight and is right for petrochemicals, malt and moisture-sensitive chemicals. Welded PE film is the tightest of the three. The cargo decides it, and we make all three.',
+  },
+  {
+    slug: 'heavy-duty-sack-vs-ordinary-bag',
+    category: 'container-liners',
+    question: 'What makes a 25 kg heavy duty sack different from an ordinary woven bag?',
+    answer:
+      'It is specified against the drop rather than the fill weight. An ordinary sack holds 25 kilograms in a warehouse and fails at the third rough handling. A heavy duty sack is built in co-extruded PE or heavy woven polypropylene, sealed rather than stitched where the product must stay dry, and UV stabilised where it will sit outdoors.',
   },
 
   // ---------------------------------------------------- machine covers

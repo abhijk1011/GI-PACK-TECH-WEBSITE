@@ -150,6 +150,73 @@ const productFaqs = {
         'They are used for hazardous and aggressive chemicals, specialty liquids and industrial products, but suitability is decided per product rather than by category. Two chemicals in the same hazard class can behave very differently against the same film, which is why compatibility is assessed against your data sheet before quotation rather than assumed from the classification.',
     },
   ],
+
+  // ------------------------------- container liners and heavy duty sacks
+  'container-liner-pp-woven-and-pe-film': [
+    {
+      question: 'What is a container liner and how does it work?',
+      answer:
+        'A container liner is a single large bag fabricated to the inside of a standard 20 or 40 foot shipping container, so dry bulk cargo travels loose instead of in sacks. It hangs from the container’s own lashing rings, is filled through top spouts or a door-end opening, and carries a woven bulkhead with steel bar pockets that holds the load when the doors are opened. GI PackTech makes them in laminated woven PP, breathable unlaminated fabric and welded PE film.',
+    },
+    {
+      question: 'Should a container liner be laminated or unlaminated?',
+      answer:
+        'It depends entirely on whether the cargo breathes. A laminated liner is effectively airtight, which is right for petrochemicals, malt and moisture-sensitive chemicals. An unlaminated woven liner lets air through the weave, which is what grain, rice, coffee, seeds and any cargo loaded warm actually need — seal a respiring product into a non-breathable liner and the moisture it gives off has nowhere to go but back onto the cargo.',
+    },
+    {
+      question: 'How much does a container liner save compared with shipping in bags?',
+      answer:
+        'The saving comes from three places at once: the sacks and pallets are removed, the filling and emptying labour at both ends largely disappears, and around 20 per cent more product fits into the same 20 foot container because nothing is being shipped as air between bags. The container also needs no cleaning before loading or after discharge — the liner is simply removed with the cargo residue in it.',
+    },
+    {
+      question: 'Which cargoes can be shipped in a dry bulk container liner?',
+      answer:
+        'Free-flowing dry solids: petrochemical granules and resins, PVC and polymer powders, soda ash, fly ash, urea and fertilisers, malt, wheat, rice, sugar, coffee, oilseeds, pulses, minerals and ores. The cargo decides the construction rather than the other way round, and food grade and antistatic constructions are made where the product or the area classification requires one.',
+    },
+    {
+      question: 'How is a container liner fitted and discharged?',
+      answer:
+        'Two people fit it using the steel bars supplied, with no other equipment and no modification to the container. Loading is through top filling spouts, a front loading opening, or both, positioned to suit your filling head. Discharge is by gravity, by tilting the container on a tipping chassis, or through a bottom spout — which one you use is agreed before the liner is made, because it changes the construction.',
+    },
+    {
+      question: 'Who manufactures container liners for 20ft and 40ft containers in India?',
+      answer:
+        'GI PackTech manufactures dry bulk container liners at Gundlav, Valsad, in Gujarat, and has been making industrial flexible packaging there since 2006. The plant is ISO 9001:2015 certified, runs its own lamination, extrusion, cutting and heat-sealing lines, and supplies across India and for export. All three constructions — laminated woven, unlaminated woven and welded PE film — are made in-house, so the recommendation is not steered by what happens to be on the machine.',
+    },
+  ],
+
+  'heavy-duty-bulk-bags-25kg-and-50kg': [
+    {
+      question: 'What makes a bulk bag heavy duty rather than an ordinary sack?',
+      answer:
+        'The film or fabric is specified against the drop rather than against the fill weight. A 25 or 50 kilogram sack is thrown, stacked, driven over bad roads and left in the sun long after it leaves the plant, and a bag built only to hold the weight fails at the third handling. GI PackTech builds them in heavy co-extruded PE or woven polypropylene, with UV stabilised and temperature-graded options where the storage demands it.',
+    },
+    {
+      question: 'Should a 25 kg sack be polyethylene or woven polypropylene?',
+      answer:
+        'They fail differently, so the product decides. Co-extruded PE is welded shut, giving a continuous moisture seal and no stitch holes anywhere — the right answer for anything that must stay dry. Woven polypropylene gives tear strength a plain film cannot reach and takes coating or BOPP lamination where the sack has to look like a finished retail product. A woven bag with a fitted PE liner combines both where the product needs it.',
+    },
+    {
+      question: 'What is a valve bag, and when do you need one?',
+      answer:
+        'A valve bag is filled through a small sleeve in one corner that closes itself under the pressure of the product, so the bag never needs a separate sewing or sealing step after filling. It suits high-speed automatic filling of cement, powders, granules and minerals. Valve size is made to your filling spout, usually in the 10 to 18 centimetre range, and block bottom formats are supplied where the sack has to stand square on a pallet.',
+    },
+    {
+      question: 'How much drop can a heavy duty PE sack take?',
+      answer:
+        'A sack of this size is normally proved by a drop test at 1.2 to 1.5 metres, which represents one careful person setting it down rather than what happens in the field. GI PackTech’s heavy grade co-extruded film has been dropped from around 12 metres without bursting. The margin exists because downstream handling is nothing like the test, and because a burst sack costs the claim and the customer, not the material.',
+    },
+    {
+      question: 'Are heavy duty polyethylene sacks recyclable?',
+      answer:
+        'A PE sack made as a mono-material goes back into the recycling stream as a single polymer, which is what recyclers can actually process — a mixed-material sack usually cannot be separated and is lost. Our heavy duty PE bags are made from linear low-density polyethylene for exactly that reason, and the same construction can be UV stabilised and temperature graded without giving up the single-polymer structure.',
+    },
+    {
+      question: 'Who manufactures 25 kg and 50 kg heavy duty bags in India?',
+      answer:
+        'GI PackTech manufactures heavy duty 25 kg and 50 kg sacks at Gundlav, Valsad, in Gujarat, as a manufacturer and exporter established in 2006 and certified to ISO 9001:2015. Valve, open mouth, block bottom, side gusset and form-fill-seal formats are made to order in co-extruded PE, woven PP, BOPP laminated woven and lined constructions, with the fill weight, valve and closure built to your filling equipment.',
+    },
+  ],
 };
 
 module.exports = productFaqs;
