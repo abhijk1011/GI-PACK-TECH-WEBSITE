@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="phero gridbg">
+    <div class="wrap">
+      <p class="eyebrow">Legal</p>
+      <h1 class="h-page phero__title" style="max-width:18ch;"><%- h.dot('Privacy policy.') %></h1>
+      <p class="lede"><%= privacy.intro %></p>
+      <div class="legal__meta measure">
+        <span>Effective <strong><%= privacy.effective %></strong></span>
+        <span>Last updated <strong><%= privacy.updated %></strong></span>
+      </div>
+    </div>
+  </section>
+
+  <%# The same jump bar the FAQ uses. A policy is read one clause at a time,
+      usually by somebody who arrived looking for a single answer. %>
+  <div class="anchor-nav">
+    <div class="wrap">
+      <ul>
+        <% privacy.sections.forEach(function(sec){ %>
+          <li><a href="#<%= sec.slug %>"><%= sec.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="faqlayout legal">
+        <div>
+          <% privacy.sections.forEach(function(sec, i){ %>
+            <section class="legal__section" id="<%= sec.slug %>">
+              <h2 class="legal__h">
+                <span class="legal__num"><%= String(i + 1).padStart(2, '0') %></span>
+                <%- h.dot(sec.heading) %>
+              </h2>
+
+              <% if (sec.body) { %>
+                <div class="legal__body">
+                  <% h.paragraphs(sec.body).forEach(function(para){ %><p><%= para %></p><% }) %>
+                </div>
+              <% } %>
+
+              <% if (sec.rows && sec.rows.length) { %>
+                <div class="spec">
+                  <% sec.rows.filter(function(r){ return r[1]; }).forEach(function(row){ %>
+                    <div class="spec__row">
+                      <div class="spec__key"><%= row[0] %></div>
+                      <div class="spec__val"><%= row[1] %></div>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } %>
+
+              <% if (sec.list && sec.list.length) { %>
+                <ul class="legal__list">
+                  <% sec.list.forEach(function(item){ %>
+                    <li><%= item %></li>
+                  <% }) %>
+                </ul>
+              <% } %>
+
+              <% (sec.subsections || []).forEach(function(sub){ %>
+                <div class="legal__sub">
+                  <h3 class="legal__subh"><%= sub.title %></h3>
+                  <% if (sub.intro) { %>
+                    <div class="legal__body">
+                      <% h.paragraphs(sub.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+                    </div>
+                  <% } %>
+                  <% if (sub.list && sub.list.length) { %>
+                    <ul class="legal__list">
+                      <% sub.list.forEach(function(item){ %>
+                        <li><%= item %></li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
+                </div>
+              <% }) %>
+
+              <% if (sec.after) { %>
+                <div class="legal__body">
+                  <% h.paragraphs(sec.after).forEach(function(para){ %><p><%= para %></p><% }) %>
+                </div>
+              <% } %>
+            </section>
+          <% }) %>
+        </div>
+
+        <aside>
+          <div class="rail">
+            <h2 class="rail__title">A question about your data?</h2>
+            <p class="rail__body">
+              Anything in this policy — a copy of what we hold, a correction, a deletion — goes to
+              the grievance officer and reaches a person. Put &ldquo;Privacy&rdquo; in the subject line.
+            </p>
+            <a class="btn btn--primary" href="mailto:<%= s.email %>?subject=Privacy">
+              Email the grievance officer <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <div class="rail__contact">
+              <span class="rail__row">
+                <%- icon('users', 15) %>
+                <span><%= s.contact_person %>, <%= s.contact_title %></span>
+              </span>
+              <span class="rail__row">
+                <%- icon('mail', 15) %>
+                <a href="mailto:<%= s.email %>"><%= s.email %></a>
+              </span>
+              <span class="rail__row">
+                <%- icon('phone', 15) %>
+                <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+              </span>
+              <span class="rail__row">
+                <%- icon('factory', 15) %>
+                <span><%= s.plant_address %></span>
+              </span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

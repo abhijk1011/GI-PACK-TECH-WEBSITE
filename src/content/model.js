@@ -22,6 +22,7 @@ const { categories: rawCategories, products: rawProducts } = require('./catalogu
 const { industries: rawIndustries, roles: rawRoles, materials, checklist } = require('./taxonomy');
 const { settings: rawSettings, pages: rawPages, valueRows } = require('./company');
 const { categories: faqCategories, faqs: rawFaqs } = require('./faqs');
+const { privacyPolicy } = require('./legal');
 
 /*
  * Photographs are the one thing that is edited without touching code, so they
@@ -152,6 +153,14 @@ const faqGroups = faqCategories
   .map((c) => ({ ...c, items: faqs.filter((f) => f.category === c.slug) }))
   .filter((c) => c.items.length);
 
+/* ---------------------------------------------------------------- legal
+ * The privacy policy names the business, its addresses and the grievance
+ * officer, all of which the footer and the contact page also name. Building it
+ * from the same settings is what stops a legal document quietly disagreeing
+ * with the rest of the site after somebody changes a mailbox.
+ */
+const privacy = privacyPolicy(settings);
+
 /* ------------------------------------------------------------ materials */
 const materialList = materials.map((m, i) => ({ ...m, sort: i + 1, published: 1 }));
 const checklistItems = checklist.map((c, i) => ({
@@ -197,5 +206,6 @@ module.exports = {
   faqs,
   faqGroups,
   faqCategories,
+  privacy,
   proof,
 };

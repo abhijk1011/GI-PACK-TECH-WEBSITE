@@ -927,6 +927,79 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 .qa__item:target .qa__q { color: var(--brand); }
 .faqgroup { scroll-margin-top: calc(var(--header-h) + 4.5rem); }
 
+/* ---------------------------------------------------------------- legal
+   The privacy policy, and anything else of that shape.
+
+   A document like this is almost never read from the top. Somebody arrives
+   from a link on one clause, reads that clause and leaves, so every section
+   is an anchor, carries its number in the markup rather than in a CSS
+   counter, and lands clear of the sticky header when it is jumped to. The
+   number is in the markup because a clause quoted in an email as "section 7"
+   has to still be section 7 when the page is printed or read aloud. */
+.legal__meta {
+  display: flex; flex-wrap: wrap; gap: .45rem 2.25rem;
+  margin-top: 1.9rem; padding-top: 1.4rem; border-top: 1px solid var(--hair);
+  font-size: var(--step--1); color: var(--ink-3);
+}
+.legal__meta strong { font-weight: 600; }
+
+.legal__section {
+  padding-block: clamp(1.9rem, 3vw, 2.75rem);
+  border-bottom: 1px solid var(--hair);
+  scroll-margin-top: calc(var(--header-h) + 4.5rem);
+}
+.legal__section:first-child { padding-top: .5rem; }
+.legal__section:last-child { border-bottom: 0; }
+.legal__section:target .legal__h { color: var(--brand); }
+
+.legal__num {
+  display: block; font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
+  text-transform: uppercase; color: var(--brand); margin-bottom: .5rem;
+  font-variant-numeric: tabular-nums;
+}
+.legal__h {
+  font-family: var(--font-display); font-size: var(--step-2); font-weight: 700;
+  letter-spacing: -0.026em; line-height: 1.14; color: var(--ink);
+  margin-bottom: 1.1rem; text-wrap: pretty;
+}
+.legal__body { color: var(--ink-2); line-height: 1.7; max-width: 68ch; }
+.legal__body p + p { margin-top: .85em; }
+.legal__body a { color: var(--brand); font-weight: 500; }
+.legal__body a:hover { color: var(--brand-600); text-decoration: underline; }
+
+/* The document's lists. .featlist, which the product pages use, gives every
+   item a hairline and a rem of air above and below it: right for eight
+   feature claims somebody is meant to dwell on, wrong for thirty-five clauses
+   somebody is scanning. This keeps featlist's brand-square marker, so the two
+   still read as one family, and drops the rules and half the leading. */
+.legal__list { display: grid; gap: .7rem; max-width: 68ch; }
+.legal__list li {
+  display: flex; gap: .85rem; align-items: flex-start;
+  color: var(--ink-2); line-height: 1.6;
+}
+.legal__list li::before {
+  content: ''; width: 7px; height: 7px; background: var(--brand);
+  border-radius: 1px; flex: none; margin-top: .55rem;
+}
+
+/* A sub-heading inside a section — the three places the enquiry forms are
+   itemised one at a time. */
+.legal__sub { margin-top: 1.6rem; }
+.legal__subh {
+  font-family: var(--font-display); font-size: var(--step-0); font-weight: 700;
+  letter-spacing: -0.015em; color: var(--ink); margin-bottom: .65rem;
+}
+
+/* The gaps between a section's parts. Written as adjacency rules so a section
+   with no list, or no table, closes up rather than leaving a hole. */
+.legal__body + .legal__list,
+.legal__body + .spec,
+.legal__body + .legal__sub,
+.legal__list + .legal__body,
+.spec + .legal__body,
+.legal__sub + .legal__body { margin-top: 1.5rem; }
+.legal__body + .legal__body { margin-top: 1.1rem; }
+
 /* --------------------------------------------------------------- tables */
 .dtable { width: 100%; border-collapse: collapse; font-size: .96rem; }
 .dtable th, .dtable td { text-align: left; padding: 1.05rem 1.35rem; border-bottom: 1px solid var(--hair); vertical-align: top; }

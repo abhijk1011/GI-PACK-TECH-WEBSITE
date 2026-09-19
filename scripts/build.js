@@ -298,6 +298,23 @@ function buildStaticPages() {
     },
   });
 
+  /*
+   * The privacy policy. It comes from src/content/legal.js rather than from a
+   * page block because it is fourteen sections long and is built against the
+   * settings, so the addresses and the grievance officer it names cannot drift
+   * away from the ones the footer and the contact page print.
+   */
+  render('/privacy', 'pages/privacy', {
+    privacy: model.privacy,
+    seo: {
+      title: 'Privacy Policy',
+      description:
+        'What this site collects, why, who else sees it and how long it is kept. ' +
+        'No cookies, no analytics and no tracking, and a named grievance officer.',
+      path: '/privacy',
+    },
+  });
+
   // Where both forms land after Netlify accepts a submission. Kept out of the
   // sitemap and marked noindex: it is only meaningful straight after a post.
   render('/thank-you', 'pages/thank-you', {
@@ -325,6 +342,9 @@ function buildRedirects() {
     ['/capabilities', '/products'],
     ['/faqs', '/faq'],
     ['/frequently-asked-questions', '/faq'],
+    // The policy lives at /privacy. /privacy-policy is what a browser
+    // autocompletes and what a link written from memory tends to say.
+    ['/privacy-policy', '/privacy'],
   ];
 
   // A product has one canonical URL. Reaching it under another category — from
@@ -356,6 +376,7 @@ function buildSitemap() {
     { loc: '/about', pri: '0.6' },
     { loc: '/specify', pri: '0.8' },
     { loc: '/contact', pri: '0.6' },
+    { loc: '/privacy', pri: '0.3' },
   ];
   for (const c of model.categories) urls.push({ loc: `/products/${c.slug}`, pri: '0.8' });
   for (const p of model.products) {
@@ -466,7 +487,8 @@ function buildLlmsTxt() {
     ['/faq', 'FAQ', 'Answers to the questions buyers ask most'],
     ['/about', 'About', 'Company history, capability and certification'],
     ['/specify', 'Specify a requirement', 'Send a specification and request a quotation'],
-    ['/contact', 'Contact', 'Contact details and enquiry form']
+    ['/contact', 'Contact', 'Contact details and enquiry form'],
+    ['/privacy', 'Privacy policy', 'What an enquiry collects, and what the site does not do']
   ]) {
     L.push(`- [${title}](${h.absUrl(p)}): ${blurb}`);
   }

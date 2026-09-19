@@ -51,7 +51,7 @@ execFileSync('node', [path.join(__dirname, 'build.js')], { stdio: 'inherit', cwd
 
 console.log('\nPublic pages');
 for (const p of ['/', '/products', '/industries', '/materials', '/faq', '/about', '/contact',
-  '/specify', '/thank-you', '/sitemap.xml', '/robots.txt', '/404.html']) {
+  '/specify', '/privacy', '/thank-you', '/sitemap.xml', '/robots.txt', '/404.html']) {
   page(p);
 }
 
@@ -90,6 +90,7 @@ const rules = new Map(
 // rather than 404.
 log(rules.get('/capabilities')?.to === '/products', '/capabilities moves to the range');
 log(rules.get('/faqs')?.to === '/faq', '/faqs moves to the FAQ');
+log(rules.get('/privacy-policy')?.to === '/privacy', '/privacy-policy moves to the policy');
 const wrongCat = rules.get('/products/pallet-covers-and-pallet-wraps/pvc-round-drum-liner');
 log(
   wrongCat?.to === '/products/round-drum-liners/pvc-round-drum-liner',
@@ -121,6 +122,48 @@ const qCount = (faqHtml.match(/"@type":"Question"/g) || []).length;
 log(qCount >= 20, 'FAQPage carries every question', `→ ${qCount}`);
 log(qCount === model.faqs.length, 'every published question is in the markup',
   `→ ${qCount}/${model.faqs.length}`);
+
+console.log('\nPrivacy policy');
+{
+  const body = html('/privacy') || '';
+  const { privacy } = model;
+  log(!/noindex/.test(body), 'the policy is indexable');
+  const present = privacy.sections.filter((sec) => body.includes(`id="${sec.slug}"`));
+  log(present.length === privacy.sections.length, 'every section is rendered and anchored',
+    `\u2192 ${present.length}/${privacy.sections.length}`);
+  // A policy that names nobody to complain to does not satisfy either the DPDP
+  // Act or the IT Act, and the grievance details come from settings, so a
+  // cleared setting would empty the section rather than break the build.
+  for (const [label, value] of [['grievance officer', model.settings.contact_person],
+    ['a mailbox to write to', model.settings.email],
+    ['a postal address', model.settings.plant_address]]) {
+    log(Boolean(value) && body.includes(value), `the policy names ${label}`);
+  }
+  log(body.includes(privacy.updated), 'the policy carries its last-updated date');
+  /*
+   * The policy states plainly that this site runs no analytics, sets no
+   * cookies and embeds nothing. Those are the sentences a later change can
+   * quietly turn into false statements in a legal document — head_scripts and
+   * body_scripts are pasted into every page, so a tag added there would do it
+   * without touching this file. The rendered page is checked rather than the
+   * settings, so it catches a tag whichever way it arrived. A Search Console
+   * verification meta tag is deliberately not on this list: it tracks nobody,
+   * and head_scripts exists partly to carry it.
+   */
+  const trackers =
+    /googletagmanager|google-analytics|gtag\(|fbq\(|hotjar|clarity\.ms|matomo|mixpanel|plausible|fathom|segment\.(io|com)/i;
+  log(!trackers.test(body), 'no analytics tag contradicts the "no tracking" section');
+  log(!/document\.cookie/.test(body), 'nothing on the page sets a cookie');
+  log(!/<(iframe|embed)\b/i.test(body), 'the policy page embeds nothing itself');
+  // Every https:// reference on the page must be a link somebody clicks, not a
+  // resource the browser fetches — that is what "loads nothing from a third
+  // party" means, and it is the claim a stray <script src> would break.
+  const fetched = [...body.matchAll(/<(?:script|img|link|source|video|audio|iframe)[^>]*?(?:src|href)="(https?:\/\/[^"]+)"/gi)]
+    .map((m) => m[1])
+    .filter((u) => !u.startsWith(model.settings.site_url));
+  log(fetched.length === 0, 'the page fetches nothing from a third party',
+    fetched.length ? fetched.join(', ') : '');
+}
 
 console.log('\nStructured data');
 const first = model.products[0];
@@ -187,11 +230,12 @@ console.log('\nEvery referenced photograph exists');
 console.log('\nNothing dynamic leaked into the output');
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 log(
-  (sitemap.match(/<loc>/g) || []).length === 8 + model.categories.length + model.products.length +
+  (sitemap.match(/<loc>/g) || []).length === 9 + model.categories.length + model.products.length +
     model.industries.length + model.roles.length,
   'the sitemap lists every page'
 );
 log(!sitemap.includes('/thank-you'), 'the thank-you page stays out of the sitemap');
+log(/<loc>[^<]*\/privacy<\/loc>/.test(sitemap), 'the privacy policy is in the sitemap');
 
 console.log(failures === 0 ? '\nAll checks passed.\n' : `\n${failures} check(s) failed.\n`);
 process.exit(failures === 0 ? 0 : 1);
