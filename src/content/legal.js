@@ -220,6 +220,13 @@ function privacyPolicy(s) {
         slug: 'retention',
         name: 'How long we keep it',
         heading: 'How long we keep it',
+        /*
+         * Both periods below are confirmed business practice, not placeholder
+         * figures: 24 months for an enquiry that goes nowhere, and the
+         * statutory minimum for anything attached to an order. They read like
+         * round numbers because they are round numbers, so do not "correct"
+         * them to something vaguer without asking first.
+         */
         body: 'Long enough to be useful to you, and no longer than we can justify.',
         list: [
           'An enquiry that does not lead to an order is kept for up to 24 months and then deleted. Packaging enquiries have a long tail, and a project deferred for a year is a common thing: a specification we still hold is one you do not have to write out again.',
@@ -262,6 +269,13 @@ function privacyPolicy(s) {
         body:
           'The Digital Personal Data Protection Act, 2023 and the Information Technology Act, 2000 each ' +
           `require a named person to answer for this. For ${s.company_name} that is:`,
+        /*
+         * Deliberately the same person the rest of the site puts forward as
+         * the contact, rather than a separate privacy mailbox: at this size
+         * naming somebody who does not read the mail would be the fiction the
+         * statute is meant to prevent. Changing contact_person changes who is
+         * named here, which is the intended behaviour.
+         */
         rows: [
           ['Name', s.contact_person],
           ['Position', s.contact_title],
