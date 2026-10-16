@@ -1424,8 +1424,8 @@ a.ctacard__value:hover { color: var(--brand); }
    width of the window, so cards slide in from the edge, but its padding is
    the container's own margin: the first card starts exactly on the page's
    left edge and snapping keeps every resting position on that line. When the
-   cards all fit, the auto margins on the first and last centre them under
-   the centred heading instead. */
+   cards all fit, auto margins on the first and last centre them under the
+   centred heading instead. */
 .vrail {
   --rail-pad: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter)));
   display: flex; gap: clamp(.9rem, 1.4vw, 1.25rem);
@@ -1438,8 +1438,12 @@ a.ctacard__value:hover { color: var(--brand); }
 .vrail:focus-visible { outline-offset: -3px; border-radius: var(--r-lg); }
 
 .vcard { flex: 0 0 clamp(236px, 20.5vw, 296px); margin: 0; scroll-snap-align: start; min-width: 0; }
-.vcard:first-child { margin-left: auto; }
-.vcard:last-child { margin-right: auto; }
+/* Centred only where the heading above is centred; on a phone the heading is
+   left-aligned, and so is the row. */
+@media (min-width: 768px) {
+  .vcard:first-child { margin-left: auto; }
+  .vcard:last-child { margin-right: auto; }
+}
 
 .vcard__media {
   position: relative; isolation: isolate; overflow: hidden;

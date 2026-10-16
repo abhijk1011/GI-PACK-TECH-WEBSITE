@@ -8,7 +8,8 @@
 # Each entry:
 #
 #   file:    /video/<name>.mp4    the clip, in public/video. H.264 MP4, 720 x
-#                                 1280, no sound track, a few MB at most.
+#                                 1280, no sound track — scripts/encode-video.sh
+#                                 makes both files from any phone video.
 #   poster:  /video/<name>.webp   a still from the clip, shown while it loads
 #                                 and to anyone who has turned motion off.
 #   title:   EVOH Barrier Liner   the heading under the video
@@ -21,4 +22,8 @@
 #
 # The row plays in the order listed here.
 
-videos: []
+videos:
+  - file: /video/evoh-bags.mp4
+    poster: /video/evoh-bags.webp
+    title: EVOH Bags
+    line: Hermetic bags for storing seeds, spices and chemicals, from 5 to 1,000 kg.

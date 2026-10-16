@@ -231,7 +231,8 @@ console.log('\nEvery product video exists');
 {
   const referenced = model.videos.flatMap((v) => [v.file, v.poster].filter(Boolean));
   const broken = referenced.filter((p) => !fs.existsSync(path.join(DIST, p)));
-  log(broken.length === 0, `${model.videos.length} videos and their stills resolve to a file`,
+  const n = model.videos.length;
+  log(broken.length === 0, `${n} video${n === 1 ? '' : 's'} and ${n === 1 ? 'its still resolve' : 'their stills resolve'} to a file`,
     broken.length ? `missing: ${broken.join(', ')}` : '');
   const untitled = model.videos.filter((v) => !v.title);
   log(untitled.length === 0, 'every video has a heading',
