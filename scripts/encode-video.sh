@@ -2,7 +2,7 @@
 #
 # Prepares a product video for the "Product videos" row on the home page.
 #
-#   scripts/encode-video.sh <input video> <name> [still at, in seconds]
+#   scripts/encode-video.sh [--landscape] <input video> <name> [still at, in seconds]
 #
 # writes public/video/<name>.mp4 and public/video/<name>.webp, then prints
 # the entry to add to content/videos.yml.
@@ -23,12 +23,26 @@
 #     product. It is taken one second in (past any fade from black) unless a
 #     time is given.
 #
+# --landscape is for footage shot sideways, including a sideways clip a phone
+# has saved inside an upright frame with black bars above and below. Cropping
+# that to 9:16 would keep a narrow slice of the scene, so instead the bars are
+# found and trimmed, the whole shot is set sharp across the middle of the
+# card, and the space above and below is filled with a blurred, slightly
+# darkened copy of the same footage — the treatment Instagram and TikTok give
+# landscape video.
+#
 # Needs ffmpeg.
 
 set -euo pipefail
 
+landscape=0
+if [ "${1:-}" = "--landscape" ]; then
+  landscape=1
+  shift
+fi
+
 if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
-  echo "usage: scripts/encode-video.sh <input video> <name> [still at, in seconds]" >&2
+  echo "usage: scripts/encode-video.sh [--landscape] <input video> <name> [still at, in seconds]" >&2
   exit 1
 fi
 
@@ -44,11 +58,28 @@ root="$(cd "$(dirname "$0")/.." && pwd)"
 out="$root/public/video"
 mkdir -p "$out"
 
-ffmpeg -hide_banner -loglevel error -y -i "$input" \
-  -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=30" \
-  -c:v libx264 -profile:v high -preset slow -crf 28 -pix_fmt yuv420p \
-  -movflags +faststart -an \
-  "$out/$name.mp4"
+if [ "$landscape" = 1 ]; then
+  # The picture's real extent: the crop cropdetect reports most often over
+  # the first few seconds, so one dark frame cannot skew it.
+  picture=$(ffmpeg -hide_banner -ss 1 -t 8 -i "$input" -vf cropdetect=limit=24:round=2 -f null - 2>&1 \
+    | grep -o 'crop=[0-9:]*' | sort | uniq -c | sort -rn | head -1 | awk '{print $2}')
+  picture="${picture:-crop=iw:ih:0:0}"
+  echo "picture area: ${picture#crop=}"
+  ffmpeg -hide_banner -loglevel error -y -i "$input" \
+    -filter_complex "[0:v]${picture},split=2[sharp][soft];\
+[soft]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,boxblur=40:3,eq=brightness=-0.08:saturation=0.85[back];\
+[sharp]scale=720:-2[front];\
+[back][front]overlay=(W-w)/2:(H-h)/2,fps=30,format=yuv420p[v]" \
+    -map "[v]" -c:v libx264 -profile:v high -preset slow -crf 28 \
+    -movflags +faststart -an \
+    "$out/$name.mp4"
+else
+  ffmpeg -hide_banner -loglevel error -y -i "$input" \
+    -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=30" \
+    -c:v libx264 -profile:v high -preset slow -crf 28 -pix_fmt yuv420p \
+    -movflags +faststart -an \
+    "$out/$name.mp4"
+fi
 
 ffmpeg -hide_banner -loglevel error -y -ss "$still_at" -i "$out/$name.mp4" \
   -frames:v 1 -c:v libwebp -quality 80 \
