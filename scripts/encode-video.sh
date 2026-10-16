@@ -8,12 +8,16 @@
 # the entry to add to content/videos.yml.
 #
 # What it does to the clip, and why:
-#   - crops and scales to 720 x 1280 (9:16). The cards are never shown taller
-#     than about 530 points, so this is sharp on a retina screen.
+#   - crops to 9:16 and scales down to 720 x 1280. The cards are never shown
+#     taller than about 530 points, so this is sharp on a retina screen. A
+#     clip smaller than that (one sent through WhatsApp arrives at about 480
+#     wide) is kept at its own size: scaling it up adds blur, not detail.
 #   - H.264, yuv420p — the one format every browser and every phone plays.
 #   - CRF 28 at 30 fps: handheld footage lands at roughly 150 KB a second, so
 #     a 24-second clip is about 3.5 MB. Shown at under 300 points wide, it is
-#     indistinguishable from a file half as compressed again.
+#     indistinguishable from a file half as compressed again. For a long clip,
+#     CRF=32 scripts/encode-video.sh ... squeezes harder; a minute of footage
+#     then comes in around 5 MB with the detail still intact at card size.
 #   - drops the sound. The row plays muted, and a sound track is weight with
 #     nothing to show for it.
 #   - +faststart moves the index to the front, so playback starts before the
@@ -49,6 +53,7 @@ fi
 input="$1"
 name="$2"
 still_at="${3:-1}"
+crf="${CRF:-28}"
 if ! [[ "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   echo "name must be lowercase words joined by hyphens, e.g. evoh-barrier-liner" >&2
   exit 1
@@ -70,13 +75,13 @@ if [ "$landscape" = 1 ]; then
 [soft]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,boxblur=40:3,eq=brightness=-0.08:saturation=0.85[back];\
 [sharp]scale=720:-2[front];\
 [back][front]overlay=(W-w)/2:(H-h)/2,fps=30,format=yuv420p[v]" \
-    -map "[v]" -c:v libx264 -profile:v high -preset slow -crf 28 \
+    -map "[v]" -c:v libx264 -profile:v high -preset slow -crf "$crf" \
     -movflags +faststart -an \
     "$out/$name.mp4"
 else
   ffmpeg -hide_banner -loglevel error -y -i "$input" \
-    -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=30" \
-    -c:v libx264 -profile:v high -preset slow -crf 28 -pix_fmt yuv420p \
+    -vf "crop='trunc(min(iw,ih*9/16)/2)*2':'trunc(min(ih,iw*16/9)/2)*2',scale='min(720,iw)':-2,setsar=1,fps=30" \
+    -c:v libx264 -profile:v high -preset slow -crf "$crf" -pix_fmt yuv420p \
     -movflags +faststart -an \
     "$out/$name.mp4"
 fi
