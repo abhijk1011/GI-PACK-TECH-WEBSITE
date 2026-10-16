@@ -6,15 +6,18 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap">
-      <p class="eyebrow">Industries</p>
-      <h1 class="h-page phero__title" style="max-width:26ch;">
-        <%- h.dot('Different sectors, the same question: what is this protecting?') %>
-      </h1>
-      <p class="lede">
-        The specification starts from your product, your container and your route &mdash; never from a
-        standard range.
-      </p>
+    <div class="wrap phero__grid">
+      <div class="phero__main">
+        <p class="eyebrow"><%= industries.length %> sectors</p>
+        <h1 class="h-page">Industries we serve</h1>
+      </div>
+      <div class="phero__side">
+        <p class="lede">
+          Different sectors, the same question: what is this packaging protecting? The
+          specification starts from your product, your container and your route &mdash; never from
+          a standard range.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -25,7 +28,7 @@
           <a class="card" href="/industries/<%= i.slug %>">
             <h2 class="card__title"><%= i.name %></h2>
             <% if (i.problem_lead) { %>
-              <p style="color:var(--brand);font-size:.94rem;font-weight:600;line-height:1.45;"><%= i.problem_lead %></p>
+              <p class="card__lead"><%= i.problem_lead %></p>
             <% } %>
             <p class="card__desc"><%= i.applications %></p>
             <span class="card__meta">

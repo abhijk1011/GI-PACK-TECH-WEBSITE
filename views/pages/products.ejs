@@ -6,15 +6,17 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap">
-      <p class="eyebrow">The full range</p>
-      <h1 class="h-page phero__title">
-        <%- h.dot(total + ' products across ' + s.stat_categories + ' categories.') %>
-      </h1>
-      <p class="lede">
-        Not the limit of what the plant can make. If a size is not listed, it can almost
-        certainly still be built.
-      </p>
+    <div class="wrap phero__grid">
+      <div class="phero__main">
+        <p class="eyebrow"><%= total %> products &nbsp;·&nbsp; <%= s.stat_categories %> categories</p>
+        <h1 class="h-page">All products</h1>
+      </div>
+      <div class="phero__side">
+        <p class="lede">
+          Not the limit of what the plant can make. If a size is not listed, it can almost
+          certainly still be built.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -31,14 +33,10 @@
   <% grouped.forEach(function(g, gi){ %>
     <section class="section section--tight <%= gi % 2 === 1 ? 'section--paper section--rule' : '' %>" id="<%= g.slug %>">
       <div class="wrap">
-        <div class="shead">
-          <div class="shead__text">
-            <p class="eyebrow"><%= g.number %> / <%= s.stat_categories %></p>
-            <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot(g.name) %></h2>
-            <p style="color:var(--ink-3);margin-top:.85rem;"><%= g.tagline %></p>
-          </div>
-          <a class="tlink" href="/products/<%= g.slug %>">Category overview <%- icon('arrow', 15) %></a>
-        </div>
+        <%- include('../partials/shead', { sh: {
+          eyebrow: 'Category ' + g.number, title: g.name, lede: g.tagline,
+          link: { href: '/products/' + g.slug, label: 'View category' }
+        } }) %>
 
         <div class="cards cards--4 cards--loose">
           <% g.products.forEach(function(p){ %>

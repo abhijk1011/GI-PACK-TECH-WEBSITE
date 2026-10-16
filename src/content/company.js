@@ -283,44 +283,41 @@ const pages = [
         value:
           'A liner decides whether a lubricant arrives clean. A cover decides whether a machine tool arrives ready to run. Either way, the packaging costs a fraction of what it protects.',
       },
-      { block_key: 'value_eyebrow', label: 'Value section eyebrow', value: 'The arithmetic' },
+      { block_key: 'value_eyebrow', label: 'Value section eyebrow', value: 'Why it matters' },
       {
         block_key: 'value_heading',
         label: 'Value section heading',
-        input_type: 'textarea',
-        value: 'When you save ten rupees on a liner and lose a lakh on a rejected batch, that is not a saving.',
+        value: 'The true cost of packaging',
       },
       {
         block_key: 'value_sub',
         label: 'Value section sub-heading',
         input_type: 'textarea',
         value:
-          'The loss has only moved to a line nobody is watching. Two questions come before any specification.',
+          'Saving ten rupees on a liner is no saving if it costs a lakh in a rejected batch. Two questions come before any specification.',
       },
       { block_key: 'value_q1', label: 'Question 1', value: 'What is the value of the product this packaging is protecting?' },
       { block_key: 'value_q2', label: 'Question 2', value: 'What does one failure cost you?' },
 
-      { block_key: 'range_eyebrow', label: 'Range section eyebrow', value: 'Built to your drawing' },
+      { block_key: 'range_eyebrow', label: 'Range section eyebrow', value: 'Products' },
       {
         block_key: 'range_heading',
         label: 'Range section heading',
-        input_type: 'textarea',
-        value: 'Nothing here is sold from a fixed standard range.',
+        value: 'Our product range',
       },
       {
         block_key: 'range_sub',
         label: 'Range section sub-heading',
         input_type: 'textarea',
         value:
-          'Built to your drawing, your drum, your machine. Forty-three products so far — and not the limit of what the plant can make.',
+          'Every product is built to your drawing, drum or machine. Nothing is sold from a fixed standard range.',
       },
 
-      { block_key: 'diameter_eyebrow', label: 'Diameter section eyebrow', value: 'A capability, not a claim' },
+      { block_key: 'diameter_eyebrow', label: 'Diameter section eyebrow', value: 'Capability' },
       {
         block_key: 'diameter_heading',
         label: 'Diameter section heading',
-        input_type: 'textarea',
-        value: 'Any drum internal diameter from 6 inches to 100 inches.',
+        value: 'Drum liners from 6" to 100"',
       },
       {
         block_key: 'diameter_sub',
@@ -330,28 +327,55 @@ const pages = [
           'Few manufacturers quote both ends of that range from one shop floor. Ours comes from our own lamination, extrusion, cutting and sealing lines.',
       },
 
-      { block_key: 'roles_eyebrow', label: 'Roles section eyebrow', value: 'Start where the problem is' },
+      { block_key: 'roles_eyebrow', label: 'Roles section eyebrow', value: 'Who it is for' },
       {
         block_key: 'roles_heading',
         label: 'Roles section heading',
+        value: 'Solutions by role',
+      },
+      {
+        block_key: 'roles_sub',
+        label: 'Roles section sub-heading',
         input_type: 'textarea',
-        value: 'A packaging decision passes through four people. Each is measured on something different.',
+        value: 'A packaging decision passes through four people, and each is measured on something different.',
       },
 
-      { block_key: 'proof_eyebrow', label: 'Proof section eyebrow', value: 'Real work' },
+      { block_key: 'featured_eyebrow', label: 'Featured section eyebrow', value: 'Highlights' },
+      { block_key: 'featured_heading', label: 'Featured section heading', value: 'Featured products' },
+      {
+        block_key: 'featured_sub',
+        label: 'Featured section sub-heading',
+        input_type: 'textarea',
+        value: 'The products that change how a plant works.',
+      },
+
+      { block_key: 'proof_eyebrow', label: 'Proof section eyebrow', value: 'Gallery' },
       {
         block_key: 'proof_heading',
         label: 'Proof section heading',
+        value: 'Product images',
+      },
+      {
+        block_key: 'proof_sub',
+        label: 'Proof section sub-heading',
         input_type: 'textarea',
         value: 'Photographs of what we actually make.',
       },
 
-      { block_key: 'plant_eyebrow', label: 'Plant section eyebrow', value: 'The plant' },
+      { block_key: 'industries_eyebrow', label: 'Industries section eyebrow', value: 'Industries' },
+      { block_key: 'industries_heading', label: 'Industries section heading', value: 'Industries we serve' },
+      {
+        block_key: 'industries_sub',
+        label: 'Industries section sub-heading',
+        input_type: 'textarea',
+        value: 'Different sectors, the same question: what is this packaging protecting?',
+      },
+
+      { block_key: 'plant_eyebrow', label: 'Plant section eyebrow', value: 'Manufacturing' },
       {
         block_key: 'plant_heading',
         label: 'Plant section heading',
-        input_type: 'textarea',
-        value: 'One organisation, from enquiry to sample to production.',
+        value: 'In-house manufacturing',
       },
       {
         block_key: 'plant_body',
@@ -361,19 +385,18 @@ const pages = [
           'Lamination, extrusion, cutting, heat sealing, R&D and quality all sit in one building at Gundlav, Valsad. A specification moves from enquiry to sample to production without waiting on anyone outside.',
       },
 
-      { block_key: 'cta_eyebrow', label: 'Closing CTA eyebrow', value: 'Send us the problem' },
+      { block_key: 'cta_eyebrow', label: 'Closing CTA eyebrow', value: 'Enquiries' },
       {
         block_key: 'cta_heading',
         label: 'Closing CTA heading',
-        input_type: 'textarea',
-        value: 'Send the drawing, the drum, or the data sheet.',
+        value: 'Send us your requirement',
       },
       {
         block_key: 'cta_body',
         label: 'Closing CTA body',
         input_type: 'textarea',
         value:
-          'Every product we make is built to order, so the conversation starts with your specification rather than with our price list. Sample liners and trial covers are supplied for fitment before bulk production begins.',
+          'Send the drawing, the drum dimensions or the product data sheet. Every product is built to order, so the conversation starts with your specification, not a price list. Sample liners and trial covers are supplied for fitment before bulk production begins.',
       },
     ],
   },
@@ -385,9 +408,10 @@ const pages = [
       'GI PackTech is a Gujarat-based manufacturer and exporter of custom made industrial packaging. In-house lamination, extrusion, cutting, heat-sealing, R&D and quality.',
     blocks: [
       { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Since 2006' },
+      { block_key: 'hero_heading', label: 'Hero heading', value: 'About GI PackTech' },
       {
-        block_key: 'hero_heading',
-        label: 'Hero heading',
+        block_key: 'hero_sub',
+        label: 'Hero sub-heading',
         input_type: 'textarea',
         value: 'A packaging company that specifies the material against the product.',
       },
@@ -398,9 +422,10 @@ const pages = [
         value:
           'A Gujarat manufacturer and exporter of custom industrial packaging since 2006. Every product is built to a drawing, a drum, a machine or an application. Nothing is sold from a fixed standard range.\n\nLamination, extrusion, cutting, heat sealing, R&D and quality all run in one building at Gundlav, Valsad — so a specification moves from enquiry to sample to production without waiting on anyone outside.',
       },
+      { block_key: 'belief_heading', label: 'Belief heading', value: 'What we believe' },
       {
-        block_key: 'belief_heading',
-        label: 'Belief heading',
+        block_key: 'belief_lead',
+        label: 'Belief lead',
         input_type: 'textarea',
         value: 'Packaging is the last thing standing between a finished product and everything that can happen to it.',
       },
@@ -411,9 +436,10 @@ const pages = [
         value:
           'Almost every buyer treats packaging as a cost to be reduced. It sits in the purchase department as a line item, and nobody is promoted for choosing better packaging.\n\nWe think that is the wrong way round. A drum liner is what decides whether a lubricant reaches its customer clean or contaminated. A machine cover is what decides whether a machine tool arrives ready to run or arrives with a corroded slideway. A pallet cover is what decides whether a full pallet is sold or written off. In every one of those cases the packaging is a tiny fraction of the value it is protecting.',
       },
+      { block_key: 'refuse_heading', label: 'Standards heading', value: 'How we work' },
       {
-        block_key: 'refuse_heading',
-        label: 'Standards heading',
+        block_key: 'refuse_lead',
+        label: 'Standards lead',
         input_type: 'textarea',
         value: 'We would rather refuse a job than supply a film that will fail.',
       },
@@ -437,8 +463,7 @@ const pages = [
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
-        input_type: 'textarea',
-        value: 'Questions we are asked every week.',
+        value: 'Frequently asked questions',
       },
       {
         block_key: 'intro',
@@ -460,8 +485,7 @@ const pages = [
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
-        input_type: 'textarea',
-        value: 'Start with the problem, not the price list.',
+        value: 'Contact us',
       },
       {
         block_key: 'intro',
@@ -479,19 +503,18 @@ const pages = [
     seo_description:
       'Give us the product, the container dimensions and the handling conditions, and we will issue a firm specification and quotation without a second round of questions.',
     blocks: [
-      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Enquiry checklist' },
+      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Made to order' },
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
-        input_type: 'textarea',
-        value: 'Every product we make is made to order.',
+        value: 'Specify your requirement',
       },
       {
         block_key: 'intro',
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'These answers let us issue a firm specification and quotation without a second round of questions. Answer what you know — the rest can follow.',
+          'Every product we make is made to order. These answers let us issue a firm specification and quotation without a second round of questions. Answer what you know — the rest can follow.',
       },
     ],
   },

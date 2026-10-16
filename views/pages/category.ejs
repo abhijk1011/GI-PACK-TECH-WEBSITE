@@ -5,34 +5,51 @@
 <%- include('../partials/header') %>
 
 <main id="main">
+  <% var heroImage = (products.find(function(p){ return p.image; }) || {}).image; %>
   <section class="phero gridbg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/products">Products</a><span>/</span>
         <span aria-current="page"><%= category.name %></span>
       </nav>
-      <p class="eyebrow"><%= category.number %> / <%= s.stat_categories %> &nbsp;·&nbsp; <%= products.length %> products</p>
-      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(category.name) %></h1>
-      <% if (category.problem_lead) { %>
-        <p class="subhead" style="margin-top:1.35rem;max-width:52ch;"><%= category.problem_lead %></p>
-      <% } %>
-      <div class="prose" style="margin-top:1.5rem;">
-        <% h.paragraphs(category.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+      <div class="mhero">
+        <div class="mhero__head">
+          <p class="eyebrow">Category <%= category.number %> &nbsp;·&nbsp; <%= products.length %> products</p>
+          <h1 class="h-page"><%= category.name %></h1>
+          <% if (category.problem_lead) { %>
+            <p class="mhero__lead"><%= category.problem_lead %></p>
+          <% } %>
+        </div>
+        <% if (heroImage) { %>
+          <figure class="mhero__media">
+            <img src="<%= heroImage.path %>" alt="<%= heroImage.alt || category.name %>"
+                 width="900" height="675" fetchpriority="high" decoding="async">
+          </figure>
+        <% } %>
+        <div class="mhero__body">
+          <div class="prose">
+            <% h.paragraphs(category.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="/specify">
+              <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <a class="btn btn--ghost" href="#range">See the <%= products.length %> products</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight section--rule" id="range">
     <div class="wrap">
       <%# An h2 here keeps the outline h1 -> h2 -> h3; the cards below are h3. %>
-      <div class="shead">
-        <div class="shead__text">
-          <h2 class="h-section" style="font-size:var(--step-2);">
-            <%- h.dot(products.length + ' products in this range') %>
-          </h2>
-        </div>
-        <a class="tlink" href="/specify">Specify a requirement <%- icon('arrow', 15) %></a>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: category.short_name || category.name,
+        title: 'Products in this range',
+        lede: category.tagline,
+        link: { href: '/specify', label: 'Specify a requirement' }
+      } }) %>
       <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
@@ -43,16 +60,19 @@
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <p class="eyebrow">Other categories</p>
-      <div class="cards cards--4" style="margin-top:1.5rem;">
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'Products', title: 'Other categories',
+        link: { href: '/products', label: 'All products' }
+      } }) %>
+      <nav class="linklist" aria-label="Other categories">
         <% others.forEach(function(c){ %>
-          <a class="card" href="/products/<%= c.slug %>">
+          <a href="/products/<%= c.slug %>">
             <span class="card__num"><%= c.number %></span>
-            <h3 class="card__title" style="font-size:1.02rem;"><%= c.short_name || c.name %></h3>
-            <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+            <span><%= c.short_name || c.name %></span>
+            <span class="card__arrow"><%- icon('arrow', 15) %></span>
           </a>
         <% }) %>
-      </div>
+      </nav>
     </div>
   </section>
 

@@ -79,13 +79,7 @@
   <!-- ============================================ the value equation -->
   <section class="section section--paper section--rule" id="value">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow"><%= b.value_eyebrow %></p>
-          <h2 class="h-section" data-reveal><%- h.dot(b.value_heading) %></h2>
-          <p class="lede"><%= b.value_sub %></p>
-        </div>
-      </div>
+      <%- include('../partials/shead', { sh: { eyebrow: b.value_eyebrow, title: b.value_heading, lede: b.value_sub } }) %>
 
       <div class="value" data-reveal>
         <div class="value__head">
@@ -103,11 +97,11 @@
       <div class="value__qs" data-reveal>
         <div class="value__q">
           <div class="value__qnum">Question 01</div>
-          <p class="value__qtext"><%- h.dot(b.value_q1) %></p>
+          <p class="value__qtext"><%= b.value_q1 %></p>
         </div>
         <div class="value__q">
           <div class="value__qnum">Question 02</div>
-          <p class="value__qtext"><%- h.dot(b.value_q2) %></p>
+          <p class="value__qtext"><%= b.value_q2 %></p>
         </div>
       </div>
     </div>
@@ -116,16 +110,13 @@
   <!-- ============================================ product range -->
   <section class="section" id="range">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow"><%= b.range_eyebrow %></p>
-          <h2 class="h-section"><%- h.dot(b.range_heading) %></h2>
-          <p class="lede"><%= b.range_sub %></p>
-        </div>
-        <a class="tlink" href="/products">All <%= s.stat_products %> products <%- icon('arrow', 15) %></a>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: b.range_eyebrow, title: b.range_heading, lede: b.range_sub,
+        link: { href: '/products', label: 'All ' + s.stat_products + ' products' }
+      } }) %>
 
-      <div class="cards cards--3">
+      <%# Four across on a laptop: eight categories make two full rows. %>
+      <div class="cards cards--4 cards--list-sm">
         <% categories.forEach(function(c){ %>
           <a class="card" href="/products/<%= c.slug %>">
             <span class="card__num"><%= c.number %> / <%= s.stat_categories %></span>
@@ -144,13 +135,7 @@
   <!-- ============================================ the 6"–100" capability -->
   <section class="section section--paper section--rule" id="diameter">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow"><%= b.diameter_eyebrow %></p>
-          <h2 class="h-section"><%- h.dot(b.diameter_heading) %></h2>
-          <p class="lede"><%= b.diameter_sub %></p>
-        </div>
-      </div>
+      <%- include('../partials/shead', { sh: { eyebrow: b.diameter_eyebrow, title: b.diameter_heading, lede: b.diameter_sub } }) %>
 
       <div class="scale" data-reveal>
         <div class="scale__track">
@@ -187,12 +172,7 @@
   <!-- ============================================ start where the problem is -->
   <section class="section" id="roles">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow"><%= b.roles_eyebrow %></p>
-          <h2 class="h-section"><%- h.dot(b.roles_heading) %></h2>
-        </div>
-      </div>
+      <%- include('../partials/shead', { sh: { eyebrow: b.roles_eyebrow, title: b.roles_heading, lede: b.roles_sub } }) %>
 
       <div class="roles">
         <% roles.forEach(function(r){ %>
@@ -210,15 +190,12 @@
   <!-- ============================================ featured / upsell -->
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow">Where the argument is easiest to see</p>
-          <h2 class="h-section"><%- h.dot('The products that change how a plant works.') %></h2>
-        </div>
-        <a class="tlink" href="/products">Full range <%- icon('arrow', 15) %></a>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: b.featured_eyebrow, title: b.featured_heading, lede: b.featured_sub,
+        link: { href: '/products', label: 'Full range' }
+      } }) %>
 
-      <div class="cards cards--3 cards--loose">
+      <div class="cards cards--3 cards--loose swipe-sm">
         <% featured.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
         <% }) %>
@@ -230,13 +207,8 @@
   <% if (proof.length) { %>
   <section class="section">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow"><%= b.proof_eyebrow %></p>
-          <h2 class="h-section"><%- h.dot(b.proof_heading) %></h2>
-        </div>
-      </div>
-      <div class="gallerystrip">
+      <%- include('../partials/shead', { sh: { eyebrow: b.proof_eyebrow, title: b.proof_heading, lede: b.proof_sub } }) %>
+      <div class="gallerystrip swipe-sm">
         <% proof.slice(0, 8).forEach(function(img){ %>
           <figure>
             <a href="/products/<%= img.category_slug %>/<%= img.slug %>">
@@ -253,19 +225,16 @@
   <!-- ============================================ industries -->
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow">Industries</p>
-          <h2 class="h-section"><%- h.dot('Different sectors, the same question: what is this protecting?') %></h2>
-        </div>
-        <a class="tlink" href="/industries">All industries <%- icon('arrow', 15) %></a>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: b.industries_eyebrow, title: b.industries_heading, lede: b.industries_sub,
+        link: { href: '/industries', label: 'All industries' }
+      } }) %>
 
-      <div class="cards cards--4">
+      <div class="cards cards--4 cards--list-sm">
         <% industries.forEach(function(i){ %>
-          <a class="card" href="/industries/<%= i.slug %>">
-            <h3 class="card__title" style="font-size:1.05rem;"><%= i.name %></h3>
-            <p class="card__desc" style="font-size:.88rem;"><%= i.applications %></p>
+          <a class="card card--sm card--row-sm" href="/industries/<%= i.slug %>">
+            <h3 class="card__title"><%= i.name %></h3>
+            <p class="card__desc"><%= i.applications %></p>
             <span class="card__meta">
               <span></span>
               <span class="card__arrow"><%- icon('arrow', 15) %></span>
@@ -279,26 +248,24 @@
   <!-- ============================================ the plant -->
   <section class="section">
     <div class="wrap">
-      <div class="split split--top">
-        <div>
+      <div class="sidehead">
+        <div class="sidehead__head">
           <p class="eyebrow"><%= b.plant_eyebrow %></p>
-          <h2 class="h-section" style="margin-bottom:1.5rem;"><%- h.dot(b.plant_heading) %></h2>
-          <div class="prose"><p><%= b.plant_body %></p></div>
+          <h2 class="h-section"><%= b.plant_heading %></h2>
+          <p class="lede"><%= b.plant_body %></p>
           <div class="btn-row" style="margin-top:2rem;">
-            <a class="btn btn--ghost" href="/faq">Common questions</a>
             <a class="btn btn--ghost" href="/about">About the company</a>
+            <a class="btn btn--ghost" href="/faq">Common questions</a>
           </div>
         </div>
-        <div>
-          <ul class="cards cards--2" style="grid-template-columns:repeat(2, 1fr);">
-            <li class="card"><span class="card__num">01</span><h3 class="card__title" style="font-size:1.02rem;">Lamination</h3><p class="card__desc" style="font-size:.86rem;">Multilayer and foil laminate structures</p></li>
-            <li class="card"><span class="card__num">02</span><h3 class="card__title" style="font-size:1.02rem;">Extrusion</h3><p class="card__desc" style="font-size:.86rem;">Co-extruded film, more strength from less material</p></li>
-            <li class="card"><span class="card__num">03</span><h3 class="card__title" style="font-size:1.02rem;">Cutting</h3><p class="card__desc" style="font-size:.86rem;">Any diameter, any profile, one-off or bulk</p></li>
-            <li class="card"><span class="card__num">04</span><h3 class="card__title" style="font-size:1.02rem;">Heat sealing</h3><p class="card__desc" style="font-size:.86rem;">Where barrier films are made or lost</p></li>
-            <li class="card"><span class="card__num">05</span><h3 class="card__title" style="font-size:1.02rem;">In-house R&amp;D</h3><p class="card__desc" style="font-size:.86rem;">Material specified against your product data</p></li>
-            <li class="card"><span class="card__num">06</span><h3 class="card__title" style="font-size:1.02rem;">Quality</h3><p class="card__desc" style="font-size:.86rem;"><%= s.show_iso === '1' ? s.iso_text : 'Tested before dispatch' %></p></li>
-          </ul>
-        </div>
+        <ul class="cards cards--plant">
+          <li class="card card--sm"><span class="card__num">01</span><h3 class="card__title">Lamination</h3><p class="card__desc">Multilayer and foil laminate structures</p></li>
+          <li class="card card--sm"><span class="card__num">02</span><h3 class="card__title">Extrusion</h3><p class="card__desc">Co-extruded film, more strength from less material</p></li>
+          <li class="card card--sm"><span class="card__num">03</span><h3 class="card__title">Cutting</h3><p class="card__desc">Any diameter, any profile, one-off or bulk</p></li>
+          <li class="card card--sm"><span class="card__num">04</span><h3 class="card__title">Heat sealing</h3><p class="card__desc">Where barrier films are made or lost</p></li>
+          <li class="card card--sm"><span class="card__num">05</span><h3 class="card__title">In-house R&amp;D</h3><p class="card__desc">Material specified against your product data</p></li>
+          <li class="card card--sm"><span class="card__num">06</span><h3 class="card__title">Quality</h3><p class="card__desc"><%= s.show_iso === '1' ? s.iso_text : 'Tested before dispatch' %></p></li>
+        </ul>
       </div>
     </div>
   </section>

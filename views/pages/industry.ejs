@@ -5,36 +5,49 @@
 <%- include('../partials/header') %>
 
 <main id="main">
+  <% var heroImage = (products.find(function(p){ return p.image; }) || {}).image; %>
   <section class="phero gridbg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/industries">Industries</a><span>/</span>
         <span aria-current="page"><%= industry.name %></span>
       </nav>
-      <p class="eyebrow">Industry</p>
-      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(industry.name) %></h1>
-
-      <% if (industry.problem_lead) { %>
-        <div class="problem" style="max-width:64ch;">
-          <div class="problem__label">What this sector loses</div>
-          <h2 class="problem__head" style="font-size:var(--step-1);margin-bottom:0;"><%- h.dot(industry.problem_lead) %></h2>
+      <div class="mhero">
+        <div class="mhero__head">
+          <p class="eyebrow">Industry</p>
+          <h1 class="h-page"><%= industry.name %></h1>
+          <% if (industry.problem_lead) { %>
+            <p class="mhero__lead"><%= industry.problem_lead %></p>
+          <% } %>
         </div>
-      <% } %>
-
-      <div class="prose" style="margin-top:1.5rem;">
-        <% h.paragraphs(industry.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+        <% if (heroImage) { %>
+          <figure class="mhero__media">
+            <img src="<%= heroImage.path %>" alt="<%= heroImage.alt || industry.name %>"
+                 width="900" height="675" fetchpriority="high" decoding="async">
+          </figure>
+        <% } %>
+        <div class="mhero__body">
+          <div class="prose">
+            <% h.paragraphs(industry.intro).forEach(function(para){ %><p><%= para %></p><% }) %>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="/specify">
+              <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <a class="btn btn--ghost" href="#products">Recommended products</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight section--rule" id="products">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow">Specified here</p>
-          <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot('Products built for this sector.') %></h2>
-        </div>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'Specified here', title: 'Recommended products',
+        lede: 'Products built for this sector.',
+        link: { href: '/products', label: 'All products' }
+      } }) %>
       <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
@@ -45,15 +58,18 @@
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <p class="eyebrow">Other industries</p>
-      <div class="cards cards--4" style="margin-top:1.5rem;">
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'Industries', title: 'Other industries',
+        link: { href: '/industries', label: 'All industries' }
+      } }) %>
+      <nav class="linklist" aria-label="Other industries">
         <% others.forEach(function(i){ %>
-          <a class="card" href="/industries/<%= i.slug %>">
-            <h3 class="card__title" style="font-size:1rem;"><%= i.name %></h3>
-            <span class="card__meta"><span></span><span class="card__arrow"><%- icon('arrow', 15) %></span></span>
+          <a href="/industries/<%= i.slug %>">
+            <span><%= i.name %></span>
+            <span class="card__arrow"><%- icon('arrow', 15) %></span>
           </a>
         <% }) %>
-      </div>
+      </nav>
     </div>
   </section>
 

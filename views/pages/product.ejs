@@ -5,26 +5,104 @@
 <%- include('../partials/header') %>
 
 <main id="main">
-  <div class="wrap pdp__head">
+  <section class="pdp__head gridbg">
+  <div class="wrap">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/products">Products</a><span>/</span>
       <a href="/products/<%= product.category_slug %>"><%= product.category_name %></a><span>/</span>
       <span aria-current="page"><%= product.name %></span>
     </nav>
 
-    <div class="pdp__layout">
-      <!-- ------------------------------------------------ left column -->
-      <div>
-        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+    <%#
+      Photographs on the left, the name and the enquiry on the right — the
+      layout a buyer expects of a product page on a laptop. On a phone the
+      grid areas put the name first, then the photographs, then the figures
+      and the button. See .pdp__hero in site.css.
+    %>
+    <div class="pdp__hero">
+      <div class="pdp__intro">
+        <div class="pdp__code">
           <span class="num"><%= product.code %></span>
           <% if (product.badge) { %><span class="badge badge--inline"><%= product.badge %></span><% } %>
         </div>
-        <h1 class="h-page" style="margin-bottom:1rem;"><%- h.dot(product.name) %></h1>
+        <h1 class="pdp__title"><%= product.name %></h1>
         <% if (product.tagline) { %>
-          <p class="subhead"><%= product.tagline %></p>
+          <p class="pdp__tagline"><%= product.tagline %></p>
+        <% } %>
+      </div>
+
+      <div class="pdp__gallery" data-gallery>
+        <figure class="gallery__main" style="margin:0;">
+          <% if (images.length) { %>
+            <img src="<%= images[0].path %>" alt="<%= images[0].alt || product.name %>"
+                 width="900" height="675" fetchpriority="high" data-gallery-main>
+          <% } else { %>
+            <div class="slot">
+              <div>
+                <%- icon('image', 30) %>
+                <span class="slot__label">Photograph to follow</span>
+              </div>
+            </div>
+          <% } %>
+        </figure>
+
+        <% if (images.length > 1) { %>
+          <div class="gallery__thumbs" role="tablist">
+            <% images.forEach(function(img, i){ %>
+              <button class="gallery__thumb" type="button" role="tab"
+                      aria-selected="<%= i === 0 ? 'true' : 'false' %>"
+                      aria-label="View photograph <%= i + 1 %>"
+                      data-src="<%= img.path %>"
+                      data-alt="<%= img.alt || product.name %>"
+                      data-caption="<%= img.caption || '' %>">
+                <img src="<%= img.path %>" alt="" loading="lazy" width="150" height="150">
+              </button>
+            <% }) %>
+          </div>
         <% } %>
 
-        <!-- The page opens with the loss, not the product. -->
+        <% if (images.length && images[0].caption) { %>
+          <p class="gallery__caption" data-gallery-caption><%= images[0].caption %></p>
+        <% } %>
+
+        <% if (!images.length && product.image_brief) { %>
+          <p class="gallery__caption"><span class="mono">Photograph brief on file</span></p>
+        <% } %>
+      </div>
+
+      <div class="pdp__buy">
+        <% if (product.sizes || product.materials) { %>
+          <dl class="pdp__facts">
+            <% if (product.sizes) { %>
+              <div class="pdp__fact"><dt>Sizes</dt><dd><%= product.sizes %></dd></div>
+            <% } %>
+            <% if (product.materials) { %>
+              <div class="pdp__fact"><dt>Materials</dt><dd><%= product.materials %></dd></div>
+            <% } %>
+          </dl>
+        <% } %>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/specify?product=<%= encodeURIComponent(product.name) %>">
+            <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+          </a>
+          <a class="btn btn--ghost" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%- icon('phone', 15) %> Call</a>
+        </div>
+        <ul class="pdp__assure">
+          <li><%- icon('check', 14) %><span>Sample supplied for trial fitment</span></li>
+          <li><%- icon('check', 14) %><span>Material specified against your product data</span></li>
+          <li><%- icon('check', 14) %><span>Made to your drawing or measured container</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <section class="section section--tight section--rule">
+  <div class="wrap">
+    <div class="pdp__layout">
+      <!-- ------------------------------------------------ the read -->
+      <div class="pdp__main">
+        <!-- The read opens with the loss, not the product. -->
         <% if (product.problem_headline) { %>
           <div class="problem">
             <div class="problem__label">The problem it prevents</div>
@@ -36,46 +114,6 @@
             </div>
           </div>
         <% } %>
-
-        <!-- Gallery -->
-        <div style="margin-block:2rem;" data-gallery>
-          <figure class="gallery__main" style="margin:0;">
-            <% if (images.length) { %>
-              <img src="<%= images[0].path %>" alt="<%= images[0].alt || product.name %>"
-                   width="900" height="675" data-gallery-main>
-            <% } else { %>
-              <div class="slot">
-                <div>
-                  <%- icon('image', 30) %>
-                  <span class="slot__label">Photograph to follow</span>
-                </div>
-              </div>
-            <% } %>
-          </figure>
-
-          <% if (images.length > 1) { %>
-            <div class="gallery__thumbs" role="tablist">
-              <% images.forEach(function(img, i){ %>
-                <button class="gallery__thumb" type="button" role="tab"
-                        aria-selected="<%= i === 0 ? 'true' : 'false' %>"
-                        aria-label="View photograph <%= i + 1 %>"
-                        data-src="<%= img.path %>"
-                        data-alt="<%= img.alt || product.name %>"
-                        data-caption="<%= img.caption || '' %>">
-                  <img src="<%= img.path %>" alt="" loading="lazy" width="150" height="150">
-                </button>
-              <% }) %>
-            </div>
-          <% } %>
-
-          <% if (images.length && images[0].caption) { %>
-            <p class="gallery__caption" data-gallery-caption><%= images[0].caption %></p>
-          <% } %>
-
-          <% if (!images.length && product.image_brief) { %>
-            <p class="gallery__caption"><span class="mono">Photograph brief on file</span></p>
-          <% } %>
-        </div>
 
         <!-- What it is -->
         <section class="pdp__block">
@@ -153,7 +191,7 @@
         <!-- Industries -->
         <% if (industries.length) { %>
           <section class="pdp__block">
-            <h2 class="h-card">Specified in</h2>
+            <h2 class="h-card">Industries</h2>
             <div class="optionchips">
               <% industries.forEach(function(i){ %>
                 <a class="optionchip" href="/industries/<%= i.slug %>"><%= i.name %></a>
@@ -163,35 +201,10 @@
         <% } %>
       </div>
 
-      <!-- ------------------------------------------------ sticky rail -->
-      <aside>
-        <div class="rail">
-          <h2 class="rail__title">Specify this product</h2>
-          <p class="rail__body">
-            Tell us what you are packing and the dimensions you are working to. We come back with a
-            specification, not just a price.
-          </p>
-          <ul class="rail__list">
-            <li><%- icon('check', 14) %><span>Sample supplied for trial fitment</span></li>
-            <li><%- icon('check', 14) %><span>Material specified against your product data</span></li>
-            <li><%- icon('check', 14) %><span>Made to your drawing or measured container</span></li>
-          </ul>
-          <a class="btn btn--primary" href="/specify?product=<%= encodeURIComponent(product.name) %>">
-            <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
-          </a>
-          <div class="rail__contact">
-            <span class="rail__row">
-              <%- icon('phone', 15) %>
-              <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
-            </span>
-            <span class="rail__row">
-              <%- icon('mail', 15) %>
-              <a href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Enquiry: ' + product.name) %>"><%= s.email %></a>
-            </span>
-          </div>
-        </div>
-
-        <!-- Same-category navigation keeps buyers inside the range -->
+      <!-- ------------------------------------------------ sidebar -->
+      <aside class="pdp__aside">
+        <%# Same-category navigation keeps buyers inside the range. It comes
+            first and scrolls away; the enquiry card under it stays in view. %>
         <% if (siblings.length) { %>
           <div class="siblings">
             <div class="siblings__head">
@@ -209,26 +222,41 @@
             </ul>
           </div>
         <% } %>
+
+        <div class="rail">
+          <h2 class="rail__title">Specify this product</h2>
+          <p class="rail__body">
+            Tell us what you are packing and the dimensions you are working to. We come back with a
+            specification, not just a price.
+          </p>
+          <a class="btn btn--primary" href="/specify?product=<%= encodeURIComponent(product.name) %>">
+            <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+          </a>
+          <div class="rail__contact">
+            <span class="rail__row">
+              <%- icon('phone', 15) %>
+              <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+            </span>
+            <span class="rail__row">
+              <%- icon('mail', 15) %>
+              <a href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Enquiry: ' + product.name) %>"><%= s.email %></a>
+            </span>
+          </div>
+        </div>
       </aside>
     </div>
   </div>
+  </section>
 
   <!-- ------------------------------------------------ questions -->
   <%# These are marked up as a FAQPage for this product, so an assistant
       answering a question about this one item quotes this page rather than
       the site-wide FAQ. Reuses the .qa styling from /faq. %>
   <% if (typeof faqs !== 'undefined' && faqs.length) { %>
-    <section class="section section--tight" id="questions">
+    <section class="section section--tight section--paper section--rule" id="questions">
       <div class="wrap">
-        <div class="shead">
-          <div class="shead__text">
-            <p class="eyebrow">Questions</p>
-            <h2 class="h-section" style="font-size:var(--step-2);">
-              <%- h.dot('What buyers ask about this one.') %>
-            </h2>
-          </div>
-        </div>
-        <div class="qa">
+        <%- include('../partials/shead', { sh: { eyebrow: 'FAQ', title: 'Frequently asked questions', lede: 'What buyers ask about this product.' } }) %>
+        <div class="qa qa--split">
           <% faqs.forEach(function(f){ %>
             <article class="qa__item">
               <h3 class="qa__q"><%= f.question %></h3>
@@ -244,17 +272,10 @@
 
   <!-- ------------------------------------------------ cross-sell -->
   <% if (related.length) { %>
-    <section class="section section--paper section--rule">
+    <section class="section section--rule">
       <div class="wrap">
-        <div class="shead">
-          <div class="shead__text">
-            <p class="eyebrow">Commonly specified with</p>
-            <h2 class="h-section" style="font-size:var(--step-2);">
-              <%- h.dot('These are usually part of the same conversation.') %>
-            </h2>
-          </div>
-        </div>
-        <div class="cards cards--3 cards--loose">
+        <%- include('../partials/shead', { sh: { eyebrow: 'Commonly specified with', title: 'Related products', lede: 'These are usually part of the same conversation.' } }) %>
+        <div class="cards cards--3 cards--loose swipe-sm">
           <% related.forEach(function(p){ %>
             <%- include('../partials/product-card', { p: p }) %>
           <% }) %>

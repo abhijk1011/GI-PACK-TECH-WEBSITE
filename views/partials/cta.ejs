@@ -3,12 +3,12 @@
     <div class="ctapanel">
       <div class="ctapanel__grid">
         <div>
-          <p class="eyebrow eyebrow--onink"><%= typeof ctaEyebrow !== 'undefined' ? ctaEyebrow : 'Send us the problem' %></p>
+          <p class="eyebrow eyebrow--onink"><%= typeof ctaEyebrow !== 'undefined' ? ctaEyebrow : 'Enquiries' %></p>
           <h2 class="h-section">
-            <%- h.dot(typeof ctaHeading !== 'undefined' ? ctaHeading : 'Send the drawing, the drum, or the data sheet.') %>
+            <%= typeof ctaHeading !== 'undefined' ? ctaHeading : 'Send us your requirement' %>
           </h2>
           <p class="ctapanel__body">
-            <%= typeof ctaBody !== 'undefined' ? ctaBody : 'Every product we make is built to order, so the conversation starts with your specification rather than with our price list. Sample liners and trial covers are supplied for fitment before bulk production begins.' %>
+            <%= typeof ctaBody !== 'undefined' ? ctaBody : 'Send the drawing, the drum dimensions or the product data sheet. Every product is built to order, so the conversation starts with your specification, not a price list. Sample liners and trial covers are supplied for fitment before bulk production begins.' %>
           </p>
           <div class="btn-row" style="margin-top:2rem;">
             <a class="btn btn--primary" href="/specify">

@@ -6,16 +6,21 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap">
-      <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-page phero__title" style="max-width:20ch;"><%- h.dot(b.hero_heading) %></h1>
-      <p class="lede"><%= b.intro %></p>
+    <div class="wrap phero__grid">
+      <div class="phero__main">
+        <p class="eyebrow"><%= b.hero_eyebrow %></p>
+        <h1 class="h-page"><%= b.hero_heading %></h1>
+      </div>
+      <div class="phero__side">
+        <p class="lede"><%= b.intro %></p>
+      </div>
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight section--rule">
     <div class="wrap">
-      <div class="measure--form">
+      <div class="formlayout">
+      <div>
       <div class="steps">
         <div class="step" data-active="true">
           <div class="step__n">Step 01</div>
@@ -53,7 +58,7 @@
               <legend class="fset__legend">
                 <span class="fset__step">Step 0<%= step %></span>
                 <span class="fset__title">
-                  <%- h.dot(step === 1 ? 'What are you packing?' : (step === 2 ? 'How is it handled?' : 'Volume and how to reach you')) %>
+                  <%= step === 1 ? 'What are you packing?' : (step === 2 ? 'How is it handled?' : 'Volume and how to reach you') %>
                 </span>
               </legend>
 
@@ -143,6 +148,29 @@
           Answer what you know. The rest can follow.
         </p>
       </form>
+      </div>
+
+      <%# What happens to the answers, beside the form that asks for them. %>
+      <aside>
+        <div class="rail">
+          <h2 class="rail__title">What happens next</h2>
+          <ol class="nextsteps">
+            <li><span>The technical team reads your answers against the product and the container.</span></li>
+            <li><span>You receive a firm specification and quotation, without a second round of questions.</span></li>
+            <li><span>A sample is supplied for trial fitment before bulk production begins.</span></li>
+          </ol>
+          <div class="rail__contact">
+            <span class="rail__row">
+              <%- icon('phone', 15) %>
+              <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+            </span>
+            <span class="rail__row">
+              <%- icon('mail', 15) %>
+              <a href="mailto:<%= s.email %>"><%= s.email %></a>
+            </span>
+          </div>
+        </div>
+      </aside>
       </div>
     </div>
   </section>

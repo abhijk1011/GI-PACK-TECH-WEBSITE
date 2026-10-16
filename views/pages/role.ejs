@@ -11,52 +11,57 @@
         <a href="/">Home</a><span>/</span>
         <span aria-current="page">For <%= role.name %></span>
       </nav>
-      <p class="eyebrow">For the <%= role.name.toLowerCase() %></p>
-      <h1 class="h-page phero__title" style="max-width:26ch;"><%- h.dot(role.headline) %></h1>
-      <p class="lede"><%= role.intro %></p>
-
-      <div class="measured">
-        <%- icon(role.icon || 'users', 18) %>
-        <span class="mono">Measured on: <%= role.cares_about %></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="wrap">
-      <div class="split split--top">
-        <div>
-          <p class="eyebrow">What changes</p>
-          <ul class="featlist">
-            <% h.lines(role.points).forEach(function(pt){ %>
-              <li><span class="featlist__text" style="font-size:1.02rem;"><%= pt %></span></li>
-            <% }) %>
-          </ul>
+      <%#
+        The role's argument on the left; on the right, what this person is
+        measured on, which is the frame for everything else on the page.
+      %>
+      <div class="mhero mhero--card">
+        <div class="mhero__head">
+          <p class="eyebrow">Solutions by role</p>
+          <h1 class="h-page"><%= role.name %></h1>
+          <p class="mhero__lead"><%= role.headline %></p>
         </div>
-        <div>
-          <div class="rail rail--static">
-            <h2 class="rail__title">Start from the problem</h2>
-            <p class="rail__body">
-              Send the product, the container dimensions and the handling conditions. We come back with a
-              specification and a sample for trial fitment.
-            </p>
+        <div class="mhero__body">
+          <p class="lede"><%= role.intro %></p>
+        </div>
+        <aside class="mhero__media">
+          <div class="focuscard">
+            <span class="focuscard__icon"><%- icon(role.icon || 'users', 30) %></span>
+            <p class="focuscard__label">Measured on</p>
+            <ul class="focuscard__list">
+              <% (role.cares_about || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean).forEach(function(item){ %>
+                <li><%= item.charAt(0).toUpperCase() + item.slice(1) %></li>
+              <% }) %>
+            </ul>
             <a class="btn btn--primary" href="/specify?role=<%= encodeURIComponent(role.name) %>">
               <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
             </a>
           </div>
-        </div>
+        </aside>
       </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--rule">
+    <div class="wrap">
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'For the ' + role.name.toLowerCase(), title: 'What changes',
+        lede: 'Where the right packaging shows up in the numbers you are measured on.'
+      } }) %>
+      <ul class="featlist featlist--cols">
+        <% h.lines(role.points).forEach(function(pt){ %>
+          <li><span class="featlist__text"><%= pt %></span></li>
+        <% }) %>
+      </ul>
     </div>
   </section>
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div class="shead">
-        <div class="shead__text">
-          <p class="eyebrow">Relevant products</p>
-          <h2 class="h-section" style="font-size:var(--step-2);"><%- h.dot('Where this shows up in the range.') %></h2>
-        </div>
-      </div>
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'Relevant products', title: 'Recommended products',
+        link: { href: '/products', label: 'All products' }
+      } }) %>
       <div class="cards cards--3 cards--loose">
         <% products.forEach(function(p){ %>
           <%- include('../partials/product-card', { p: p }) %>
@@ -67,12 +72,15 @@
 
   <section class="section section--tight">
     <div class="wrap">
-      <p class="eyebrow">A decision passes through four people</p>
-      <div class="roles" style="margin-top:1.5rem;">
+      <%- include('../partials/shead', { sh: {
+        eyebrow: 'Solutions by role', title: 'Other roles',
+        lede: 'A packaging decision passes through four people, and each is measured on something different.'
+      } }) %>
+      <div class="roles">
         <% roles.forEach(function(r){ %>
           <a class="role" href="/for/<%= r.slug %>" <%= r.slug === role.slug ? 'aria-current="page"' : '' %>>
             <span class="role__icon"><%- icon(r.icon || 'users', 28) %></span>
-            <h3 class="role__name" style="font-size:1.05rem;"><%= r.name %></h3>
+            <h3 class="role__name"><%= r.name %></h3>
             <p class="role__cares"><%= r.cares_about %></p>
           </a>
         <% }) %>

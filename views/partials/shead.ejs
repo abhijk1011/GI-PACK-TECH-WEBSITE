@@ -1,0 +1,29 @@
+<%#
+  Section header. Every section on every page goes through this one partial,
+  so they all share one structure and one set of proportions.
+
+    include('../partials/shead', { sh: {
+      eyebrow: 'Products',               small label above the title (optional)
+      title:   'Our product range',      a short label, not a sentence
+      lede:    'One line of explanation.' (optional)
+      link:    { href: '/products', label: 'All products' }  (optional)
+    } })
+
+  On a laptop the title holds the left five-twelfths and the explanation and
+  link the right seven, so the heading row spans the full width of whatever
+  sits under it. On a phone the four stack. See .shead in site.css.
+%>
+<header class="shead">
+  <div class="shead__main">
+    <% if (sh.eyebrow) { %><p class="eyebrow"><%= sh.eyebrow %></p><% } %>
+    <h2 class="h-section"><%= sh.title %></h2>
+  </div>
+  <% if (sh.lede || sh.link) { %>
+    <div class="shead__side">
+      <% if (sh.lede) { %><p class="lede"><%= sh.lede %></p><% } %>
+      <% if (sh.link) { %>
+        <a class="tlink" href="<%= sh.link.href %>"><%= sh.link.label %> <%- icon('arrow', 15) %></a>
+      <% } %>
+    </div>
+  <% } %>
+</header>

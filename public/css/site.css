@@ -112,10 +112,21 @@
   --step--1: clamp(.8125rem, .8rem + .1vw, .875rem);
   --step-0:  clamp(1rem, .975rem + .1vw, 1.0625rem);
   --step-1:  clamp(1.1875rem, 1.1rem + .35vw, 1.375rem);
-  --step-2:  clamp(1.5rem, 1.32rem + .82vw, 2.125rem);
-  --step-3:  clamp(1.9375rem, 1.55rem + 1.75vw, 3rem);
-  --step-4:  clamp(2.125rem, 1.7rem + 2.2vw, 3.5rem);
-  --step-5:  clamp(2.5rem, 1.85rem + 3.6vw, 4.75rem);
+  /* The display steps are deliberately restrained. Headings on this site are
+     short labels, not sentences, so they never need to be large to be found:
+     a section title tops out at 36px and a page title at 44px on a laptop. */
+  --step-2:  clamp(1.375rem, 1.27rem + .45vw, 1.75rem);
+  --step-3:  clamp(1.625rem, 1.33rem + 1.05vw, 2.25rem);
+  --step-4:  clamp(1.875rem, 1.48rem + 1.45vw, 2.75rem);
+  --step-5:  clamp(2.25rem, 1.66rem + 2.2vw, 3.5rem);
+
+  /* The site's one column split. Section headers, page heroes and side-headed
+     sections all divide the container at the same line — title in the left
+     five-twelfths, content in the right seven — so on a laptop every heading
+     row spans the full width and the right-hand column starts at the same x
+     on every page. Below 1024px it collapses to a single column. */
+  --split:      minmax(0, 5fr) minmax(0, 7fr);
+  --split-gap:  clamp(2rem, 5vw, 5.5rem);
 
   /* ---- legacy aliases -------------------------------------------------
      Templates carry a handful of inline colour references. Keeping the old
@@ -173,9 +184,9 @@ a { color: inherit; text-decoration: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.028em;
-  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.12;
   color: var(--ink);
   margin: 0;
   text-wrap: balance;
@@ -200,9 +211,7 @@ strong, b { font-weight: 600; color: var(--ink); }
    .wrap-narrow is kept as an alias for the same reason the colour tokens are:
    so an old class name in a template cannot silently break the grid. */
 .wrap-narrow { max-width: var(--maxw); }
-.measure { max-width: 74ch; }
 .measure--tight { max-width: 62ch; }
-.measure--form { max-width: 900px; }
 .section { padding-block: clamp(3.5rem, 7.5vw, 7.5rem); position: relative; }
 .section--tight { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 /* The ground alternates between the page grey and pure white. Nothing
@@ -253,9 +262,9 @@ strong, b { font-weight: 600; color: var(--ink); }
 .eyebrow--plain::before { display: none; }
 .eyebrow--onink { color: rgba(255,255,255,.6); }
 
-.h-hero    { font-size: var(--step-5); letter-spacing: -0.036em; line-height: 1.02; }
-.h-page    { font-size: var(--step-4); letter-spacing: -0.032em; line-height: 1.04; }
-.h-section { font-size: var(--step-3); letter-spacing: -0.03em; line-height: 1.06; }
+.h-hero    { font-size: var(--step-5); letter-spacing: -0.032em; line-height: 1.04; }
+.h-page    { font-size: var(--step-4); letter-spacing: -0.028em; line-height: 1.08; }
+.h-section { font-size: var(--step-3); letter-spacing: -0.024em; line-height: 1.1; }
 .h-card    { font-size: var(--step-1); letter-spacing: -0.02em; line-height: 1.2; font-weight: 700; }
 
 /* The brand-coloured full stop. h.dot() in the view helpers wraps the closing
@@ -282,17 +291,52 @@ strong, b { font-weight: 600; color: var(--ink); }
   letter-spacing: .02em; font-variant-numeric: tabular-nums;
 }
 
-/* Section header: heading on the left, a link on the right. */
+/*
+ * Section header — views/partials/shead.ejs.
+ *
+ * On a phone it is one column: label, title, one line of explanation, link.
+ * On a laptop it becomes a row across the full container: the label and title
+ * hold the left five-twelfths, the explanation and the "view all" link the
+ * right seven, and both sides sit on the same bottom line. That is what keeps
+ * the right half of the screen from standing empty beside a heading, without
+ * resorting to a heading long enough to fill it.
+ */
 .shead {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  gap: 1.5rem 2.5rem; flex-wrap: wrap; margin-bottom: clamp(2rem, 3.5vw, 3.25rem);
+  display: grid; gap: 1rem var(--split-gap);
+  margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
 }
-.shead__text { max-width: 60ch; }
-.shead__text .lede { margin-top: 1.1rem; }
-.shead--center { justify-content: center; text-align: center; }
-.shead--center .shead__text { margin-inline: auto; }
-.shead--center .eyebrow { text-align: center; }
-.shead--center .lede { margin-inline: auto; }
+.shead__main > .eyebrow { margin-bottom: .8rem; }
+.shead__side {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;
+}
+.shead .lede { font-size: clamp(1.0625rem, 1rem + .25vw, 1.1875rem); max-width: 60ch; }
+.shead .tlink { flex: none; white-space: nowrap; }
+@media (min-width: 1024px) {
+  .shead { grid-template-columns: var(--split); align-items: end; }
+  /* The explanation reads left to right and the link closes the row at the
+     container's right edge — the same edge the card grid below stops at. */
+  .shead__side {
+    flex-direction: row; align-items: flex-end; justify-content: space-between;
+    gap: 2.5rem;
+  }
+  .shead__main:only-child { grid-column: 1 / -1; }
+  /* With no explanation beside it, the link still closes the row on the right. */
+  .shead__side > .tlink { margin-left: auto; }
+}
+
+/*
+ * Side-headed section: the title column on the left, the body on the right,
+ * on the same split as the section header. Used where a section is prose
+ * rather than a grid of cards, so the text runs at a readable measure and the
+ * right side of the page is still used.
+ */
+.sidehead { display: grid; gap: 1.5rem var(--split-gap); }
+.sidehead__head .eyebrow { margin-bottom: .8rem; }
+.sidehead__head .lede { margin-top: 1.1rem; font-size: clamp(1.0625rem, 1rem + .25vw, 1.1875rem); }
+@media (min-width: 1024px) {
+  .sidehead { grid-template-columns: var(--split); align-items: start; }
+  .sidehead__head { position: sticky; top: calc(var(--header-h) + 2rem); }
+}
 
 /* --------------------------------------------------------------- buttons */
 .btn {
@@ -459,19 +503,19 @@ strong, b { font-weight: 600; color: var(--ink); }
  * at exactly the width where the contrast is doing the most work.
  */
 .hero__lead {
-  font-size: clamp(1.1875rem, .95rem + 1.15vw, 1.9375rem);
+  font-size: clamp(1.125rem, .98rem + .65vw, 1.5rem);
   font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  letter-spacing: -0.018em;
+  line-height: 1.25;
   color: var(--ink-3);
-  margin-bottom: .3em;
+  margin-bottom: .35em;
   text-wrap: balance;
 }
 .hero__payoff {
-  font-size: clamp(2.375rem, 1.85rem + 2.9vw, 4.25rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: .98;
+  font-size: var(--step-5);
+  font-weight: 700;
+  letter-spacing: -0.034em;
+  line-height: 1.04;
   color: var(--ink);
 }
 .hero__sub {
@@ -488,8 +532,8 @@ strong, b { font-weight: 600; color: var(--ink); }
 .stat + .stat { border-left: 1px solid var(--hair); padding-left: clamp(1.25rem, 2.5vw, 2rem); margin-left: clamp(1.25rem, 2.5vw, 2rem); }
 .stat__value {
   margin: 0;
-  font-family: var(--font-display); font-size: clamp(1.75rem, 1.4rem + 1.1vw, 2.375rem);
-  font-weight: 800; letter-spacing: -0.032em; color: var(--ink); line-height: 1;
+  font-family: var(--font-display); font-size: clamp(1.625rem, 1.35rem + .9vw, 2.125rem);
+  font-weight: 700; letter-spacing: -0.03em; color: var(--ink); line-height: 1;
 }
 .stat__label {
   font-size: var(--step--1); font-weight: 600; letter-spacing: .075em;
@@ -545,13 +589,70 @@ strong, b { font-weight: 600; color: var(--ink); }
   .stat__label { margin-top: 0; }
 }
 
-/* Page hero — interior pages. Left aligned, breadcrumb above the title. */
-.phero { padding-block: clamp(2.25rem, 4.5vw, 4rem) clamp(1.75rem, 3.5vw, 3rem); }
-.phero__title { max-width: 24ch; }
-.phero .lede { margin-top: 1.5rem; }
+/*
+ * Page hero — interior pages. Breadcrumb above, then the same split as the
+ * section headers: a short title on the left, the introduction on the right,
+ * on one bottom line. On a phone the two stack.
+ */
+.phero { padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3.25rem); }
+.phero__grid { display: grid; gap: 1.1rem var(--split-gap); }
+.phero__main > .eyebrow { margin-bottom: .9rem; }
+.phero__side { display: grid; gap: 1.25rem; justify-items: start; }
+.phero__side .lede, .phero__side .prose { max-width: 62ch; }
+.phero__side .btn-row { margin-top: .25rem; }
+@media (min-width: 1024px) {
+  .phero__grid { grid-template-columns: var(--split); align-items: end; }
+  .phero__side { padding-bottom: .25rem; }
+  /* For an introduction long enough to stand well above the title. */
+  .phero__grid--top { align-items: start; }
+}
 .phero--center { text-align: center; }
-.phero--center .phero__title, .phero--center .lede { margin-inline: auto; }
+.phero--center .lede { margin-inline: auto; }
 .phero--center .eyebrow { text-align: center; }
+
+/*
+ * Page hero with a photograph — category and industry pages. Text and image
+ * share the row equally on a laptop. On a phone the title comes first, the
+ * photograph second at a shorter crop, and the longer introduction after it,
+ * so the page still opens on words rather than on a picture.
+ */
+.mhero {
+  display: grid; gap: 1.5rem;
+  grid-template-areas: 'head' 'media' 'body';
+}
+.mhero__head { grid-area: head; }
+.mhero__head > .eyebrow { margin-bottom: .9rem; }
+.mhero__body { grid-area: body; display: grid; gap: 1.5rem; justify-items: start; align-content: start; }
+.mhero__media { grid-area: media; margin: 0; min-width: 0; }
+/* height:auto overrides the height attribute, which would otherwise win over
+   aspect-ratio and stretch the photograph to its intrinsic height. */
+.mhero__media img {
+  width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; display: block;
+  border-radius: var(--r-lg); background: var(--surface-2);
+}
+.mhero__lead {
+  margin-top: 1.1rem; max-width: 46ch;
+  font-size: var(--step-1); font-weight: 500; line-height: 1.45;
+  letter-spacing: -0.014em; color: var(--ink);
+}
+@media (min-width: 1024px) {
+  .mhero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'head media' 'body media';
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(2.5rem, 5vw, 5rem); row-gap: 1.5rem;
+  }
+  .mhero__media { align-self: center; }
+  .mhero__media img { aspect-ratio: 4 / 3; }
+}
+/* The same hero with a card in place of the photograph (role pages). The
+   text is the substance here, so it takes the wider column; on a phone the
+   card follows the introduction rather than interrupting it. */
+.mhero--card { grid-template-areas: 'head' 'body' 'media'; }
+@media (min-width: 1024px) {
+  .mhero--card { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: 'head media' 'body media'; }
+  .mhero--card .mhero__media { align-self: start; }
+}
 
 /* --------------------------------------------------------------- value equation */
 .value {
@@ -604,6 +705,12 @@ strong, b { font-weight: 600; color: var(--ink); }
 .cards--2 { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); }
 .cards--3 { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
 .cards--4 { grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); }
+/* Pinned rather than auto-filled on a laptop: eight categories or eight
+   industries make two full rows of four, never a row of five and a row of
+   three with a blank hole beside it. */
+@media (min-width: 1024px) {
+  .cards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 .card {
   background: var(--surface); padding: clamp(1.4rem, 2.2vw, 1.9rem);
@@ -622,6 +729,7 @@ strong, b { font-weight: 600; color: var(--ink); }
   letter-spacing: -0.022em; line-height: 1.2; color: var(--ink);
 }
 .card__desc { color: var(--ink-3); font-size: .94rem; line-height: 1.55; }
+.card__lead { color: var(--ink); font-size: .94rem; font-weight: 600; line-height: 1.45; }
 .card__meta {
   margin-top: auto; padding-top: 1.1rem;
   font-size: var(--step--1); color: var(--ink-4); font-weight: 500;
@@ -630,6 +738,31 @@ strong, b { font-weight: 600; color: var(--ink); }
 .card__arrow { color: var(--hair-3); transition: transform .25s var(--ease), color .25s var(--ease); flex: none; }
 .card:hover .card__arrow { transform: translateX(4px); color: var(--brand); }
 .card--link::after { content: ''; position: absolute; inset: 0; }
+/*
+ * Link list — "other categories", "other industries". Navigation, not
+ * reading, so no boxes: a hairline above each row, the name and an arrow.
+ * Rows read cleanly whatever the count, where a panel of boxed cards leaves a
+ * ragged last row with blank cells beside it. One column on a phone.
+ */
+.linklist { display: grid; column-gap: clamp(1.5rem, 3vw, 2.5rem); border-bottom: 1px solid var(--hair); }
+@media (min-width: 560px) { .linklist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .linklist { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.linklist a {
+  display: flex; align-items: center; gap: .9rem;
+  padding-block: 1.05rem; border-top: 1px solid var(--hair);
+  font-weight: 600; font-size: .98rem; letter-spacing: -0.01em; color: var(--ink);
+  transition: color .18s var(--ease);
+}
+.linklist a > span:not([class]) { flex: 1; }
+.linklist .card__num { flex: none; min-width: 1.4rem; }
+.linklist a:hover { color: var(--brand); }
+.linklist a:hover .card__arrow { transform: translateX(4px); color: var(--brand); }
+
+/* The smaller card, for the home page panels and the plant's capability list. */
+.card--sm .card__title { font-size: 1.0625rem; }
+.card--sm .card__desc { font-size: .88rem; }
+.cards--plant { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 420px) { .cards--plant .card { padding: 1.1rem 1rem; } }
 
 /* Product card — standalone, floats on the ground rather than joining a panel. */
 .cards--loose {
@@ -782,10 +915,74 @@ strong, b { font-weight: 600; color: var(--ink); }
 .crumbs span { color: var(--hair-3); }
 .crumbs [aria-current] { color: var(--ink-3); }
 
-.pdp__layout { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
-@media (max-width: 940px) { .pdp__layout { grid-template-columns: 1fr; } }
+/*
+ * Product hero. On a laptop it is the layout a buyer expects from a product
+ * page: photographs on the left, and on the right the name, the one-line
+ * promise, the key figures and the enquiry button. On a phone the name comes
+ * first, then the photographs, then the figures and the button — so the page
+ * opens on what the product is, not on a picture of it.
+ */
+.pdp__hero {
+  display: grid; gap: 1.5rem;
+  grid-template-areas: 'intro' 'gallery' 'buy';
+}
+.pdp__gallery { grid-area: gallery; min-width: 0; }
+.pdp__intro { grid-area: intro; min-width: 0; }
+.pdp__buy { grid-area: buy; min-width: 0; display: grid; gap: 1.5rem; align-content: start; }
+.pdp__code { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .9rem; }
+.pdp__title { font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem); letter-spacing: -0.026em; line-height: 1.1; }
+.pdp__tagline {
+  margin-top: .9rem; max-width: 48ch;
+  font-size: var(--step-1); line-height: 1.45; letter-spacing: -0.012em; color: var(--ink-3);
+}
+@media (min-width: 940px) {
+  .pdp__hero {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas: 'gallery intro' 'gallery buy';
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(2.5rem, 4.5vw, 4.5rem); row-gap: 1.75rem;
+  }
+}
+
+/* The figures a buyer checks first, as hairline rows. */
+.pdp__facts { margin: 0; border-top: 1px solid var(--hair); }
+.pdp__fact {
+  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 1rem;
+  padding-block: .85rem; border-bottom: 1px solid var(--hair);
+}
+.pdp__fact dt {
+  font-size: var(--step--1); font-weight: 600; letter-spacing: .075em;
+  text-transform: uppercase; color: var(--ink-3); padding-top: .1rem;
+}
+.pdp__fact dd { margin: 0; font-size: .96rem; color: var(--ink-2); line-height: 1.5; }
+.pdp__assure { display: grid; gap: .55rem; }
+.pdp__assure li { display: flex; gap: .6rem; font-size: .92rem; color: var(--ink-2); line-height: 1.5; }
+.pdp__assure svg { flex: none; margin-top: .3rem; color: var(--brand); }
+@media (max-width: 560px) {
+  .pdp__buy .btn-row .btn { flex: 1 1 100%; }
+}
+
+/*
+ * Body: the long read on the left, a sidebar on the right. The sidebar is
+ * stretched to the full height of the read so that the enquiry card at its
+ * foot has room to stay in view — a sticky element can only travel inside its
+ * own parent, and a sidebar only as tall as its contents gives it none, which
+ * is what used to leave the right half of the page empty after the first
+ * screen. The category list sits above the card and scrolls away normally.
+ */
+.pdp__layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: clamp(2rem, 5vw, 5rem); align-items: start;
+}
+.pdp__aside { align-self: stretch; display: flex; flex-direction: column; gap: 1.5rem; }
+.pdp__aside .rail { margin-top: 0; }
+@media (max-width: 940px) {
+  .pdp__layout { grid-template-columns: 1fr; }
+  .pdp__aside .rail { position: static; }
+}
 .pdp__block { margin-block: clamp(2rem, 3.5vw, 3rem); }
 .pdp__block > h2 { margin-bottom: 1.15rem; }
+.pdp__main > .problem:first-child { margin-top: 0; }
 
 .gallery__main {
   position: relative; aspect-ratio: 4/3; background: var(--surface-2);
@@ -815,18 +1012,13 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 .problem__label::before { content: ''; width: 18px; height: 2px; background: var(--brand); flex: none; }
 .problem__head {
-  font-family: var(--font-display); font-size: var(--step-2); font-weight: 800;
-  letter-spacing: -0.028em; line-height: 1.14; color: var(--ink); margin-bottom: .9rem;
+  font-family: var(--font-display); font-size: var(--step-1); font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.3; color: var(--ink); margin-bottom: .9rem;
+  max-width: 52ch;
 }
 .problem__body { color: var(--ink-2); line-height: 1.65; }
 .problem__body p + p { margin-top: .9em; }
 .problem__head:last-child { margin-bottom: 0; }
-
-/* A brand-coloured sub-headline, under a product name. */
-.subhead {
-  font-family: var(--font-display); font-size: var(--step-2); font-weight: 700;
-  letter-spacing: -0.024em; line-height: 1.2; color: var(--brand);
-}
 
 /* Specification rows. */
 .spec {
@@ -907,6 +1099,8 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 
 /* --------------------------------------------------------------- FAQ */
 .faqlayout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+/* Stretched so the rail inside has the height of the page to stick within. */
+.faqlayout > aside { align-self: stretch; }
 @media (max-width: 1000px) { .faqlayout { grid-template-columns: 1fr; } }
 
 .faqgroup + .faqgroup { margin-top: clamp(2.5rem, 4vw, 3.5rem); }
@@ -922,6 +1116,14 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 }
 .qa__a { color: var(--ink-2); line-height: 1.7; max-width: 68ch; }
 .qa__a p + p { margin-top: .8em; }
+/* Full-width question lists (a product's own questions): on a laptop the
+   question takes the left column and the answer the right, on the site's
+   split, instead of a single narrow column with nothing beside it. */
+.qa--split { border-top: 1px solid var(--hair); }
+@media (min-width: 1024px) {
+  .qa--split .qa__item { display: grid; grid-template-columns: var(--split); gap: var(--split-gap); }
+  .qa--split .qa__q { margin-bottom: 0; font-size: 1.125rem; line-height: 1.4; }
+}
 /* Deep links land under the sticky header rather than behind it. */
 .qa__item:target { scroll-margin-top: calc(var(--header-h) + 4.5rem); }
 .qa__item:target .qa__q { color: var(--brand); }
@@ -942,6 +1144,7 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
   font-size: var(--step--1); color: var(--ink-3);
 }
 .legal__meta strong { font-weight: 600; }
+.phero__side .legal__meta { margin-top: 0; padding-top: 1.1rem; justify-self: stretch; }
 
 .legal__section {
   padding-block: clamp(1.9rem, 3vw, 2.75rem);
@@ -1042,7 +1245,24 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 }
 .fset__title {
   display: block; font-family: var(--font-display); font-size: var(--step-2);
-  font-weight: 800; letter-spacing: -0.028em; line-height: 1.1; color: var(--ink); margin-top: .45rem;
+  font-weight: 700; letter-spacing: -0.024em; line-height: 1.15; color: var(--ink); margin-top: .45rem;
+}
+
+/* Specification form with its explanation beside it. The form keeps a
+   comfortable measure on the left; the right column says what happens to the
+   answers and who reads them, and stays in view while the form is filled. */
+.formlayout {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: clamp(2rem, 5vw, 5rem); align-items: start;
+}
+.formlayout > aside { align-self: stretch; }
+@media (max-width: 1000px) { .formlayout { grid-template-columns: 1fr; } }
+.nextsteps { display: grid; gap: 1rem; margin-bottom: 1.5rem; counter-reset: next; }
+.nextsteps li { display: grid; grid-template-columns: 1.75rem 1fr; gap: .6rem; font-size: .92rem; color: var(--ink-2); line-height: 1.5; }
+.nextsteps li::before {
+  counter-increment: next; content: counter(next, decimal-leading-zero);
+  font-size: var(--step--1); font-weight: 600; color: var(--brand);
+  font-variant-numeric: tabular-nums; padding-top: .1rem;
 }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -1228,18 +1448,84 @@ a.ctacard__value:hover { color: var(--brand); }
   letter-spacing: -0.026em; line-height: 1.22; color: var(--ink);
 }
 
-.measured {
-  margin-top: 2rem; display: inline-flex; align-items: center; gap: .75rem;
-  padding: .6rem 1.15rem; border: 1px solid var(--hair-2); border-radius: var(--r-pill);
-  background: var(--surface);
+/* What a role is measured on — the right-hand card of a role page hero. */
+.focuscard {
+  background: var(--surface); border: 1px solid var(--hair);
+  border-radius: var(--r-xl); padding: clamp(1.5rem, 2.4vw, 2rem);
+  box-shadow: var(--lift-1);
 }
-.measured svg { color: var(--purple); flex: none; }
+.focuscard__icon { color: var(--purple); margin-bottom: 1rem; }
+.focuscard__label {
+  font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: .35rem;
+}
+.focuscard__list { margin-bottom: 1.5rem; }
+.focuscard__list li {
+  display: flex; align-items: center; gap: .75rem;
+  padding-block: .75rem; border-bottom: 1px solid var(--hair);
+  font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600;
+  letter-spacing: -0.012em; color: var(--ink);
+}
+.focuscard__list li::before {
+  content: ''; width: 7px; height: 7px; background: var(--purple); border-radius: 1px; flex: none;
+}
+.focuscard .btn { width: 100%; }
+
+/* A list of points set in two columns on a laptop, one on a phone. */
+.featlist--cols { column-gap: var(--split-gap); }
+@media (min-width: 1024px) {
+  .featlist--cols { grid-template-columns: 1fr 1fr; }
+  .featlist--cols li:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
+}
 
 .optionbox {
   margin-block: clamp(2rem, 3.5vw, 3rem); padding: clamp(1.5rem, 2.4vw, 2rem);
   background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r-xl);
 }
 .optionbox p { color: var(--ink-3); font-size: .95rem; margin-bottom: 1.35rem; max-width: 62ch; line-height: 1.6; }
+
+/* ------------------------------------------------------- phone patterns
+   A phone is not a narrow laptop. Below 700px only:
+
+   .swipe-sm turns a grid of cards into one row that scrolls sideways and
+   snaps, so six product cards or eight photographs cost one screen of height
+   instead of six. The next card peeks in from the edge to say there is more.
+
+   .cards--list-sm turns the home page's category and industry panels into a
+   tight list: the one-line description goes, the padding comes in, and an
+   industry row puts its arrow beside the name. Eight rows, not eight cards.
+
+   The calls to action in heroes and the closing panel go full width, so the
+   two buttons stack as a matched pair rather than wrapping unevenly. */
+@media (max-width: 700px) {
+  .swipe-sm {
+    display: grid; grid-template-columns: none;
+    grid-auto-flow: column; grid-auto-columns: 80%;
+    gap: .9rem; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+    margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) .75rem;
+    scrollbar-width: none;
+  }
+  .swipe-sm::-webkit-scrollbar { display: none; }
+  .swipe-sm > * { scroll-snap-align: start; }
+  .swipe-sm > .pcard:hover, .swipe-sm > figure:hover { transform: none; }
+
+  .cards--list-sm .card { padding: 1rem 1.2rem; gap: .3rem; }
+  .cards--list-sm .card__desc { display: none; }
+  .cards--list-sm .card__meta { padding-top: .3rem; }
+  .cards--list-sm .card--row-sm { flex-direction: row; align-items: center; justify-content: space-between; }
+  .cards--list-sm .card--row-sm .card__meta { margin: 0; padding: 0; }
+  .cards--list-sm .card--row-sm .card__meta > span:empty { display: none; }
+
+  .roles .role { padding: 1.2rem 1.25rem; gap: .4rem; }
+  .roles .role__icon { margin-bottom: .1rem; }
+  .roles .role__go { padding-top: .6rem; }
+}
+@media (max-width: 560px) {
+  .hero .btn-row .btn,
+  .mhero__body .btn-row .btn,
+  .ctapanel .btn-row .btn { flex: 1 1 100%; }
+}
 
 /* Reveal on scroll. Scoped to .js so content is never hidden when
    JavaScript is unavailable or fails to run. */

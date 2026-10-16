@@ -128,8 +128,10 @@ The catalogue's selling approach is built into the structure rather than
 written on the page. Nothing internal — no sales instructions, no marketing
 playbook — appears anywhere on the public site.
 
-- **Every product page opens with the problem it prevents**, then explains the
-  product, then the specification. The loss comes first, the product last.
+- **Every product page reads problem first.** The top of the page is the
+  product itself — photographs, name, key figures and the enquiry button, as a
+  buyer expects a product page to open. The read below it starts with the
+  problem the product prevents, then explains it, then the specification.
 - **Four role pages** (`/for/...`) let operations, quality, safety and
   procurement each arrive at the argument they are measured on, instead of
   everything funnelling through a price conversation.
@@ -172,6 +174,22 @@ public/admin/            the image panel's page and configuration
 ```
 
 `dist/` is generated and not committed.
+
+### Layout
+
+Headings are short labels ("Our product range", "Industries we serve"), never
+sentences; the argument goes in the line of explanation beside them.
+
+On a laptop every section header, page hero and side-headed section divides
+the container at the same line — title in the left five-twelfths, explanation
+and link in the right seven — so a heading row always spans the full width.
+Section headers all come from one partial, `views/partials/shead.ejs`; the
+split itself is `--split` in `site.css`. Below 1024px it collapses to one column.
+
+A phone gets its own arrangements rather than a squeezed laptop layout:
+product and photo rows scroll sideways (`.swipe-sm`), the home page's category
+and industry panels become tight lists (`.cards--list-sm`), a product page puts
+the name before the photographs, and hero buttons go full width.
 
 ### Cache headers
 

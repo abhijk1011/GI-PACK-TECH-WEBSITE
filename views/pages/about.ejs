@@ -6,13 +6,18 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap">
-      <p class="eyebrow"><%= b.hero_eyebrow %></p>
-      <h1 class="h-page phero__title"><%- h.dot(b.hero_heading) %></h1>
+    <div class="wrap phero__grid">
+      <div class="phero__main">
+        <p class="eyebrow"><%= b.hero_eyebrow %></p>
+        <h1 class="h-page"><%= b.hero_heading %></h1>
+      </div>
+      <div class="phero__side">
+        <p class="lede"><%= b.hero_sub %></p>
+      </div>
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight section--rule">
     <div class="wrap">
       <div class="split split--top">
         <div class="prose" style="font-size:var(--step-1);line-height:1.6;">
@@ -38,27 +43,35 @@
 
   <section class="section section--paper section--rule">
     <div class="wrap">
-      <div class="measure">
-      <p class="eyebrow">What we believe</p>
-      <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.belief_heading) %></h2>
-      <div class="prose" style="max-width:none;">
-        <% h.paragraphs(b.belief_body).forEach(function(para){ %><p><%= para %></p><% }) %>
-      </div>
-      <blockquote class="quote">
-        <p><%- h.dot(s.positioning_line) %></p>
-      </blockquote>
+      <div class="sidehead">
+        <div class="sidehead__head">
+          <p class="eyebrow">Our belief</p>
+          <h2 class="h-section"><%= b.belief_heading %></h2>
+          <p class="lede"><%= b.belief_lead %></p>
+        </div>
+        <div>
+          <div class="prose">
+            <% h.paragraphs(b.belief_body).forEach(function(para){ %><p><%= para %></p><% }) %>
+          </div>
+          <blockquote class="quote">
+            <p><%- h.dot(s.positioning_line) %></p>
+          </blockquote>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
-      <div class="measure">
-      <p class="eyebrow">How we work</p>
-      <h2 class="h-section" style="margin-bottom:1.75rem;"><%- h.dot(b.refuse_heading) %></h2>
-      <div class="prose" style="max-width:none;">
-        <% h.paragraphs(b.refuse_body).forEach(function(para){ %><p><%= para %></p><% }) %>
-      </div>
+      <div class="sidehead">
+        <div class="sidehead__head">
+          <p class="eyebrow">Our standards</p>
+          <h2 class="h-section"><%= b.refuse_heading %></h2>
+          <p class="lede"><%= b.refuse_lead %></p>
+        </div>
+        <div class="prose">
+          <% h.paragraphs(b.refuse_body).forEach(function(para){ %><p><%= para %></p><% }) %>
+        </div>
       </div>
     </div>
   </section>
@@ -66,8 +79,8 @@
   <% if (proof.length) { %>
     <section class="section section--paper section--rule">
       <div class="wrap">
-        <p class="eyebrow">Real work</p>
-        <div class="gallerystrip" style="margin-top:1.5rem;">
+        <%- include('../partials/shead', { sh: { eyebrow: 'Gallery', title: 'Product images', lede: 'Photographs of what we actually make.' } }) %>
+        <div class="gallerystrip swipe-sm">
           <% proof.forEach(function(img){ %>
             <figure>
               <img src="<%= img.path %>" alt="<%= img.alt %>" loading="lazy" width="500" height="375">
