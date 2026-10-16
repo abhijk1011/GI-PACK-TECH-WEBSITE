@@ -120,11 +120,11 @@
   --step-4:  clamp(1.875rem, 1.48rem + 1.45vw, 2.75rem);
   --step-5:  clamp(2.25rem, 1.66rem + 2.2vw, 3.5rem);
 
-  /* The site's one column split. Section headers, page heroes and side-headed
-     sections all divide the container at the same line — title in the left
-     five-twelfths, content in the right seven — so on a laptop every heading
-     row spans the full width and the right-hand column starts at the same x
-     on every page. Below 1024px it collapses to a single column. */
+  /* The site's one column split, for sections that set a title block beside
+     its content (the plant's capabilities, the about page's prose, a
+     product's questions and answers): title in the left five-twelfths,
+     content in the right seven, so the right-hand column starts at the same
+     x on every page. Below 1024px it collapses to a single column. */
   --split:      minmax(0, 5fr) minmax(0, 7fr);
   --split-gap:  clamp(2rem, 5vw, 5.5rem);
 
@@ -294,34 +294,43 @@ strong, b { font-weight: 600; color: var(--ink); }
 /*
  * Section header — views/partials/shead.ejs.
  *
- * On a phone it is one column: label, title, one line of explanation, link.
- * On a laptop it becomes a row across the full container: the label and title
- * hold the left five-twelfths, the explanation and the "view all" link the
- * right seven, and both sides sit on the same bottom line. That is what keeps
- * the right half of the screen from standing empty beside a heading, without
- * resorting to a heading long enough to fill it.
+ * The explanation always sits directly under the title, never beside it: a
+ * line of grey text floating to the right of a heading has no edge to align
+ * to on either end, and reads as an accident.
+ *
+ * On a laptop the block is centred — label, title, one or two lines of
+ * explanation, then the "view all" link — over the full-width grid below it,
+ * the way Apple, Stripe and most premium B2B sites open a section. The text is
+ * held to about sixty characters so the explanation breaks into two even
+ * lines rather than one long one.
+ *
+ * .shead--left is the catalogue variant, for a run of similar shelves (the
+ * full product list) and the "other categories" link lists: title and
+ * explanation stacked on the left, the link closing the row on the right edge
+ * of the grid it introduces.
+ *
+ * On a phone both are left-aligned. Centred paragraphs on a narrow screen give
+ * a ragged edge on both sides; a phone reads down the left edge.
  */
 .shead {
-  display: grid; gap: 1rem var(--split-gap);
-  margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1.1rem;
+  margin-bottom: clamp(2rem, 3.5vw, 3.25rem);
 }
-.shead__main > .eyebrow { margin-bottom: .8rem; }
-.shead__side {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;
+.shead__text { max-width: 46rem; }
+.shead .eyebrow { margin-bottom: .85rem; }
+.shead .lede {
+  margin-top: .9rem; max-width: 60ch;
+  font-size: clamp(1.0625rem, 1rem + .3vw, 1.25rem); line-height: 1.55;
 }
-.shead .lede { font-size: clamp(1.0625rem, 1rem + .25vw, 1.1875rem); max-width: 60ch; }
 .shead .tlink { flex: none; white-space: nowrap; }
-@media (min-width: 1024px) {
-  .shead { grid-template-columns: var(--split); align-items: end; }
-  /* The explanation reads left to right and the link closes the row at the
-     container's right edge — the same edge the card grid below stops at. */
-  .shead__side {
-    flex-direction: row; align-items: flex-end; justify-content: space-between;
-    gap: 2.5rem;
-  }
-  .shead__main:only-child { grid-column: 1 / -1; }
-  /* With no explanation beside it, the link still closes the row on the right. */
-  .shead__side > .tlink { margin-left: auto; }
+@media (min-width: 768px) {
+  .shead:not(.shead--left) { align-items: center; text-align: center; }
+  /* Balanced, so a centred two-line explanation breaks into two even lines
+     instead of a full line and a stray word or two. */
+  .shead:not(.shead--left) .lede { margin-inline: auto; text-wrap: balance; }
+  .shead:not(.shead--left) .tlink { margin-top: .15rem; }
+  .shead--left { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 2.5rem; }
+  .shead--left .shead__text { max-width: 60ch; }
 }
 
 /*
@@ -362,6 +371,7 @@ strong, b { font-weight: 600; color: var(--ink); }
 .btn__arrow { display: inline-flex; transition: transform .25s var(--ease); }
 .btn:hover .btn__arrow { transform: translateX(4px); }
 .btn-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+@media (min-width: 768px) { .btn-row--center { justify-content: center; } }
 
 /* Bold text link with a trailing arrow. */
 .tlink {
@@ -590,21 +600,18 @@ strong, b { font-weight: 600; color: var(--ink); }
 }
 
 /*
- * Page hero — interior pages. Breadcrumb above, then the same split as the
- * section headers: a short title on the left, the introduction on the right,
- * on one bottom line. On a phone the two stack.
+ * Page hero — interior pages without a photograph. One stacked block —
+ * label, title, introduction — centred on a laptop and left-aligned on a
+ * phone, so the introduction always sits under the title it explains.
  */
-.phero { padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3.25rem); }
-.phero__grid { display: grid; gap: 1.1rem var(--split-gap); }
-.phero__main > .eyebrow { margin-bottom: .9rem; }
-.phero__side { display: grid; gap: 1.25rem; justify-items: start; }
-.phero__side .lede, .phero__side .prose { max-width: 62ch; }
-.phero__side .btn-row { margin-top: .25rem; }
-@media (min-width: 1024px) {
-  .phero__grid { grid-template-columns: var(--split); align-items: end; }
-  .phero__side { padding-bottom: .25rem; }
-  /* For an introduction long enough to stand well above the title. */
-  .phero__grid--top { align-items: start; }
+.phero { padding-block: clamp(2.25rem, 4.5vw, 4rem) clamp(2.25rem, 4.5vw, 3.75rem); }
+.phero__inner { max-width: 50rem; }
+.phero__inner > .eyebrow { margin-bottom: .9rem; }
+.phero__inner > .lede { margin-top: 1.15rem; max-width: 62ch; }
+@media (min-width: 768px) {
+  .phero__inner { margin-inline: auto; text-align: center; }
+  .phero__inner > .lede { margin-inline: auto; text-wrap: balance; }
+  .phero__inner .legal__meta { justify-content: center; }
 }
 .phero--center { text-align: center; }
 .phero--center .lede { margin-inline: auto; }
@@ -710,6 +717,9 @@ strong, b { font-weight: 600; color: var(--ink); }
    three with a blank hole beside it. */
 @media (min-width: 1024px) {
   .cards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* Product cards three across: six featured products make two even rows,
+     and a photograph at this width is large enough to read the product. */
+  .cards--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 .card {
@@ -853,30 +863,43 @@ strong, b { font-weight: 600; color: var(--ink); }
   letter-spacing: -0.02em; color: var(--ink); line-height: 1.25;
 }
 
-/* --------------------------------------------------------------- diameter scale */
+/* --------------------------------------------------------------- diameter scale
+   A drawn graph, not a row of tiles. The circles stand on one floor line,
+   spaced so the first starts exactly where the floor starts and the last
+   ends exactly where it ends; the labels sit under their circles on the same
+   spacing, and the dimension line below spans the same width, so every start
+   and end point in the figure lines up. --k scales the drawing down on a
+   phone without changing its proportions. */
 .scale {
+  --k: 1;
   margin-top: clamp(2rem, 3.5vw, 3rem); background: var(--surface);
   border: 1px solid var(--hair); border-radius: var(--r-xl);
-  padding: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3.25rem) clamp(1.5rem, 5vw, 4rem);
 }
-.scale__track { display: flex; align-items: flex-end; gap: clamp(.5rem, 2vw, 1.75rem); justify-content: space-between; min-height: 190px; }
-.scale__item { display: flex; flex-direction: column; align-items: center; gap: .7rem; flex: 1; }
+.scale__track, .scale__labels { display: flex; justify-content: space-between; }
+.scale__track { align-items: flex-end; border-bottom: 1.5px solid var(--hair-2); }
 .scale__circle {
+  display: block; flex: none; width: calc(var(--d) * var(--k)); aspect-ratio: 1;
   border-radius: 50%; border: 1.5px solid var(--hair-3); background: var(--surface-2);
-  aspect-ratio: 1; width: 100%; max-width: var(--d);
+  margin-bottom: -1px;
   transition: border-color .25s var(--ease), background .25s var(--ease);
 }
-.scale__item:hover .scale__circle { border-color: var(--brand); background: var(--brand-tint); }
-.scale__label { font-size: var(--step--1); font-weight: 500; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scale__circle:hover { border-color: var(--brand); background: var(--brand-tint); }
+.scale__labels { margin-top: .9rem; }
+.scale__label {
+  flex: none; width: calc(var(--d) * var(--k)); display: flex; justify-content: center;
+  font-size: var(--step--1); font-weight: 600; color: var(--ink-2);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
 .scale__rule {
-  margin-top: 1.75rem; padding-top: 1.35rem; border-top: 1px solid var(--hair);
+  margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px dashed var(--hair-2);
   display: flex; justify-content: space-between; gap: 1rem;
   font-size: var(--step--2); font-weight: 600; letter-spacing: .085em;
   text-transform: uppercase; color: var(--ink-4);
 }
 @media (max-width: 700px) {
-  .scale__track { min-height: 120px; }
-  .scale__label { font-size: .68rem; }
+  .scale { --k: .5; }
+  .scale__label { font-size: .7rem; }
   .scale__rule span:nth-child(2) { display: none; }
 }
 
@@ -1144,7 +1167,7 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
   font-size: var(--step--1); color: var(--ink-3);
 }
 .legal__meta strong { font-weight: 600; }
-.phero__side .legal__meta { margin-top: 0; padding-top: 1.1rem; justify-self: stretch; }
+.phero__inner .legal__meta { max-width: 62ch; margin-inline: auto; }
 
 .legal__section {
   padding-block: clamp(1.9rem, 3vw, 2.75rem);
@@ -1394,6 +1417,7 @@ a.ctacard__value:hover { color: var(--brand); }
 
 /* Photograph strip. Each frame is its own rounded card. */
 .gallerystrip { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(1rem, 1.6vw, 1.5rem); }
+@media (min-width: 1024px) { .gallerystrip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .gallerystrip figure {
   margin: 0; background: var(--surface); border: 1px solid var(--hair);
   border-radius: var(--r-lg); overflow: hidden;
@@ -1524,6 +1548,7 @@ a.ctacard__value:hover { color: var(--brand); }
 @media (max-width: 560px) {
   .hero .btn-row .btn,
   .mhero__body .btn-row .btn,
+  .btn-row--center .btn,
   .ctapanel .btn-row .btn { flex: 1 1 100%; }
 }
 

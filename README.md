@@ -178,18 +178,25 @@ public/admin/            the image panel's page and configuration
 ### Layout
 
 Headings are short labels ("Our product range", "Industries we serve"), never
-sentences; the argument goes in the line of explanation beside them.
+sentences. The line that explains a heading always sits directly under it,
+never beside it.
 
-On a laptop every section header, page hero and side-headed section divides
-the container at the same line — title in the left five-twelfths, explanation
-and link in the right seven — so a heading row always spans the full width.
-Section headers all come from one partial, `views/partials/shead.ejs`; the
-split itself is `--split` in `site.css`. Below 1024px it collapses to one column.
+On a laptop a section header is one centred block — label, title, one or two
+lines of explanation, then the "view all" link — over the full-width grid
+below it. Interior pages without a photograph open the same way. The catalogue
+shelves on `/products` and the "other categories / industries" lists use the
+left-aligned variant, with the link closing the row on the right. All section
+headers come from one partial, `views/partials/shead.ejs` (pass
+`align: 'left'` for the variant).
+
+Category, industry, role and product pages open with two columns: the text
+stacked on the left, a photograph or card on the right.
 
 A phone gets its own arrangements rather than a squeezed laptop layout:
-product and photo rows scroll sideways (`.swipe-sm`), the home page's category
-and industry panels become tight lists (`.cards--list-sm`), a product page puts
-the name before the photographs, and hero buttons go full width.
+headers are left-aligned, product and photo rows scroll sideways
+(`.swipe-sm`), the home page's category and industry panels become tight lists
+(`.cards--list-sm`), a product page puts the name before the photographs, and
+buttons go full width.
 
 ### Cache headers
 

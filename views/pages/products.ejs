@@ -6,12 +6,10 @@
 
 <main id="main">
   <section class="phero gridbg">
-    <div class="wrap phero__grid">
-      <div class="phero__main">
+    <div class="wrap">
+      <div class="phero__inner">
         <p class="eyebrow"><%= total %> products &nbsp;·&nbsp; <%= s.stat_categories %> categories</p>
         <h1 class="h-page">All products</h1>
-      </div>
-      <div class="phero__side">
         <p class="lede">
           Not the limit of what the plant can make. If a size is not listed, it can almost
           certainly still be built.
@@ -35,10 +33,13 @@
       <div class="wrap">
         <%- include('../partials/shead', { sh: {
           eyebrow: 'Category ' + g.number, title: g.name, lede: g.tagline,
-          link: { href: '/products/' + g.slug, label: 'View category' }
+          link: { href: '/products/' + g.slug, label: 'View category' },
+          align: 'left'
         } }) %>
 
-        <div class="cards cards--4 cards--loose">
+        <%# On a phone each category is a shelf that swipes sideways, so the
+            whole range is eight rows deep rather than forty-three cards. %>
+        <div class="cards cards--4 cards--loose swipe-sm">
           <% g.products.forEach(function(p){ %>
             <%- include('../partials/product-card', { p: p }) %>
           <% }) %>

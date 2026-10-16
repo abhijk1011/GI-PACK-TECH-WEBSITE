@@ -5,25 +5,22 @@
     include('../partials/shead', { sh: {
       eyebrow: 'Products',               small label above the title (optional)
       title:   'Our product range',      a short label, not a sentence
-      lede:    'One line of explanation.' (optional)
+      lede:    'One line of explanation.' (optional) — always under the title
       link:    { href: '/products', label: 'All products' }  (optional)
+      align:   'left'                    (optional) the catalogue variant
     } })
 
-  On a laptop the title holds the left five-twelfths and the explanation and
-  link the right seven, so the heading row spans the full width of whatever
-  sits under it. On a phone the four stack. See .shead in site.css.
+  Centred on a laptop by default, with the link under the explanation. With
+  align: 'left' the text stacks on the left and the link closes the row on
+  the right. Left-aligned on a phone either way. See .shead in site.css.
 %>
-<header class="shead">
-  <div class="shead__main">
+<header class="shead<%= sh.align === 'left' ? ' shead--left' : '' %>">
+  <div class="shead__text">
     <% if (sh.eyebrow) { %><p class="eyebrow"><%= sh.eyebrow %></p><% } %>
     <h2 class="h-section"><%= sh.title %></h2>
+    <% if (sh.lede) { %><p class="lede"><%= sh.lede %></p><% } %>
   </div>
-  <% if (sh.lede || sh.link) { %>
-    <div class="shead__side">
-      <% if (sh.lede) { %><p class="lede"><%= sh.lede %></p><% } %>
-      <% if (sh.link) { %>
-        <a class="tlink" href="<%= sh.link.href %>"><%= sh.link.label %> <%- icon('arrow', 15) %></a>
-      <% } %>
-    </div>
+  <% if (sh.link) { %>
+    <a class="tlink" href="<%= sh.link.href %>"><%= sh.link.label %> <%- icon('arrow', 15) %></a>
   <% } %>
 </header>

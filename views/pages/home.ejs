@@ -137,20 +137,29 @@
     <div class="wrap">
       <%- include('../partials/shead', { sh: { eyebrow: b.diameter_eyebrow, title: b.diameter_heading, lede: b.diameter_sub } }) %>
 
+      <%#
+        Two rows on the same spacing — circles standing on a floor line, then
+        their labels — so each label sits exactly under its circle, and the
+        first and last circles meet the ends of the floor and of the
+        dimension line below it. See .scale in site.css.
+      %>
+      <% var diameters = [
+        { d: 6,   label: '6"',   note: 'Lab containers' },
+        { d: 14,  label: '14"',  note: 'Small drums' },
+        { d: 23,  label: '23"',  note: '200 L drums' },
+        { d: 40,  label: '40"',  note: 'Bulk drums' },
+        { d: 65,  label: '65"',  note: 'Open-top' },
+        { d: 100, label: '100"', note: 'Bulk containers' }
+      ]; %>
       <div class="scale" data-reveal>
-        <div class="scale__track">
-          <% [
-            { d: 6,   label: '6"',   note: 'Lab containers' },
-            { d: 14,  label: '14"',  note: 'Small drums' },
-            { d: 23,  label: '23"',  note: '200 L drums' },
-            { d: 40,  label: '40"',  note: 'Bulk drums' },
-            { d: 65,  label: '65"',  note: 'Open-top' },
-            { d: 100, label: '100"', note: 'Bulk containers' }
-          ].forEach(function(item){ %>
-            <div class="scale__item" title="<%= item.note %>">
-              <div class="scale__circle" style="--d: <%= 22 + item.d * 1.35 %>px;"></div>
-              <span class="scale__label"><%= item.label %></span>
-            </div>
+        <div class="scale__track" role="img" aria-label="Drum liner internal diameters from 6 to 100 inches">
+          <% diameters.forEach(function(item){ %>
+            <span class="scale__circle" style="--d: <%= 22 + item.d * 1.35 %>px;" title="<%= item.label %> — <%= item.note %>"></span>
+          <% }) %>
+        </div>
+        <div class="scale__labels">
+          <% diameters.forEach(function(item){ %>
+            <span class="scale__label" style="--d: <%= 22 + item.d * 1.35 %>px;"><%= item.label %></span>
           <% }) %>
         </div>
         <div class="scale__rule">
@@ -160,7 +169,7 @@
         </div>
       </div>
 
-      <div class="btn-row" style="margin-top:2rem;">
+      <div class="btn-row btn-row--center" style="margin-top:2rem;">
         <a class="btn btn--ink" href="/products/round-drum-liners">
           Round drum liners <span class="btn__arrow"><%- icon('arrow', 16) %></span>
         </a>
