@@ -362,6 +362,15 @@ const pages = [
         value: 'Photographs of what we actually make.',
       },
 
+      { block_key: 'videos_eyebrow', label: 'Videos section eyebrow', value: 'From the production line' },
+      { block_key: 'videos_heading', label: 'Videos section heading', value: 'Product videos' },
+      {
+        block_key: 'videos_sub',
+        label: 'Videos section sub-heading',
+        input_type: 'textarea',
+        value: 'Real footage of our products as they come off the line, before they are packed and shipped.',
+      },
+
       { block_key: 'industries_eyebrow', label: 'Industries section eyebrow', value: 'Industries' },
       { block_key: 'industries_heading', label: 'Industries section heading', value: 'Industries we serve' },
       {

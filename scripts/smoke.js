@@ -227,6 +227,17 @@ console.log('\nEvery referenced photograph exists');
     broken.length ? `missing: ${broken.join(', ')}` : '');
 }
 
+console.log('\nEvery product video exists');
+{
+  const referenced = model.videos.flatMap((v) => [v.file, v.poster].filter(Boolean));
+  const broken = referenced.filter((p) => !fs.existsSync(path.join(DIST, p)));
+  log(broken.length === 0, `${model.videos.length} videos and their stills resolve to a file`,
+    broken.length ? `missing: ${broken.join(', ')}` : '');
+  const untitled = model.videos.filter((v) => !v.title);
+  log(untitled.length === 0, 'every video has a heading',
+    untitled.length ? `no heading: ${untitled.map((v) => v.file).join(', ')}` : '');
+}
+
 console.log('\nNothing dynamic leaked into the output');
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 log(

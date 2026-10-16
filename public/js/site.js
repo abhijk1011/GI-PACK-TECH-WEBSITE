@@ -63,6 +63,109 @@
     });
   }
 
+  /* --------------------------------------------------- product videos
+   *
+   * Each clip plays, muted and looping, only while most of it is on screen,
+   * and pauses as soon as it leaves — so the page is never decoding six
+   * videos at once, and a clip that is never scrolled to is never downloaded
+   * (they are preload="none"). A clip the visitor paused stays paused. With
+   * reduced motion turned on nothing plays by itself; the button still works.
+   */
+  var vrail = document.querySelector('[data-vrail]');
+  if (vrail) {
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var clips = vrail.querySelectorAll('[data-vplay]');
+
+    clips.forEach(function (video) {
+      var media = video.parentNode;
+      var toggle = media.querySelector('[data-vtoggle]');
+      var sync = function () {
+        var playing = !video.paused;
+        media.setAttribute('data-state', playing ? 'playing' : 'paused');
+        if (toggle) toggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+      };
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          if (video.paused) {
+            video.removeAttribute('data-user-paused');
+            var started = video.play();
+            if (started && started.catch) started.catch(function () {});
+          } else {
+            video.setAttribute('data-user-paused', '');
+            video.pause();
+          }
+        });
+      }
+    });
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      var watcher = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            var video = entry.target;
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+              if (video.hasAttribute('data-user-paused')) return;
+              var started = video.play();
+              // A browser that refuses autoplay leaves the play button showing.
+              if (started && started.catch) started.catch(function () {});
+            } else if (!video.paused) {
+              video.pause();
+            }
+          });
+        },
+        { threshold: [0, 0.6] }
+      );
+      clips.forEach(function (video) { watcher.observe(video); });
+    }
+
+    /* The arrows move a page of whole cards; snapping squares it up. The bar
+       under the row only shows when there is somewhere to scroll to. */
+    var bar = document.querySelector('[data-vrail-bar]');
+    var thumb = bar && bar.querySelector('[data-vrail-progress]');
+    var prev = bar && bar.querySelector('[data-vrail-prev]');
+    var next = bar && bar.querySelector('[data-vrail-next]');
+
+    var pageWidth = function () {
+      var card = vrail.querySelector('.vcard');
+      var style = window.getComputedStyle(vrail);
+      var gap = parseFloat(style.columnGap) || 0;
+      var per = card ? card.getBoundingClientRect().width + gap : vrail.clientWidth;
+      var room = vrail.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+      return Math.max(1, Math.floor((room + gap) / per)) * per;
+    };
+    var go = function (dir) {
+      vrail.scrollBy({ left: dir * pageWidth(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+    if (prev) prev.addEventListener('click', function () { go(-1); });
+    if (next) next.addEventListener('click', function () { go(1); });
+
+    var railQueued = false;
+    var updateRail = function () {
+      railQueued = false;
+      var max = vrail.scrollWidth - vrail.clientWidth;
+      if (bar) bar.hidden = max <= 2;
+      if (max <= 2) return;
+      var shown = vrail.clientWidth / vrail.scrollWidth;
+      var along = vrail.scrollLeft / max;
+      if (thumb) {
+        thumb.style.width = shown * 100 + '%';
+        thumb.style.left = along * (1 - shown) * 100 + '%';
+      }
+      if (prev) prev.disabled = vrail.scrollLeft <= 2;
+      if (next) next.disabled = vrail.scrollLeft >= max - 2;
+    };
+    var queueRail = function () {
+      if (railQueued) return;
+      railQueued = true;
+      window.requestAnimationFrame(updateRail);
+    };
+    updateRail();
+    vrail.addEventListener('scroll', queueRail, { passive: true });
+    window.addEventListener('resize', queueRail, { passive: true });
+  }
+
   /* -------------------------------------------------- reveal on scroll */
   var revealables = document.querySelectorAll('[data-reveal]');
   if (revealables.length && 'IntersectionObserver' in window) {

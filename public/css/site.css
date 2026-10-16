@@ -1418,6 +1418,112 @@ a.ctacard__value:hover { color: var(--brand); }
 /* Photograph strip. Each frame is its own rounded card. */
 .gallerystrip { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(1rem, 1.6vw, 1.5rem); }
 @media (min-width: 1024px) { .gallerystrip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* --------------------------------------------------------------- product videos
+   Upright (9:16) clips in a row that scrolls sideways. The row runs the full
+   width of the window, so cards slide in from the edge, but its padding is
+   the container's own margin: the first card starts exactly on the page's
+   left edge and snapping keeps every resting position on that line. When the
+   cards all fit, the auto margins on the first and last centre them under
+   the centred heading instead. */
+.vrail {
+  --rail-pad: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter)));
+  display: flex; gap: clamp(.9rem, 1.4vw, 1.25rem);
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--rail-pad);
+  padding: .25rem var(--rail-pad) .5rem;
+  scrollbar-width: none;
+}
+.vrail::-webkit-scrollbar { display: none; }
+.vrail:focus-visible { outline-offset: -3px; border-radius: var(--r-lg); }
+
+.vcard { flex: 0 0 clamp(236px, 20.5vw, 296px); margin: 0; scroll-snap-align: start; min-width: 0; }
+.vcard:first-child { margin-left: auto; }
+.vcard:last-child { margin-right: auto; }
+
+.vcard__media {
+  position: relative; isolation: isolate; overflow: hidden;
+  aspect-ratio: 9 / 16; border-radius: var(--r-lg);
+  background: #16161a; box-shadow: var(--lift-1);
+}
+.vcard__video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* A light shade at the top and bottom edges, so the white label and button
+   stay legible whatever the frame behind them. */
+.vcard__media::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.30), transparent 20%, transparent 80%, rgba(0,0,0,.30));
+}
+.vcard__tag, .vcard__toggle {
+  position: absolute; z-index: 1; color: #fff;
+  background: rgba(16,16,18,.52);
+  backdrop-filter: saturate(160%) blur(10px); -webkit-backdrop-filter: saturate(160%) blur(10px);
+}
+.vcard__tag {
+  top: .8rem; left: .8rem; max-width: calc(100% - 1.6rem);
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .42rem .8rem .42rem .65rem; border-radius: var(--r-pill);
+  font-size: .75rem; font-weight: 600; letter-spacing: .01em; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vcard__tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); flex: none; }
+.vcard__toggle {
+  right: .8rem; bottom: .8rem; width: 44px; height: 44px; padding: 0;
+  display: grid; place-items: center; border: 0; border-radius: 50%; cursor: pointer;
+  transition: background .2s var(--ease), transform .2s var(--ease);
+}
+.vcard__toggle:hover { background: rgba(16,16,18,.78); transform: scale(1.06); }
+.vcard__toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 50%; }
+.vcard__icon { display: none; }
+.vcard__icon svg { display: block; }
+.vcard__icon svg { fill: currentColor; stroke: none; }
+.vcard__icon--play svg { margin-left: 2px; }
+.vcard__media[data-state='paused'] .vcard__icon--play,
+.vcard__media[data-state='playing'] .vcard__icon--pause { display: block; }
+
+.vcard__body { padding: 1rem .2rem 0; }
+.vcard__title {
+  font-family: var(--font-display); font-size: 1.0625rem; font-weight: 700;
+  letter-spacing: -0.016em; line-height: 1.3; color: var(--ink);
+}
+.vcard__line { margin-top: .35rem; font-size: .9rem; line-height: 1.5; color: var(--ink-3); }
+.vcard__link {
+  display: inline-flex; align-items: center; gap: .35rem; margin-top: .7rem;
+  font-size: .88rem; font-weight: 600; color: var(--ink); transition: color .18s var(--ease);
+}
+.vcard__link svg { transition: transform .25s var(--ease); }
+.vcard__link:hover { color: var(--brand); }
+.vcard__link:hover svg { transform: translateX(3px); }
+
+/* Under the row: how far along it you are, and the arrows. Hidden by the
+   script when every card already fits. */
+.vrail__bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-top: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+.vrail__progress {
+  position: relative; flex: 0 1 260px; height: 2px;
+  background: var(--hair); border-radius: 2px; overflow: hidden;
+}
+.vrail__progress span {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 0;
+  background: var(--ink); border-radius: 2px;
+}
+.vrail__nav { display: flex; gap: .6rem; }
+.vrail__btn {
+  width: 44px; height: 44px; padding: 0; display: grid; place-items: center;
+  border: 1px solid var(--hair-2); border-radius: 50%; background: var(--surface);
+  color: var(--ink); cursor: pointer;
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), opacity .2s var(--ease);
+}
+.vrail__btn--prev svg { transform: scaleX(-1); }
+.vrail__btn:hover:not(:disabled) { background: var(--ink); border-color: var(--ink); color: #fff; }
+.vrail__btn:disabled { opacity: .35; cursor: default; }
+@media (max-width: 700px) {
+  .vcard { flex-basis: min(64vw, 260px); }
+  /* A thumb swipes; the arrows are for a mouse. */
+  .vrail__nav { display: none; }
+  .vrail__progress { flex-basis: 100%; }
+}
 .gallerystrip figure {
   margin: 0; background: var(--surface); border: 1px solid var(--hair);
   border-radius: var(--r-lg); overflow: hidden;

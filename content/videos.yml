@@ -1,0 +1,24 @@
+# Product videos — the "Product videos" row on the home page, straight after
+# the product photographs.
+#
+# Real footage of products as they come off the line, shot upright (9:16).
+# The row is not shown at all until this list has at least one entry, so an
+# empty list never puts an empty section on the site.
+#
+# Each entry:
+#
+#   file:    /video/<name>.mp4    the clip, in public/video. H.264 MP4, 720 x
+#                                 1280, no sound track, a few MB at most.
+#   poster:  /video/<name>.webp   a still from the clip, shown while it loads
+#                                 and to anyone who has turned motion off.
+#   title:   EVOH Barrier Liner   the heading under the video
+#   line:    One sentence: the material and what it carries.
+#   product: evoh-barrier-liner   optional — the product's slug. Adds the
+#                                 category label on the video and a "View
+#                                 product" link under it.
+#   tag:     Bulk Bag Liners      optional — the label on the video, when it
+#                                 should differ from the product's category.
+#
+# The row plays in the order listed here.
+
+videos: []

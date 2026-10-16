@@ -110,6 +110,29 @@ and never touches a photograph you have set.
 
 ---
 
+## Product videos
+
+The home page has a row of upright (9:16) product videos straight after the
+product photographs — real footage of products coming off the line, each
+with a heading and a one-line description under it. The row is listed in
+`content/videos.yml`, and it is not shown at all until that list has an entry.
+
+To add one:
+
+```bash
+scripts/encode-video.sh ~/Downloads/evoh-liner.mov evoh-barrier-liner
+```
+
+That writes `public/video/evoh-barrier-liner.mp4` (720 × 1280, no sound, a
+few MB) and a still to show while it loads, and prints the entry to paste into
+`content/videos.yml` — fill in the heading, the one line, and optionally the
+product's slug, which adds its category label and a link to its page.
+
+Clips play muted and looping only while on screen, and load nothing until
+they first scroll into view. `npm run smoke` checks every listed file exists.
+
+---
+
 ## Enquiries
 
 The contact form and the specification form are handled by **Netlify Forms**,

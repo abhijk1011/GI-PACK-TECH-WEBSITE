@@ -125,6 +125,7 @@ function buildHome() {
     categories: model.categories.map((c) => ({ ...c, count: counts.get(c.slug) || 0 })),
     featured: model.products.filter((p) => p.featured).slice(0, 6),
     proof: model.proof.slice(0, 8),
+    videos: model.videos,
     valueRows: model.valueRows,
     roles: model.roles,
     industries: model.industries.slice(0, 8),

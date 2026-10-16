@@ -38,6 +38,13 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000"
 
+# Product videos, like photographs, are replaced under a new name rather than
+# edited in place, so a month's cache is safe.
+[[headers]]
+  for = "/video/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
 # The font files are a fixed release of Inter, so the bytes behind these names
 # never change. Cache them for a year.
 [[headers]]

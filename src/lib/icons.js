@@ -7,6 +7,8 @@ function icon(name, size = 16) {
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     arrowUR: '<path d="M7 17 17 7M8 7h9v9"/>',
     check: '<path d="M20 6 9 17l-5-5"/>',
+    play: '<path d="M8 5.5v13a.6.6 0 0 0 .9.5l10.2-6.5a.6.6 0 0 0 0-1L8.9 5a.6.6 0 0 0-.9.5Z"/>',
+    pause: '<rect x="6.5" y="5" width="3.6" height="14" rx="1"/><rect x="13.9" y="5" width="3.6" height="14" rx="1"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     chevron: '<path d="m6 9 6 6 6-6"/>',
     drum: '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',

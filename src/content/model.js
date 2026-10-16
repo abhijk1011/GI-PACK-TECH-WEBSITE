@@ -133,6 +133,30 @@ function productsInCategory(slug) {
   return products.filter((p) => p.category_slug === slug);
 }
 
+/* --------------------------------------------------------------- videos
+ * The product videos, from content/videos.yml. An entry that names a product
+ * takes that product's category as its label and links to its page; an entry
+ * naming a product that no longer exists is a mistake worth stopping the build
+ * for, because it would otherwise ship a link to a 404.
+ */
+const videos = (readYaml(path.join(CONTENT, 'videos.yml'), {}).videos || [])
+  .filter((v) => v && v.file)
+  .map((v) => {
+    const product = v.product ? productBySlug.get(v.product) : null;
+    if (v.product && !product) {
+      throw new Error(`content/videos.yml: "${v.title || v.file}" names an unknown product "${v.product}".`);
+    }
+    return {
+      file: v.file,
+      type: /\.webm$/i.test(v.file) ? 'video/webm' : 'video/mp4',
+      poster: v.poster || '',
+      title: v.title || (product ? product.name : ''),
+      line: v.line || '',
+      tag: v.tag || (product ? product.category_short : ''),
+      href: product ? `/products/${product.category_slug}/${product.slug}` : '',
+    };
+  });
+
 /* ---------------------------------------------------- industries, roles */
 const industries = rawIndustries
   .slice()
@@ -208,4 +232,5 @@ module.exports = {
   faqCategories,
   privacy,
   proof,
+  videos,
 };

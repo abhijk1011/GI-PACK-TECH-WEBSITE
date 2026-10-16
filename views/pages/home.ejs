@@ -231,8 +231,64 @@
   </section>
   <% } %>
 
+  <!-- ============================================ product videos -->
+  <%#
+    Upright (9:16) footage of products straight off the line, in a row that
+    scrolls sideways. The row runs the full width of the window but its first
+    card lines up with the container's left edge, and the controls under it
+    sit inside the container. Each clip plays, muted and looping, only while
+    it is on screen, and loads nothing until it first comes into view.
+    Shown only once content/videos.yml lists at least one video.
+  %>
+  <% if (videos.length) { %>
+  <section class="section section--paper section--rule" id="videos">
+    <div class="wrap">
+      <%- include('../partials/shead', { sh: { eyebrow: b.videos_eyebrow, title: b.videos_heading, lede: b.videos_sub } }) %>
+    </div>
+
+    <div class="vrail" data-vrail tabindex="0" role="region" aria-label="<%= b.videos_heading %>">
+      <% videos.forEach(function(v){ %>
+        <figure class="vcard">
+          <div class="vcard__media" data-state="paused">
+            <video class="vcard__video" muted loop playsinline preload="none"
+                   <% if (v.poster) { %>poster="<%= v.poster %>"<% } %>
+                   aria-label="<%= v.title %>" data-vplay>
+              <source src="<%= v.file %>" type="<%= v.type %>">
+            </video>
+            <% if (v.tag) { %><span class="vcard__tag"><%= v.tag %></span><% } %>
+            <button class="vcard__toggle" type="button" aria-label="Play video" data-vtoggle>
+              <span class="vcard__icon vcard__icon--play"><%- icon('play', 16) %></span>
+              <span class="vcard__icon vcard__icon--pause"><%- icon('pause', 16) %></span>
+            </button>
+          </div>
+          <figcaption class="vcard__body">
+            <h3 class="vcard__title"><%= v.title %></h3>
+            <% if (v.line) { %><p class="vcard__line"><%= v.line %></p><% } %>
+            <% if (v.href) { %>
+              <a class="vcard__link" href="<%= v.href %>">View product <%- icon('arrow', 14) %></a>
+            <% } %>
+          </figcaption>
+        </figure>
+      <% }) %>
+    </div>
+
+    <div class="wrap">
+      <div class="vrail__bar" data-vrail-bar>
+        <div class="vrail__progress" aria-hidden="true"><span data-vrail-progress></span></div>
+        <div class="vrail__nav">
+          <button class="vrail__btn vrail__btn--prev" type="button" aria-label="Previous videos" data-vrail-prev><%- icon('arrow', 18) %></button>
+          <button class="vrail__btn" type="button" aria-label="Next videos" data-vrail-next><%- icon('arrow', 18) %></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
   <!-- ============================================ industries -->
-  <section class="section section--paper section--rule">
+  <%# The ground keeps alternating grey and white. When the video row is
+      shown it takes white, so industries move to grey and the plant to white. %>
+  <% var afterVideos = videos.length > 0; %>
+  <section class="section section--rule<%= afterVideos ? '' : ' section--paper' %>">
     <div class="wrap">
       <%- include('../partials/shead', { sh: {
         eyebrow: b.industries_eyebrow, title: b.industries_heading, lede: b.industries_sub,
@@ -255,7 +311,7 @@
   </section>
 
   <!-- ============================================ the plant -->
-  <section class="section">
+  <section class="section<%= afterVideos ? ' section--paper section--rule' : '' %>">
     <div class="wrap">
       <div class="sidehead">
         <div class="sidehead__head">
