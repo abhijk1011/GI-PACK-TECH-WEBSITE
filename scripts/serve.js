@@ -39,6 +39,8 @@ const TYPES = {
   '.avif': 'image/avif',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
 };
 
 if (!fs.existsSync(DIST)) {
@@ -77,10 +79,30 @@ http
 
     for (const file of [target, path.join(target, 'index.html'), `${target}.html`]) {
       if (fs.existsSync(file) && fs.statSync(file).isFile()) {
-        res.writeHead(200, {
-          'content-type': TYPES[path.extname(file)] || 'application/octet-stream',
-        });
-        return res.end(fs.readFileSync(file));
+        const type = TYPES[path.extname(file)] || 'application/octet-stream';
+        const body = fs.readFileSync(file);
+        // Byte ranges, as Netlify answers them. A browser fetches video in
+        // ranges and cannot seek within one without them — it would restart
+        // a clip from the beginning instead of jumping to the end.
+        const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+        if (range && (range[1] || range[2])) {
+          const size = body.length;
+          const start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
+          const end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+          if (start > end || start >= size) {
+            res.writeHead(416, { 'content-range': `bytes */${size}` });
+            return res.end();
+          }
+          res.writeHead(206, {
+            'content-type': type,
+            'accept-ranges': 'bytes',
+            'content-range': `bytes ${start}-${end}/${size}`,
+            'content-length': end - start + 1,
+          });
+          return res.end(body.subarray(start, end + 1));
+        }
+        res.writeHead(200, { 'content-type': type, 'accept-ranges': 'bytes', 'content-length': body.length });
+        return res.end(body);
       }
     }
 

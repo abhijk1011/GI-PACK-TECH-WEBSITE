@@ -1484,6 +1484,35 @@ a.ctacard__value:hover { color: var(--brand); }
 .vcard__media[data-state='paused'] .vcard__icon--play,
 .vcard__media[data-state='playing'] .vcard__icon--pause { display: block; }
 
+/* The whole frame is the control. Paused, the button is a large white disc
+   in the middle of the picture — the one thing on the card that says "play
+   me". Playing, it gets out of the way: a small pause button in the corner,
+   which with a mouse appears only while the pointer is over the video. */
+.vcard__media { cursor: pointer; }
+.vcard__media[data-state='paused'] .vcard__toggle {
+  top: 50%; left: 50%; right: auto; bottom: auto;
+  width: 64px; height: 64px; transform: translate(-50%, -50%);
+  background: rgba(255,255,255,.92); color: var(--ink);
+  box-shadow: 0 6px 24px -6px rgba(0,0,0,.35);
+}
+.vcard__media[data-state='paused'] .vcard__icon svg { width: 22px; height: 22px; }
+.vcard__media[data-state='paused']:hover .vcard__toggle {
+  background: #fff; transform: translate(-50%, -50%) scale(1.07);
+}
+.vcard__toggle:focus-visible { outline-color: var(--brand); }
+@media (hover: hover) and (pointer: fine) {
+  .vcard__media[data-state='playing'] .vcard__toggle { opacity: 0; transition: opacity .2s var(--ease), background .2s var(--ease); }
+  .vcard__media[data-state='playing']:hover .vcard__toggle,
+  .vcard__media[data-state='playing'] .vcard__toggle:focus-visible { opacity: 1; }
+}
+/* How far through the clip — a hairline of brand orange along the bottom. */
+.vcard__media::before {
+  content: ''; position: absolute; left: 0; bottom: 0; z-index: 2;
+  height: 3px; width: calc(var(--played, 0) * 100%);
+  background: var(--brand); pointer-events: none;
+  transition: width .25s linear;
+}
+
 .vcard__body { padding: 1rem .2rem 0; }
 .vcard__title {
   font-family: var(--font-display); font-size: 1.0625rem; font-weight: 700;

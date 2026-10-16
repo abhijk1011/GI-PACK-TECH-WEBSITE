@@ -236,8 +236,9 @@
     Upright (9:16) footage of products straight off the line, in a row that
     scrolls sideways. The row runs the full width of the window but its first
     card lines up with the container's left edge, and the controls under it
-    sit inside the container. Each clip plays, muted and looping, only while
-    it is on screen, and loads nothing until it first comes into view.
+    sit inside the container. One clip plays at a time, once through: on a
+    laptop the one clicked, on a phone the one in focus. Nothing loads until
+    the row nears the screen. See "product videos" in site.js.
     Shown only once content/videos.yml lists at least one video.
   %>
   <% if (videos.length) { %>
@@ -250,7 +251,7 @@
       <% videos.forEach(function(v){ %>
         <figure class="vcard">
           <div class="vcard__media" data-state="paused">
-            <video class="vcard__video" muted loop playsinline preload="none"
+            <video class="vcard__video" muted playsinline preload="none"
                    <% if (v.poster) { %>poster="<%= v.poster %>"<% } %>
                    aria-label="<%= v.title %>" data-vplay>
               <source src="<%= v.file %>" type="<%= v.type %>">

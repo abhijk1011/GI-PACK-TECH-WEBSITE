@@ -65,57 +65,135 @@
 
   /* --------------------------------------------------- product videos
    *
-   * Each clip plays, muted and looping, only while most of it is on screen,
-   * and pauses as soon as it leaves — so the page is never decoding six
-   * videos at once, and a clip that is never scrolled to is never downloaded
-   * (they are preload="none"). A clip the visitor paused stays paused. With
-   * reduced motion turned on nothing plays by itself; the button still works.
+   * One clip plays at a time, once through, and only when the visitor asks
+   * for it:
+   *
+   *   - with a mouse or trackpad nothing plays by itself. A click plays that
+   *     clip; clicking another stops the first.
+   *   - on a touchscreen the card in focus — the one most of the way on
+   *     screen — plays, and the card peeking in from the edge does not until
+   *     it is swiped to.
+   *
+   * Decided by the kind of pointer, not the window's width, so a narrow
+   * laptop window still waits for a click and a tablet behaves like a phone.
+   *
+   * Loading is staged so a clip starts at once without the page downloading
+   * six videos up front. Nothing loads until the row is close to the screen
+   * (they are preload="none"); then each fetches its header and opening
+   * frames. A clip about to be wanted — under the mouse, or the next card on
+   * a phone — buffers ahead properly. With reduced motion turned on nothing
+   * starts by itself on either kind of device.
    */
   var vrail = document.querySelector('[data-vrail]');
   if (vrail) {
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var clips = vrail.querySelectorAll('[data-vplay]');
+    var clickToPlay = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var cards = Array.prototype.slice.call(vrail.querySelectorAll('.vcard'));
+    var clips = cards.map(function (card) { return card.querySelector('[data-vplay]'); });
+    var focused = null;
 
-    clips.forEach(function (video) {
+    var start = function (video) {
+      var started = video.play();
+      // A browser that refuses to play leaves the play button showing.
+      if (started && started.catch) started.catch(function () {});
+    };
+    var warm = function (video) {
+      if (video.preload !== 'auto') video.preload = 'auto';
+    };
+
+    clips.forEach(function (video, i) {
+      var card = cards[i];
       var media = video.parentNode;
       var toggle = media.querySelector('[data-vtoggle]');
       var sync = function () {
-        var playing = !video.paused;
+        var playing = !video.paused && !video.ended;
         media.setAttribute('data-state', playing ? 'playing' : 'paused');
         if (toggle) toggle.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
       };
-      video.addEventListener('play', sync);
-      video.addEventListener('pause', sync);
-      if (toggle) {
-        toggle.addEventListener('click', function () {
-          if (video.paused) {
-            video.removeAttribute('data-user-paused');
-            var started = video.play();
-            if (started && started.catch) started.catch(function () {});
-          } else {
-            video.setAttribute('data-user-paused', '');
-            video.pause();
-          }
+      video.addEventListener('play', function () {
+        sync();
+        clips.forEach(function (other) {
+          if (other !== video && !other.paused) other.pause();
         });
+      });
+      video.addEventListener('pause', sync);
+      video.addEventListener('ended', sync);
+      // How far through the clip, for the line along the bottom of the card.
+      video.addEventListener('timeupdate', function () {
+        if (video.duration) media.style.setProperty('--played', (video.currentTime / video.duration).toFixed(4));
+      });
+
+      // The whole frame is the control, and the button inside it is the same
+      // control for a keyboard: its click bubbles up to here.
+      media.addEventListener('click', function () {
+        // On a phone, tapping the card peeking in from the edge brings it
+        // into focus, and coming into focus is what starts it.
+        if (!clickToPlay && !reduceMotion && video !== focused) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          return;
+        }
+        if (video.paused || video.ended) start(video);
+        else video.pause();
+      });
+
+      if (clickToPlay) {
+        card.addEventListener('pointerenter', function () { warm(video); });
+        card.addEventListener('focusin', function () { warm(video); });
       }
     });
 
-    if (!reduceMotion && 'IntersectionObserver' in window) {
+    if ('IntersectionObserver' in window) {
+      // Close to the screen: every clip fetches its header and opening frames.
+      var approach = new IntersectionObserver(
+        function (entries) {
+          if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+          approach.disconnect();
+          clips.forEach(function (video) {
+            if (video.preload !== 'none') return;
+            video.preload = 'metadata';
+            if (video.readyState === 0) video.load();
+          });
+        },
+        { rootMargin: '600px 0px' }
+      );
+      approach.observe(vrail);
+
+      var shown = clips.map(function () { return 0; });
       var watcher = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
-            var video = entry.target;
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-              if (video.hasAttribute('data-user-paused')) return;
-              var started = video.play();
-              // A browser that refuses autoplay leaves the play button showing.
-              if (started && started.catch) started.catch(function () {});
-            } else if (!video.paused) {
-              video.pause();
+            shown[clips.indexOf(entry.target)] = entry.isIntersecting ? entry.intersectionRatio : 0;
+          });
+
+          if (clickToPlay) {
+            // A clip scrolled away stops; nothing else changes on its own.
+            clips.forEach(function (video, i) {
+              if (shown[i] < 0.25 && !video.paused) video.pause();
+            });
+            return;
+          }
+
+          // The card most of the way on screen is the one in focus.
+          var best = -1;
+          shown.forEach(function (ratio, i) {
+            if (ratio >= 0.6 && (best < 0 || ratio > shown[best])) best = i;
+          });
+          var next = best >= 0 ? clips[best] : null;
+          if (next !== focused) {
+            if (focused && !focused.paused) focused.pause();
+            focused = next;
+            if (focused && !reduceMotion) {
+              warm(focused);
+              start(focused);
             }
+          }
+          // Whatever is partly in view buffers ahead, so a swipe to it plays
+          // without a wait.
+          shown.forEach(function (ratio, i) {
+            if (ratio > 0) warm(clips[i]);
           });
         },
-        { threshold: [0, 0.6] }
+        { threshold: [0, 0.25, 0.6, 0.8, 1] }
       );
       clips.forEach(function (video) { watcher.observe(video); });
     }

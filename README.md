@@ -128,8 +128,12 @@ few MB) and a still to show while it loads, and prints the entry to paste into
 `content/videos.yml` — fill in the heading, the one line, and optionally the
 product's slug, which adds its category label and a link to its page.
 
-Clips play muted and looping only while on screen, and load nothing until
-they first scroll into view. `npm run smoke` checks every listed file exists.
+One clip plays at a time, once through, muted. With a mouse nothing plays
+until it is clicked; on a touchscreen the card in focus plays and the one
+peeking in from the edge waits until it is swiped to. Nothing downloads until
+the row nears the screen; then each clip fetches only its opening, and the
+one about to be wanted (under the mouse, or next on a phone) buffers ahead so
+it starts at once. `npm run smoke` checks every listed file exists.
 
 ---
 
