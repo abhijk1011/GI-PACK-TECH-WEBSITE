@@ -1152,6 +1152,155 @@ a.optionchip:hover { border-color: var(--ink); background: var(--ink); color: #f
 .qa__item:target .qa__q { color: var(--brand); }
 .faqgroup { scroll-margin-top: calc(var(--header-h) + 4.5rem); }
 
+/* ---------------------------------------------------------------- blog
+   A guide reads like the rest of the site: the same hairlines, the same
+   brand square on list markers, the same table as the material reference.
+   The short answer sits first, in a panel of its own, because it is what a
+   hurried reader and an answer engine both take away. */
+.postcard { gap: .7rem; }
+.postcard .card__title { font-size: 1.0625rem; line-height: 1.3; }
+.postcard__link::after { content: ''; position: absolute; inset: 0; }
+.postcard:hover .card__title { color: var(--brand); }
+.postcard .card__meta { font-variant-numeric: tabular-nums; }
+
+.postmeta {
+  display: flex; flex-wrap: wrap; gap: .35rem 1.6rem; margin-top: 1.25rem;
+  font-size: var(--step--1); color: var(--ink-3);
+}
+.postmeta span { position: relative; }
+@media (min-width: 768px) { .postmeta--center { justify-content: center; } }
+
+/* The newest guide, set as a feature at the top of the index. */
+.postlead {
+  display: grid; gap: clamp(1.75rem, 4vw, 3.5rem);
+  background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r-xl);
+  padding: clamp(1.6rem, 4vw, 3.25rem); box-shadow: var(--lift-1);
+}
+.postlead h2 a:hover { color: var(--brand); }
+.postlead .lede { margin-top: 1rem; }
+.postlead .tlink { margin-top: 1.5rem; }
+.postlead__aside { border-top: 1px solid var(--hair); padding-top: 1.5rem; }
+.postlead__aside .mono { margin-bottom: 1rem; }
+@media (min-width: 1024px) {
+  .postlead { grid-template-columns: var(--split-r, minmax(0, 7fr) minmax(0, 5fr)); align-items: start; }
+  .postlead__aside { border-top: 0; border-left: 1px solid var(--hair); padding: 0 0 0 clamp(1.75rem, 3vw, 2.75rem); }
+}
+
+.keypoints { display: grid; gap: .75rem; }
+.keypoints li { display: flex; gap: .85rem; align-items: flex-start; color: var(--ink-2); line-height: 1.55; }
+.keypoints li::before {
+  content: ''; width: 7px; height: 7px; background: var(--brand);
+  border-radius: 1px; flex: none; margin-top: .55rem;
+}
+
+.postlayout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(2rem, 4.5vw, 4.5rem); align-items: start; }
+.postlayout > aside { align-self: stretch; }
+@media (max-width: 1000px) { .postlayout { grid-template-columns: 1fr; } }
+.post__main { min-width: 0; max-width: 72ch; }
+.post__aside { display: flex; flex-direction: column; gap: 1.5rem; }
+@media (max-width: 1000px) { .post__aside .toc { display: none; } }
+
+.answer {
+  background: var(--surface); border: 1px solid var(--hair); border-left: 3px solid var(--brand);
+  border-radius: var(--r-lg); padding: clamp(1.25rem, 2.4vw, 1.75rem);
+}
+.answer__label {
+  font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
+  text-transform: uppercase; color: var(--brand); margin-bottom: .6rem;
+}
+.answer__text {
+  font-size: var(--step-1); line-height: 1.55; color: var(--ink);
+  letter-spacing: -0.011em; font-weight: 450;
+}
+
+.takeaways {
+  margin-top: 1.5rem; padding: clamp(1.25rem, 2.4vw, 1.75rem);
+  background: var(--surface-2); border-radius: var(--r-lg);
+}
+.takeaways__title {
+  font-size: var(--step--1); font-weight: 600; letter-spacing: .085em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: 1rem; font-family: var(--font-sans);
+}
+
+/* The article body: Markdown, so the elements arrive bare and are styled
+   here by position rather than by class. */
+.article { margin-top: clamp(2rem, 3.5vw, 2.75rem); color: var(--ink-2); line-height: 1.75; font-size: 1.0625rem; }
+.article > * + * { margin-top: 1.15em; }
+.article h2 {
+  font-size: var(--step-2); letter-spacing: -0.026em; line-height: 1.18;
+  margin-top: 2.4em; padding-top: 1.4rem; border-top: 1px solid var(--hair);
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+.article h3 {
+  font-size: var(--step-1); letter-spacing: -0.02em; line-height: 1.3; margin-top: 1.9em;
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+.article h2 + *, .article h3 + * { margin-top: .75em; }
+.article a { color: var(--brand-600); font-weight: 500; text-decoration: underline; text-decoration-color: rgba(244,82,14,.35); text-underline-offset: 3px; }
+.article a:hover { color: var(--brand-700); text-decoration-color: currentColor; }
+.article ul, .article ol { display: grid; gap: .55rem; padding-left: 0; }
+.article ul > li { display: flex; gap: .85rem; align-items: flex-start; }
+.article ul > li::before {
+  content: ''; width: 7px; height: 7px; background: var(--brand);
+  border-radius: 1px; flex: none; margin-top: .68rem;
+}
+.article ol { counter-reset: art; }
+.article ol > li { display: grid; grid-template-columns: 1.9rem 1fr; gap: .4rem; counter-increment: art; }
+.article ol > li::before {
+  content: counter(art, decimal-leading-zero); font-size: var(--step--1); font-weight: 600;
+  color: var(--brand); font-variant-numeric: tabular-nums; padding-top: .25rem;
+}
+.article li > p { margin: 0; }
+.article blockquote {
+  margin-inline: 0; padding: 1.1rem 1.35rem; border-radius: var(--r);
+  background: var(--brand-tint); color: var(--brand-700); font-size: .98rem; line-height: 1.6;
+}
+.article blockquote p + p { margin-top: .6em; }
+.article blockquote strong { color: inherit; }
+.article .tablewrap { margin-block: 1.6em; }
+.article .dtable { font-size: .93rem; line-height: 1.5; }
+.article .dtable th { white-space: normal; }
+.article .dtable td:first-child { white-space: normal; min-width: 6.5rem; }
+.article .dtable th, .article .dtable td { min-width: 8rem; }
+@media (max-width: 700px) { .article .dtable th, .article .dtable td { padding: .85rem 1rem; } }
+.article hr { border: 0; border-top: 1px solid var(--hair); margin-block: 2em; }
+.article code { font-size: .9em; background: var(--surface-2); padding: .1em .35em; border-radius: 4px; }
+
+.post__h2 { font-size: var(--step-2); letter-spacing: -0.026em; margin-bottom: .5rem; }
+.post__faq {
+  margin-top: clamp(2.5rem, 4vw, 3.5rem); padding-top: 1.4rem; border-top: 2px solid var(--ink);
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+.post__foot {
+  margin-top: clamp(2.5rem, 4vw, 3.5rem); padding: 1.35rem 1.5rem;
+  background: var(--surface-2); border-radius: var(--r-lg);
+  font-size: .92rem; color: var(--ink-3); line-height: 1.6;
+}
+
+.toc {
+  background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r-lg);
+  padding: 1.25rem 1.35rem;
+}
+.toc__head { margin-bottom: .8rem; }
+.toc ol { display: grid; gap: .1rem; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a {
+  display: grid; grid-template-columns: 1.6rem 1fr; gap: .2rem;
+  padding: .38rem 0; font-size: .88rem; line-height: 1.4; color: var(--ink-2);
+  transition: color .18s var(--ease);
+}
+.toc a::before {
+  content: counter(toc, decimal-leading-zero); font-size: .75rem; font-weight: 600;
+  color: var(--ink-4); font-variant-numeric: tabular-nums; padding-top: .1rem;
+}
+.toc a:hover { color: var(--brand); }
+/* The rail under the contents list keeps its sticky behaviour; the list
+   itself scrolls away. */
+.post__aside .rail { top: calc(var(--header-h) + 1.5rem); }
+
+.glossary__also { font-weight: 500; color: var(--ink-4); font-size: .9em; }
+dl.qa { margin: 0; }
+
 /* ---------------------------------------------------------------- legal
    The privacy policy, and anything else of that shape.
 
@@ -1363,7 +1512,7 @@ a.ctacard__value:hover { color: var(--brand); }
 }
 .footer a { color: var(--ink-3); transition: color .18s var(--ease); }
 .footer a:hover { color: var(--brand); }
-.footer__grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 2.5rem; }
+.footer__grid { display: grid; grid-template-columns: 1.5fr repeat(4, 1fr); gap: 2.5rem; }
 @media (max-width: 900px) { .footer__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .footer__grid { grid-template-columns: 1fr; } }
 .footer__brand { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem; }
@@ -1702,7 +1851,7 @@ a.ctacard__value:hover { color: var(--brand); }
 
 /* Print */
 @media print {
-  .header, .footer, .rail, .anchor-nav, .btn, .cta { display: none !important; }
+  .header, .footer, .rail, .anchor-nav, .btn, .cta, .toc { display: none !important; }
   body { background: #fff; font-size: 11pt; }
   .cards, .pcard, .spec, .value { break-inside: avoid; }
 }

@@ -19,7 +19,15 @@
 <link rel="canonical" href="<%= canonical %>">
 <% if (noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><meta name="robots" content="index, follow, max-image-preview:large"><% } %>
 
-<meta property="og:type" content="website">
+<% const isArticle = seo.type === 'article' && seo.post; %>
+<meta property="og:type" content="<%= isArticle ? 'article' : 'website' %>">
+<% if (isArticle) { %>
+<meta property="article:published_time" content="<%= seo.post.published %>">
+<meta property="article:modified_time" content="<%= seo.post.updated %>">
+<meta property="article:section" content="<%= seo.post.topic_name %>">
+<% (seo.post.keywords || []).slice(0, 6).forEach(function (k) { %><meta property="article:tag" content="<%= k %>">
+<% }) %>
+<% } %>
 <meta property="og:site_name" content="<%= s.company_name %>">
 <meta property="og:title" content="<%= title %>">
 <meta property="og:description" content="<%= description %>">
@@ -46,6 +54,14 @@
 <link rel="icon" href="/img/favicon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" sizes="180x180">
 <link rel="manifest" href="/site.webmanifest">
+
+<%# The same page as Markdown, for AI assistants and answer engines: no
+    navigation, no styling, every fact on one plain page. /llms.txt indexes
+    all of them. The feed lets a reader or an aggregator follow new guides. %>
+<% if (typeof markdownPath !== 'undefined' && markdownPath && !noindex) { %>
+<link rel="alternate" type="text/markdown" href="<%= markdownPath %>" title="<%= seo.title || s.company_name %> (Markdown)">
+<% } %>
+<link rel="alternate" type="application/rss+xml" href="/blog/feed.xml" title="<%= s.company_name %> packaging guides">
 
 <%# Typography is self-hosted, so there is no third-party request on the
     critical path. Both faces are variable, and both are used above the fold,
@@ -121,12 +137,40 @@
     { '@type': 'Place', name: 'Worldwide' }
   ],
   knowsLanguage: ['en', 'hi', 'gu'],
+  /*
+   * What the company is an authority on, in the words a buyer searches with.
+   * An answer engine deciding whether this site is a credible source for
+   * "conductive FIBC liner" or "VCI machine cover" reads this alongside the
+   * pages themselves.
+   */
+  knowsAbout: [
+    'Industrial flexible packaging',
+    'Round drum liners from 6 to 100 inches',
+    'Reactor, vessel and tank liners',
+    'FIBC and jumbo bags',
+    'FIBC Type C and Type D antistatic bags',
+    'Bulk bag and FIBC liners',
+    'Form-fit, baffle and box type liners',
+    'EVOH barrier liners',
+    'Aluminium foil barrier liners',
+    'Conductive and antistatic liners',
+    'Dry bulk container liners',
+    'Heavy duty 25 kg and 50 kg sacks',
+    'Liquid flexi bags and bladder tanks',
+    'Machine covers and export packing',
+    'Aluminium vacuum barrier packaging',
+    'VCI corrosion protection packaging',
+    'Pallet covers and shrink hoods',
+    'Dunnage air bags',
+    'Hazardous waste containment enclosures',
+    'Spill containment bunds'
+  ],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: s.phone,
     email: s.email,
     contactType: 'sales',
-    areaServed: 'IN',
+    areaServed: ['IN', 'Worldwide'],
     availableLanguage: ['en', 'hi', 'gu']
   }
 }) %>
@@ -244,6 +288,108 @@
     { '@type': 'ListItem', position: 2, name: seo.product.category_name, item: h.absUrl('/products/' + seo.product.category_slug) },
     { '@type': 'ListItem', position: 3, name: seo.product.name, item: canonical }
   ]
+}) %>
+</script>
+<% } %>
+
+<%# A guide. BlogPosting is the type Google reads for article results, and
+    `about` and `mentions` tie the guide to the products it discusses, so an
+    assistant can follow it from the explanation to the thing being sold. %>
+<% if (isArticle) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': canonical + '#article',
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  url: canonical,
+  headline: seo.post.title,
+  description: seo.post.description,
+  abstract: seo.post.summary,
+  image: [image],
+  datePublished: seo.post.published,
+  dateModified: seo.post.updated,
+  inLanguage: 'en',
+  wordCount: seo.post.words,
+  timeRequired: 'PT' + seo.post.minutes + 'M',
+  articleSection: seo.post.topic_name,
+  keywords: (seo.post.keywords || []).join(', ') || undefined,
+  author: {
+    '@type': 'Organization',
+    name: s.company_name + ' technical team',
+    url: h.absUrl('/about'),
+    parentOrganization: { '@id': h.absUrl('/') + '#organization' }
+  },
+  publisher: { '@id': h.absUrl('/') + '#organization' },
+  isPartOf: { '@type': 'Blog', '@id': h.absUrl('/blog') + '#blog', name: s.company_name + ' packaging guides', url: h.absUrl('/blog') },
+  audience: (seo.post.audience || []).length
+    ? { '@type': 'BusinessAudience', audienceType: seo.post.audience.join(', ') }
+    : undefined,
+  /*
+   * Typed as Thing, with Product as an additional type, so the reference is
+   * understood without a validator treating it as a product listing that
+   * should carry a price — the same reason the product pages carry no offer.
+   */
+  about: seo.post.resolvedProducts.slice(0, 3).map(function (p) {
+    return { '@type': 'Thing', additionalType: 'https://schema.org/Product', name: p.name, url: h.absUrl('/products/' + p.category_slug + '/' + p.slug) };
+  }),
+  mentions: seo.post.resolvedProducts.slice(3).map(function (p) {
+    return { '@type': 'Thing', additionalType: 'https://schema.org/Product', name: p.name, url: h.absUrl('/products/' + p.category_slug + '/' + p.slug) };
+  }).concat(seo.post.resolvedIndustries.map(function (i) {
+    return { '@type': 'Thing', name: i.name, url: h.absUrl('/industries/' + i.slug) };
+  })),
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-speakable]'] }
+}) %>
+</script>
+<% } %>
+
+<%# The blog index names the collection, so each guide's isPartOf resolves. %>
+<% if (typeof blogPosts !== 'undefined' && blogPosts && blogPosts.length) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  '@id': h.absUrl('/blog') + '#blog',
+  url: h.absUrl('/blog'),
+  name: s.company_name + ' packaging guides',
+  description: description,
+  inLanguage: 'en',
+  publisher: { '@id': h.absUrl('/') + '#organization' },
+  blogPost: blogPosts.map(function (p) {
+    return {
+      '@type': 'BlogPosting',
+      '@id': h.absUrl(p.path) + '#article',
+      headline: p.title,
+      url: h.absUrl(p.path),
+      datePublished: p.published,
+      dateModified: p.updated
+    };
+  })
+}) %>
+</script>
+<% } %>
+
+<%# The glossary as a DefinedTermSet: each term is a definition a machine can
+    lift and attribute, which is the shape most "what is a ..." answers take. %>
+<% if (typeof definedTerms !== 'undefined' && definedTerms && definedTerms.length) { %>
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  '@id': canonical + '#terms',
+  name: s.company_name + ' industrial packaging glossary',
+  url: canonical,
+  hasDefinedTerm: definedTerms.map(function (t) {
+    return {
+      '@type': 'DefinedTerm',
+      '@id': canonical + '#' + t.slug,
+      name: t.term,
+      alternateName: t.also || undefined,
+      description: t.definition,
+      url: canonical + '#' + t.slug,
+      inDefinedTermSet: canonical + '#terms'
+    };
+  })
 }) %>
 </script>
 <% } %>

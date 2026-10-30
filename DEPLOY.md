@@ -25,7 +25,7 @@ correct. Confirm they read:
 Press **Deploy**. The build log ends with a line like:
 
 ```
-Built 80 files into dist/  (74 URLs in the sitemap, 249 redirects)
+Built 224 files into dist/  (105 URLs in the sitemap, 105 Markdown pages for AI assistants, 25 guides, 310 redirects)
 ```
 
 That is the whole deploy. No environment variables are required.
@@ -98,7 +98,8 @@ While the site is still being reviewed, set `robots_allow` in the same file to
 `'0'`. That serves `Disallow: /` to every crawler and marks each page
 `noindex`. Set it back to `'1'` when you want to be found.
 
-Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 74 pages.
+Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 105
+pages, and that `https://your-site.netlify.app/llms.txt` opens.
 
 ---
 
@@ -107,7 +108,11 @@ Then check `https://your-site.netlify.app/sitemap.xml` loads and lists 74 pages.
 1. Netlify: **Domain management → Add a domain** and follow the DNS steps.
    Netlify issues the HTTPS certificate free.
 2. Change `site_url` in `src/content/company.js` to the new address and commit.
-3. Submit the sitemap to Google Search Console.
+3. Submit the sitemap to Google Search Console **and** Bing Webmaster Tools.
+   Bing's index also feeds ChatGPT search and Microsoft Copilot.
+4. After each deploy that adds or changes pages, run `npm run indexnow` from
+   your machine. It tells Bing and the other IndexNow engines which pages
+   changed, so a new guide is crawled within hours.
 
 ---
 

@@ -15,16 +15,26 @@
  * pieces, a lead time in days, payment terms — the answer says what governs it
  * and asks for the specification rather than inventing a figure. Those are the
  * answers to sharpen once the commercial team confirms the numbers; they are
- * marked `needsFigures` so they are easy to find.
+ * marked `needsFigures` so they are easy to find. The same flag marks the
+ * export answers that state a commercial arrangement (port, Incoterm,
+ * documents) the commercial team should confirm.
+ *
+ * `link` points at the guide on /blog that goes further. It is shown under
+ * the answer on /faq and kept out of the FAQPage markup, so the answer an
+ * assistant quotes still stands on its own.
  */
 
 const categories = [
   { slug: 'ordering', name: 'Ordering, samples and lead time' },
-  { slug: 'drum-liners', name: 'Drum liners' },
+  { slug: 'export', name: 'Export and overseas buyers' },
+  { slug: 'drum-liners', name: 'Drum, reactor and vessel liners' },
   { slug: 'fibc', name: 'FIBC and jumbo bags' },
+  { slug: 'chemicals', name: 'Chemical, petroleum and refinery buyers' },
   { slug: 'container-liners', name: 'Container liners and heavy duty sacks' },
+  { slug: 'logistics', name: 'Shipping and logistics' },
   { slug: 'machine-covers', name: 'Machine covers and export packing' },
   { slug: 'materials', name: 'Materials and compliance' },
+  { slug: 'sustainability', name: 'Reuse and sustainability' },
   { slug: 'specifying', name: 'Specifying and customisation' },
   { slug: 'company', name: 'The company' },
 ];
@@ -33,6 +43,7 @@ const faqs = [
   // ---------------------------------------------------- ordering
   {
     slug: 'are-you-a-manufacturer',
+    link: '/blog/sourcing-industrial-packaging-from-india',
     category: 'ordering',
     question: 'Are you a manufacturer or a trading company?',
     answer:
@@ -70,6 +81,7 @@ const faqs = [
   },
   {
     slug: 'do-you-export',
+    link: '/blog/sourcing-industrial-packaging-from-india',
     category: 'ordering',
     question: 'Do you export, and do you supply across India?',
     answer:
@@ -79,6 +91,7 @@ const faqs = [
   // ---------------------------------------------------- drum liners
   {
     slug: 'what-is-a-drum-liner',
+    link: '/blog/drum-liner-materials-guide',
     category: 'drum-liners',
     question: 'What is a drum liner and why use one?',
     answer:
@@ -86,6 +99,7 @@ const faqs = [
   },
   {
     slug: 'drum-liner-sizes',
+    link: '/blog/how-to-measure-a-drum-for-a-liner',
     category: 'drum-liners',
     question: 'What sizes and diameters of drum liner do you make?',
     answer:
@@ -93,6 +107,7 @@ const faqs = [
   },
   {
     slug: 'measure-a-drum-for-a-liner',
+    link: '/blog/how-to-measure-a-drum-for-a-liner',
     category: 'drum-liners',
     question: 'How do I measure my drum for a liner?',
     answer:
@@ -100,6 +115,7 @@ const faqs = [
   },
   {
     slug: 'liner-for-200-litre-drum',
+    link: '/blog/how-to-measure-a-drum-for-a-liner',
     category: 'drum-liners',
     question: 'What liner fits a 200 litre or 210 litre drum?',
     answer:
@@ -107,6 +123,7 @@ const faqs = [
   },
   {
     slug: 'antistatic-conductive-liners',
+    link: '/blog/conductive-liners-and-static-safety',
     category: 'drum-liners',
     question: 'What is a conductive or antistatic drum liner, and do I need one?',
     answer:
@@ -114,6 +131,7 @@ const faqs = [
   },
   {
     slug: 'aluminium-barrier-liner',
+    link: '/blog/evoh-vs-aluminium-barrier-liners',
     category: 'drum-liners',
     question: 'When is an aluminium foil laminate liner needed?',
     answer:
@@ -121,6 +139,7 @@ const faqs = [
   },
   {
     slug: 'liner-with-spout',
+    link: '/blog/drum-liners-for-lubricants-and-reusable-drums',
     category: 'drum-liners',
     question: 'Can a drum liner have a dispensing spout?',
     answer:
@@ -145,6 +164,7 @@ const faqs = [
   // ---------------------------------------------------- FIBC
   {
     slug: 'what-is-an-fibc',
+    link: '/blog/fibc-types-a-b-c-d-explained',
     category: 'fibc',
     question: 'What is an FIBC, and is it the same as a jumbo bag?',
     answer:
@@ -152,6 +172,7 @@ const faqs = [
   },
   {
     slug: 'fibc-types-a-b-c-d',
+    link: '/blog/fibc-types-a-b-c-d-explained',
     category: 'fibc',
     question: 'What is the difference between Type A, B, C and D FIBCs?',
     answer:
@@ -159,6 +180,7 @@ const faqs = [
   },
   {
     slug: 'baffle-bag',
+    link: '/blog/baffle-bags-vs-round-fibc',
     category: 'fibc',
     question: 'What is a baffle bag, and why use one?',
     answer:
@@ -166,6 +188,7 @@ const faqs = [
   },
   {
     slug: 'fibc-liner-types',
+    link: '/blog/fibc-liner-types-guide',
     category: 'fibc',
     question: 'Do FIBCs need a liner, and which type?',
     answer:
@@ -182,6 +205,7 @@ const faqs = [
   // ------------------------------------- container liners and sacks
   {
     slug: 'what-is-a-container-liner',
+    link: '/blog/container-liners-for-dry-bulk',
     category: 'container-liners',
     question: 'What is a container liner, and when is it better than shipping in bags?',
     answer:
@@ -189,6 +213,7 @@ const faqs = [
   },
   {
     slug: 'laminated-or-unlaminated-container-liner',
+    link: '/blog/container-liners-for-dry-bulk',
     category: 'container-liners',
     question: 'Does a container liner need to be breathable?',
     answer:
@@ -196,6 +221,7 @@ const faqs = [
   },
   {
     slug: 'heavy-duty-sack-vs-ordinary-bag',
+    link: '/blog/heavy-duty-sacks-25kg-and-50kg',
     category: 'container-liners',
     question: 'What makes a 25 kg heavy duty sack different from an ordinary woven bag?',
     answer:
@@ -205,6 +231,7 @@ const faqs = [
   // ---------------------------------------------------- machine covers
   {
     slug: 'what-is-a-machine-cover',
+    link: '/blog/seaworthy-export-packing-for-machinery',
     category: 'machine-covers',
     question: 'What is a machine cover, and why not use a standard bag?',
     answer:
@@ -212,6 +239,7 @@ const faqs = [
   },
   {
     slug: 'vci-packaging',
+    link: '/blog/what-is-vci-packaging',
     category: 'machine-covers',
     question: 'What is VCI packaging, and when is it needed?',
     answer:
@@ -219,6 +247,7 @@ const faqs = [
   },
   {
     slug: 'vacuum-packing-machinery',
+    link: '/blog/seaworthy-export-packing-for-machinery',
     category: 'machine-covers',
     question: 'Do you vacuum pack machinery for export?',
     answer:
@@ -228,6 +257,7 @@ const faqs = [
   // ---------------------------------------------------- materials
   {
     slug: 'which-material-for-my-product',
+    link: '/blog/chemical-packaging-guide',
     category: 'materials',
     question: 'How do I know which material my product needs?',
     answer:
@@ -249,6 +279,7 @@ const faqs = [
   },
   {
     slug: 'recyclable-packaging',
+    link: '/blog/sustainable-industrial-packaging',
     category: 'materials',
     question: 'Is your packaging recyclable?',
     answer:
@@ -315,6 +346,224 @@ const faqs = [
     answer:
       'Technical enquiries go straight to the people who specify the job rather than through a call centre. Send the drawing, the drum dimensions or the product data sheet through the enquiry form, or call the number in the footer. The first reply is a specification, not a price list.',
   },
+  // ---------------------------------------------------- export
+  {
+    slug: 'supply-buyers-outside-india',
+    category: 'export',
+    link: '/blog/sourcing-industrial-packaging-from-india',
+    question: 'Do you supply buyers outside India?',
+    answer:
+      'Yes. GI PackTech exports from its plant in Valsad, Gujarat, as well as supplying customers throughout India. Everything is made to the buyer\'s specification, so an overseas order follows the same route as a domestic one: specification, a sample for trial fitment, approval, then bulk production, quoted on the Incoterm and destination port the buyer works to.',
+  },
+  {
+    slug: 'port-of-loading',
+    category: 'export',
+    question: 'Which port do you ship from?',
+    answer:
+      'Valsad lies on the Mumbai–Ahmedabad industrial corridor, within road distance of Nhava Sheva (JNPT) and Hazira ports. The port of loading is confirmed with each quotation, along with the Incoterm, so the buyer knows from the start where responsibility for the shipment passes.',
+    needsFigures: true,
+  },
+  {
+    slug: 'incoterms',
+    category: 'export',
+    link: '/blog/sourcing-industrial-packaging-from-india',
+    question: 'Can you quote FOB, CIF or another Incoterm?',
+    answer:
+      'Tell us the Incoterm you buy on — FOB, CFR, CIF, FCA, DAP or another — and the destination port, and the quotation is made on that basis. Agreeing the terms at quotation stage, rather than at shipment, avoids surprises over freight, insurance and the point where risk transfers.',
+    needsFigures: true,
+  },
+  {
+    slug: 'export-documents',
+    category: 'export',
+    question: 'What documents come with an export shipment?',
+    answer:
+      'An export shipment travels with a commercial invoice, a packing list, the bill of lading or air waybill, and usually a certificate of origin. Where your market needs material documentation — the quality certificate, test reports or a food-contact declaration — ask at enquiry stage, so the right grade is specified and the paperwork is prepared alongside production.',
+    needsFigures: true,
+  },
+  {
+    slug: 'hs-codes',
+    category: 'export',
+    link: '/blog/sourcing-industrial-packaging-from-india',
+    question: 'What HS code do drum liners and FIBCs ship under?',
+    answer:
+      'Polyethylene bags and liners — drum liners, FIBC liners, sacks — usually fall under HS 3923.21, PVC liners under 3923.29, and woven polypropylene FIBCs under 6305.32. Machine covers, container liners and laminated products can fall elsewhere depending on their construction, so confirm every line item with your customs broker before the first shipment.',
+  },
+  {
+    slug: 'samples-overseas',
+    category: 'export',
+    question: 'Can you send samples overseas before an order?',
+    answer:
+      'Yes. Samples are supplied for trial fitment before bulk production on every product, including for buyers outside India. The sample is made to your own drum, bag, container or machine dimensions, so the fit, the seal and the material can be confirmed on your own line before a full run is committed.',
+  },
+  {
+    slug: 'own-brand-printing',
+    category: 'export',
+    question: 'Can importers and distributors have packaging printed with their own brand?',
+    answer:
+      'Yes. Printing is one of the options specified per order — brand, product identification, grade and batch details — so an importer or distributor can supply under its own name. Print adds a plate and a minimum film run, so raise it at enquiry stage and the quantity and price reflect it from the start.',
+    needsFigures: true,
+  },
+  {
+    slug: 'how-overseas-buyers-communicate',
+    category: 'export',
+    question: 'How do overseas buyers work with your technical team?',
+    answer:
+      'By email, phone or WhatsApp, in English. Technical questions go straight to the people who specify the job rather than through a call centre, and the first reply is a written specification rather than a price list. Drawings, data sheets and photographs of the drum, bag or machine can all be sent the same way.',
+  },
+
+  // ------------------------------------- drum, reactor and vessel liners
+  {
+    slug: 'reactor-and-vessel-liners',
+    category: 'drum-liners',
+    link: '/blog/reactor-vessel-and-tank-liners',
+    question: 'Do you make reactor, vessel and tank liners?',
+    answer:
+      'Yes. Round liners are made to the internal diameter and height of open-top reactors, process vessels, mixing tanks and bins, in any diameter from 6 to 100 inches. The batch sits in the liner rather than against the wall, so changeovers need far less cleaning. Flexible liners are for non-pressurised duty within the film\'s temperature range.',
+  },
+  {
+    slug: 'reduce-cleaning-between-batches',
+    category: 'drum-liners',
+    link: '/blog/reactor-vessel-and-tank-liners',
+    question: 'How can we cut cleaning time between batches in a mixing vessel?',
+    answer:
+      'Line the vessel. A liner made to its internal diameter and height holds the batch and is lifted out with the residue at the end, so the vessel wall is never contaminated. Cleaning, solvent use and changeover time fall, and cross-contamination between products becomes far less likely. The film is chosen for the product and any static risk.',
+  },
+
+  // ------------------------------------- chemical, petroleum, refinery
+  {
+    slug: 'polymer-granule-packaging',
+    category: 'chemicals',
+    link: '/blog/container-liners-for-dry-bulk',
+    question: 'What is the most economical way to export polymer granules and resins?',
+    answer:
+      'For full containers of one product, a dry bulk container liner: the granules travel loose in a laminated woven or welded PE film liner inside a 20 or 40 foot container, so the sacks, pallets and most of the handling go. For tonne lots moved into a process, FIBCs; for dealer sales, 25 kg PE sacks.',
+  },
+  {
+    slug: 'catalyst-packaging',
+    category: 'chemicals',
+    link: '/blog/petrochemical-and-refinery-packaging',
+    question: 'How should catalysts and moisture-sensitive additives be packed?',
+    answer:
+      'In a drum or FIBC with an aluminium foil laminate liner, usually 5 or 6 layers, sealed so that permeation at the seal stays minimal. A heavier polyethylene liner only slows moisture. Where the product is also handled near flammable vapour, a conductive aluminium liner gives static control and the barrier in one construction.',
+  },
+  {
+    slug: 'flammable-powder-packaging',
+    category: 'chemicals',
+    link: '/blog/fibc-types-a-b-c-d-explained',
+    question: 'What packaging is safe for solvent-wet or flammable powders?',
+    answer:
+      'A Type C FIBC earthed at every fill and discharge, or a Type D FIBC that needs no earthing, with a conductive liner specified as part of the same system. Type A and Type B bags must not be used where flammable vapour is present. Your process safety assessment decides the final choice.',
+  },
+  {
+    slug: 'dangerous-goods-liners',
+    category: 'chemicals',
+    link: '/blog/chemical-packaging-guide',
+    question: 'Can your liners be used in UN-approved packaging for dangerous goods?',
+    answer:
+      'UN approval belongs to the packaging design as a whole — the tested drum or FIBC design type — and a liner is part of that design. Give us the UN number, the packing group and the approved packaging you use, and the liner is specified within that design rather than as a substitute for it.',
+  },
+  {
+    slug: 'spill-bunds-for-drum-stores',
+    category: 'chemicals',
+    question: 'Do you make spill containment bunds for drum and IBC stores?',
+    answer:
+      'Yes. Flexible bunds in chemical-resistant PVC-coated fabric are made to any size and holding capacity for drum stores, IBCs, generators, transformers, pumps and refuelling points. The walls stand up on their own when the bund is placed, and it folds flat to move — no civil work and no permanent concrete.',
+  },
+
+  // ---------------------------------------------------- logistics
+  {
+    slug: 'container-rain',
+    category: 'logistics',
+    link: '/blog/container-rain-and-cargo-sweat',
+    question: 'What causes container rain, and how do I stop it damaging the cargo?',
+    answer:
+      'Moisture inside the container — mostly from the cargo, pallets and dunnage — condenses on the steel roof and walls when the outside cools, then drips onto the load. Seal goods that must stay dry inside their own barrier with desiccant, protect bare metal with VCI, use dry pallets, and keep respiring cargo in breathable packaging.',
+  },
+  {
+    slug: 'dunnage-bag-sizing',
+    category: 'logistics',
+    link: '/blog/dunnage-air-bags-guide',
+    question: 'How do I choose the right size of dunnage air bag?',
+    answer:
+      'Measure the width of the gap and the height and length of the load face the bag will press against. Inflated, the bag should fill the gap fully and cover enough of the face to spread the pressure. An undersized bag cannot fill the void and an oversized one can burst. Send a load plan to have it sized.',
+  },
+  {
+    slug: 'is-stretch-wrap-enough',
+    category: 'logistics',
+    link: '/blog/pallet-covers-vs-stretch-wrap-vs-shrink-hoods',
+    question: 'Is stretch wrap enough to protect a pallet?',
+    answer:
+      'For short, dry, indoor moves, usually. Stretch wrap holds the sides together but leaves the top of the pallet open, which is where dust and water land first. Add a top sheet under the wrap, use a pallet hood, or use a shrink hood that seals the whole load for outdoor storage and open transport.',
+  },
+  {
+    slug: 'flexi-bag-or-ibc',
+    category: 'logistics',
+    link: '/blog/liquid-flexi-bags-vs-ibc-vs-drums',
+    question: 'Should I ship liquids in a flexi bag or an IBC?',
+    answer:
+      'Use a flexi bag where the return journey and cleaning are the larger cost — one-way routes, export, customers who will not store empties. It is filled, emptied and then disposed of or recycled, with nothing to bring back. A rigid IBC suits a short closed loop where empties reliably return and cleaning is cheap.',
+  },
+  {
+    slug: 'baffle-bags-container-fill',
+    category: 'logistics',
+    link: '/blog/baffle-bags-vs-round-fibc',
+    question: 'Do baffle bags really fit more product in a container?',
+    answer:
+      'Usually, yes. A round-filling bag in a square footprint uses only about 79 per cent of the floor area; a baffle bag holds its square shape and recovers most of the corners, so more product fits per pallet, bay and container. The gain depends on bulk density and the load plan, so it is worked out for your cargo.',
+  },
+
+  // ---------------------------------------------------- machine covers (OEM)
+  {
+    slug: 'covers-for-a-product-range',
+    category: 'machine-covers',
+    link: '/blog/seaworthy-export-packing-for-machinery',
+    question: 'Can you supply covers for our whole machine range on repeat orders?',
+    answer:
+      'Yes. Each model\'s cover is built once from its general arrangement drawing, proved on a trial unit, then repeated against the same specification on every order, with identification printed or labelled where needed. Machinery and power equipment manufacturers use this to standardise export packing across a product line.',
+  },
+  {
+    slug: 'electrical-panel-humidity',
+    category: 'machine-covers',
+    link: '/blog/covers-for-generators-transformers-and-panels',
+    question: 'How do you stop moisture damaging electrical panels in transit?',
+    answer:
+      'By sealing the panel in a barrier cover and controlling the humidity inside it: desiccant matched to the enclosed volume and the transit time, and a humidity indicator so the receiving engineer can confirm the air stayed dry before energising. Moisture on terminations and electronics is invisible until power is applied, so it has to be controlled at source.',
+  },
+  {
+    slug: 'how-long-does-vci-last',
+    category: 'machine-covers',
+    link: '/blog/what-is-vci-packaging',
+    question: 'How long does VCI protection last?',
+    answer:
+      'It depends on how well the enclosure holds the vapour, the amount of VCI for the enclosed volume, humidity, temperature and how long the pack stays closed. Specify VCI against the actual storage or transit period, and for long voyages combine it with an aluminium barrier and desiccant rather than relying on VCI film alone.',
+  },
+
+  // ---------------------------------------------------- sustainability
+  {
+    slug: 'reusable-packaging',
+    category: 'sustainability',
+    link: '/blog/sustainable-industrial-packaging',
+    question: 'Do you make reusable packaging?',
+    answer:
+      'Yes, in two ways. Reusable products — woven laminated and PVC-coated fabric covers, flexible spill bunds and bladder tanks — are built for many uses. And drum liners let rigid drums be reused: the product never touches the drum wall, so the drum goes back into service instead of being scrapped or reconditioned, and only the liner is discarded.',
+  },
+  {
+    slug: 'reduce-plastic-use',
+    category: 'sustainability',
+    link: '/blog/sustainable-industrial-packaging',
+    question: 'Can you reduce the amount of plastic in our packaging?',
+    answer:
+      'Often, yes. A co-extruded multilayer film gets more strength from less material than a thicker single-layer film, so an over-specified plain liner can frequently be replaced by a thinner engineered one with no loss of performance. Show us the liner or cover you use now and we will tell you whether a thinner structure would outperform it.',
+  },
+  {
+    slug: 'protect-product-first',
+    category: 'sustainability',
+    link: '/blog/sustainable-industrial-packaging',
+    question: 'Why is preventing product loss part of sustainable packaging?',
+    answer:
+      'Because a spoiled batch, a corroded machine or a burst sack wastes far more material and energy than the packaging around it. Specifying the right barrier, static control or corrosion protection keeps the product saleable, which is the largest environmental gain available. After that come reuse, less material and recyclability.',
+  },
+
 ];
 
 module.exports = { categories, faqs };

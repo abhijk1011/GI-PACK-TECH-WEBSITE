@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="phero gridbg">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/blog">Blog</a><span>/</span>
+        <span aria-current="page">Glossary</span>
+      </nav>
+      <div class="phero__inner">
+        <p class="eyebrow">Reference</p>
+        <h1 class="h-page">Packaging glossary</h1>
+        <p class="lede">
+          <%= terms.length %> terms used when specifying industrial flexible packaging — from FIBC
+          types and safe working load to EVOH, VCI and water vapour transmission — each defined in
+          a sentence or two, with a link to the guide or product that goes further.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="anchor-nav">
+    <div class="wrap">
+      <ul>
+        <% letters.forEach(function(l){ %><li><a href="#letter-<%= l.letter.toLowerCase() %>"><%= l.letter %></a></li><% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="faqlayout">
+        <div>
+          <% letters.forEach(function(l){ %>
+            <section class="faqgroup" id="letter-<%= l.letter.toLowerCase() %>">
+              <h2 class="faqgroup__title"><%= l.letter %></h2>
+              <dl class="qa">
+                <% l.terms.forEach(function(t){ %>
+                  <div class="qa__item" id="<%= t.slug %>">
+                    <dt class="qa__q"><%= t.term %><% if (t.also) { %> <span class="glossary__also">(<%= t.also %>)</span><% } %></dt>
+                    <dd class="qa__a" style="margin:0;">
+                      <p><%= t.definition %></p>
+                      <% if (t.link) { %>
+                        <p style="margin-top:.6rem;"><a class="tlink tlink--brand" href="<%= t.link %>"><%= t.link_label || 'Read more' %> <%- icon('arrow', 14) %></a></p>
+                      <% } %>
+                    </dd>
+                  </div>
+                <% }) %>
+              </dl>
+            </section>
+          <% }) %>
+        </div>
+
+        <aside>
+          <div class="rail">
+            <h2 class="rail__title">A term not listed?</h2>
+            <p class="rail__body">
+              Ask the technical team. If a specification uses a word you have not seen before, the
+              chances are it decides something about the product inside.
+            </p>
+            <a class="btn btn--primary" href="/contact">
+              Ask a question <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+            </a>
+            <div class="rail__contact">
+              <span class="rail__row"><%- icon('doc', 15) %><a href="/blog">All packaging guides</a></span>
+              <span class="rail__row"><%- icon('layers', 15) %><a href="/materials">Material reference</a></span>
+              <span class="rail__row"><%- icon('search', 15) %><a href="/faq">Frequently asked questions</a></span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

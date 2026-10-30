@@ -51,7 +51,8 @@ execFileSync('node', [path.join(__dirname, 'build.js')], { stdio: 'inherit', cwd
 
 console.log('\nPublic pages');
 for (const p of ['/', '/products', '/industries', '/materials', '/faq', '/about', '/contact',
-  '/specify', '/privacy', '/thank-you', '/sitemap.xml', '/robots.txt', '/404.html']) {
+  '/specify', '/privacy', '/thank-you', '/blog', '/glossary', '/blog/feed.xml', '/sitemap.xml',
+  '/robots.txt', '/404.html']) {
   page(p);
 }
 
@@ -239,13 +240,132 @@ console.log('\nEvery product video exists');
     untitled.length ? `no heading: ${untitled.map((v) => v.file).join(', ')}` : '');
 }
 
+console.log('\nBlog');
+{
+  let missingPosts = 0;
+  let schemaGaps = [];
+  for (const post of model.posts) {
+    const body = html(post.path);
+    if (!body) { missingPosts++; continue; }
+    for (const type of ['BlogPosting', 'BreadcrumbList', 'Organization']) {
+      if (!body.includes(`"@type":"${type}"`)) schemaGaps.push(`${post.slug}: ${type}`);
+    }
+    if (post.faqs.length && !body.includes('"@type":"FAQPage"')) schemaGaps.push(`${post.slug}: FAQPage`);
+    if (!body.includes('data-speakable')) schemaGaps.push(`${post.slug}: short answer`);
+    if (!body.includes('property="og:type" content="article"')) schemaGaps.push(`${post.slug}: og:type`);
+  }
+  log(missingPosts === 0, `${model.posts.length} guides rendered`, missingPosts ? `${missingPosts} missing` : '');
+  log(schemaGaps.length === 0, 'every guide carries its article, breadcrumb and FAQ markup',
+    schemaGaps.slice(0, 5).join('; '));
+  // The short answer is the passage an answer engine lifts; past ~80 words it
+  // stops being a short answer.
+  const longSummaries = model.posts.filter((p) => p.summary.split(/\s+/).length > 80).map((p) => p.slug);
+  log(longSummaries.length === 0, 'every short answer is 80 words or fewer', longSummaries.join(', '));
+  const blogIndex = html('/blog') || '';
+  log(model.posts.every((p) => blogIndex.includes(`href="${p.path}"`)), 'the blog index links every guide');
+  log(blogIndex.includes('"@type":"Blog"'), 'the blog index emits Blog JSON-LD');
+  const feed = fs.readFileSync(path.join(DIST, 'blog', 'feed.xml'), 'utf8');
+  log((feed.match(/<item>/g) || []).length === model.posts.length, 'the feed carries every guide');
+  log(/<link rel="alternate" type="application\/rss\+xml"/.test(html('/') || ''), 'pages advertise the feed');
+  const home = html('/') || '';
+  log(model.posts.slice(0, 3).every((p) => home.includes(`href="${p.path}"`)), 'the home page links the latest guides');
+  const headerNav = home.includes('href="/blog"');
+  log(headerNav, 'the blog is in the navigation');
+}
+
+console.log('\nGlossary');
+{
+  const body = html('/glossary') || '';
+  log(body.includes('"@type":"DefinedTermSet"'), 'the glossary emits DefinedTermSet JSON-LD');
+  const n = (body.match(/"@type":"DefinedTerm"/g) || []).length;
+  log(n === model.glossary.length, 'every term is in the markup', `\u2192 ${n}/${model.glossary.length}`);
+  log(model.glossary.every((t) => body.includes(`id="${t.slug}"`)), 'every term is anchored');
+}
+
+console.log('\nStructured data parses on every page');
+{
+  const pages = [];
+  (function walk(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) { if (e.name !== 'admin') walk(f); }
+      else if (e.name.endsWith('.html')) pages.push(f);
+    }
+  })(DIST);
+  const broken = [];
+  for (const f of pages) {
+    const body = fs.readFileSync(f, 'utf8');
+    for (const m of body.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+      try { JSON.parse(m[1]); } catch (e) { broken.push(path.relative(DIST, f)); }
+    }
+  }
+  log(broken.length === 0, `JSON-LD is valid JSON on ${pages.length} pages`, broken.slice(0, 5).join(', '));
+
+  /*
+   * Every internal link resolves: to a file, or to a redirect that lands on
+   * one. The guides are hand-written Markdown full of links into the
+   * catalogue, and this is what stops one of them shipping a 404.
+   */
+  const dead = new Set();
+  for (const f of pages) {
+    const body = fs.readFileSync(f, 'utf8');
+    for (const m of body.matchAll(/href="(\/[^"#?]*)/g)) {
+      const url = m[1] || '/';
+      if (url.startsWith('//')) continue;
+      if (fileFor(url)) continue;
+      const r = rules.get(url.replace(/\/$/, ''));
+      if (r && fileFor(r.to)) continue;
+      dead.add(`${url} (in ${path.relative(DIST, f)})`);
+    }
+  }
+  log(dead.size === 0, 'every internal link resolves', [...dead].slice(0, 6).join(', '));
+}
+
+console.log('\nPages for AI assistants');
+{
+  for (const f of ['/llms.txt', '/llms-full.txt', '/products/llms.txt', '/industries/llms.txt', '/blog/llms.txt', '/faq/llms.txt']) {
+    log(Boolean(fileFor(f)), `${f} is published`);
+  }
+  const index = fs.readFileSync(path.join(DIST, 'llms.txt'), 'utf8');
+  log(index.startsWith(`# ${model.settings.company_name}\n\n> `), 'llms.txt opens with a title and a summary');
+  const site = model.settings.site_url.replace(/\/+$/, '');
+  const links = [...index.matchAll(/\]\((https?:\/\/[^)]+)\)/g)].map((m) => m[1]).filter((u) => u.startsWith(site));
+  const unresolved = links.filter((u) => !fileFor(u.slice(site.length) || '/'));
+  log(unresolved.length === 0, `every link in llms.txt resolves (${links.length})`, unresolved.slice(0, 5).join(', '));
+
+  // Every indexable page names its Markdown twin, and the twin exists.
+  const sm = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
+  const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].slice(site.length) || '/');
+  const noTwin = locs.filter((u) => {
+    const body = html(u) || '';
+    const m = body.match(/<link rel="alternate" type="text\/markdown" href="([^"]+)"/);
+    return !m || !fileFor(m[1]);
+  });
+  log(noTwin.length === 0, `every page in the sitemap has a Markdown version (${locs.length})`, noTwin.slice(0, 5).join(', '));
+
+  const full = fs.readFileSync(path.join(DIST, 'llms-full.txt'), 'utf8');
+  log(model.products.every((p) => full.includes(`# ${p.name}`)), 'llms-full.txt carries every product');
+  log(model.posts.every((p) => full.includes(`# ${p.title}`)), 'llms-full.txt carries every guide');
+  log(model.faqs.every((f) => full.includes(f.question)), 'llms-full.txt carries every FAQ');
+
+  const headers = fs.readFileSync(path.join(DIST, '_headers'), 'utf8');
+  const mdFiles = locs.map((u) => (u === '/' ? '/index.md' : `${u}.md`));
+  log(mdFiles.every((m) => headers.includes(`${m}\n  Content-Type: text/markdown; charset=utf-8`)),
+    'every Markdown page is served as UTF-8 Markdown');
+  log(/Link: <[^>]+>; rel="canonical"/.test(headers), 'Markdown pages point search engines at the HTML page');
+  log(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8').includes('/llms.txt'), 'robots.txt points to llms.txt');
+}
+
 console.log('\nNothing dynamic leaked into the output');
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 log(
-  (sitemap.match(/<loc>/g) || []).length === 9 + model.categories.length + model.products.length +
-    model.industries.length + model.roles.length,
+  (sitemap.match(/<loc>/g) || []).length === 11 + model.categories.length + model.products.length +
+    model.industries.length + model.roles.length + model.posts.length,
   'the sitemap lists every page'
 );
+log(model.posts.every((p) => sitemap.includes(`${p.path}</loc><lastmod>${p.updated}</lastmod>`)),
+  'each guide is in the sitemap with the date it last changed');
+log(sitemap.includes('<image:image>'), 'product photographs are in the sitemap');
 log(!sitemap.includes('/thank-you'), 'the thank-you page stays out of the sitemap');
 log(/<loc>[^<]*\/privacy<\/loc>/.test(sitemap), 'the privacy policy is in the sitemap');
 

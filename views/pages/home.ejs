@@ -336,6 +336,14 @@
     </div>
   </section>
 
+  <!-- ============================================ guides -->
+  <%- include('../partials/guides', {
+    guides: guides,
+    section: 'section section--rule' + (afterVideos ? '' : ' section--paper'),
+    guidesEyebrow: 'Blog', guidesTitle: 'Packaging guides',
+    guidesLede: 'Technical answers on liners, FIBC, static safety, barrier films and export packing.'
+  }) %>
+
   <%- include('../partials/cta', {
     ctaEyebrow: b.cta_eyebrow,
     ctaHeading: b.cta_heading,

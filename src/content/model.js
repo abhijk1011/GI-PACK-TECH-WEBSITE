@@ -23,6 +23,11 @@ const { industries: rawIndustries, roles: rawRoles, materials, checklist } = req
 const { settings: rawSettings, pages: rawPages, valueRows } = require('./company');
 const { categories: faqCategories, faqs: rawFaqs } = require('./faqs');
 const { privacyPolicy } = require('./legal');
+const productFaqs = require('./product-faqs');
+const { slugify } = require('../lib/text');
+const { topics: blogTopics, loadPosts } = require('./blog');
+const { terms: glossaryTerms } = require('./glossary');
+const { renderMarkdown } = require('../lib/markdown');
 
 /*
  * Photographs are the one thing that is edited without touching code, so they
@@ -177,6 +182,106 @@ const faqGroups = faqCategories
   .map((c) => ({ ...c, items: faqs.filter((f) => f.category === c.slug) }))
   .filter((c) => c.items.length);
 
+/* ----------------------------------------------------------------- blog
+ * Guides from content/blog. Each one names the products, industries and
+ * other guides it relates to by slug; a slug that resolves to nothing stops
+ * the build, because it would otherwise publish a link to a 404.
+ */
+const topicBySlug = new Map(blogTopics.map((t) => [t.slug, t]));
+const industryBySlug = new Map(industries.map((i) => [i.slug, i]));
+
+const rawPosts = loadPosts();
+const postSlugs = new Set(rawPosts.map((p) => p.slug));
+
+const posts = rawPosts
+  .map((p) => {
+    const topic = topicBySlug.get(p.topic);
+    if (!topic) throw new Error(`content/blog/${p.slug}.md names an unknown topic "${p.topic}".`);
+    for (const slug of p.products) {
+      if (!productBySlug.has(slug)) throw new Error(`content/blog/${p.slug}.md names an unknown product "${slug}".`);
+    }
+    for (const slug of p.industries) {
+      if (!industryBySlug.has(slug)) throw new Error(`content/blog/${p.slug}.md names an unknown industry "${slug}".`);
+    }
+    for (const slug of p.related) {
+      if (!postSlugs.has(slug)) throw new Error(`content/blog/${p.slug}.md names an unknown guide "${slug}".`);
+    }
+    const rendered = renderMarkdown(p.body);
+    const summaryWords = p.summary.split(/\s+/).length;
+    return {
+      ...p,
+      path: `/blog/${p.slug}`,
+      topic_name: topic.name,
+      html: rendered.html,
+      toc: rendered.toc,
+      words: rendered.words + summaryWords,
+      minutes: Math.max(2, Math.round((rendered.words + summaryWords) / 220)),
+      resolvedProducts: productsBySlugs(p.products),
+      resolvedIndustries: p.industries.map((slug) => industryBySlug.get(slug)),
+    };
+  })
+  // Newest first; within a day, the order the guides were meant to be read.
+  .sort((a, z) => z.published.localeCompare(a.published) || (a.priority ?? 50) - (z.priority ?? 50) || a.title.localeCompare(z.title));
+
+const postBySlug = new Map(posts.map((p) => [p.slug, p]));
+for (const p of posts) p.resolvedRelated = p.related.map((slug) => postBySlug.get(slug)).filter(Boolean);
+
+const postGroups = blogTopics
+  .map((t) => ({ ...t, posts: posts.filter((p) => p.topic === t.slug) }))
+  .filter((t) => t.posts.length);
+
+/*
+ * A guide lists its products and industries most-central first, so the
+ * position of a slug in that list is how much the guide is about it. Related
+ * guides are ranked by that, then by the guides' own order.
+ */
+const rank = (list, slug) => {
+  const i = list.indexOf(slug);
+  return i === -1 ? Infinity : i;
+};
+
+/** Guides that name a product, the ones most about it first. */
+function postsForProduct(slug, limit = 3) {
+  return posts
+    .filter((p) => p.products.includes(slug))
+    .map((p, order) => ({ p, order, r: rank(p.products, slug) }))
+    .sort((a, z) => a.r - z.r || a.order - z.order)
+    .slice(0, limit)
+    .map((x) => x.p);
+}
+/** Guides that name an industry, then guides about any of the given products. */
+function postsForIndustry(slug, productSlugs = [], limit = 3) {
+  const direct = posts
+    .filter((p) => slug && p.industries.includes(slug))
+    .map((p, order) => ({ p, order, r: rank(p.industries, slug) }))
+    .sort((a, z) => a.r - z.r || a.order - z.order)
+    .map((x) => x.p);
+  const viaProduct = posts
+    .filter((p) => !direct.includes(p))
+    .map((p, order) => ({ p, order, r: Math.min(...productSlugs.map((s) => rank(p.products, s))) }))
+    .filter((x) => x.r !== Infinity)
+    .sort((a, z) => a.r - z.r || a.order - z.order)
+    .map((x) => x.p);
+  return [...direct, ...viaProduct].slice(0, limit);
+}
+
+// An FAQ answer can point at the guide that goes deeper.
+for (const f of faqs) {
+  if (f.link && f.link.startsWith('/blog/') && !postSlugs.has(f.link.slice(6))) {
+    throw new Error(`FAQ "${f.slug}" links to an unknown guide "${f.link}".`);
+  }
+}
+
+/* ------------------------------------------------------------- glossary */
+const glossary = glossaryTerms
+  .map((t) => {
+    if (t.link && t.link.startsWith('/blog/') && !postSlugs.has(t.link.slice(6))) {
+      throw new Error(`Glossary term "${t.term}" links to an unknown guide "${t.link}".`);
+    }
+    return { ...t, slug: t.slug || slugify(t.term) };
+  })
+  .sort((a, z) => a.term.localeCompare(z.term, 'en', { sensitivity: 'base' }));
+
 /* ---------------------------------------------------------------- legal
  * The privacy policy names the business, its addresses and the grievance
  * officer, all of which the footer and the contact page also name. Building it
@@ -229,8 +334,16 @@ module.exports = {
   valueRows: valueRows.map((v, i) => ({ ...v, sort: i + 1, published: 1 })),
   faqs,
   faqGroups,
+  productFaqs,
   faqCategories,
   privacy,
   proof,
   videos,
+  blogTopics,
+  posts,
+  postBySlug,
+  postGroups,
+  postsForProduct,
+  postsForIndustry,
+  glossary,
 };

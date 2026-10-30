@@ -11,12 +11,14 @@
     "serve": "node scripts/serve.js",
     "start": "npm run build && npm run serve",
     "smoke": "node scripts/smoke.js",
-    "images:sync": "node scripts/sync-image-files.js"
+    "images:sync": "node scripts/sync-image-files.js",
+    "indexnow": "node scripts/indexnow.js"
   },
   "dependencies": {
     "@sveltia/cms": "^0.189.0",
     "ejs": "^3.1.10",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "marked": "15.0.12"
   },
   "devDependencies": {
     "ajv": "^8.17.1",
