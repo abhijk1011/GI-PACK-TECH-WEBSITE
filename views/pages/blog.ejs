@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="phero gridbg">
+    <div class="wrap">
+      <div class="phero__inner">
+        <p class="eyebrow">Blog</p>
+        <h1 class="h-page">Packaging guides</h1>
+        <p class="lede">
+          Technical guides on drum liners, FIBC and bulk bag liners, container liners, static
+          safety, barrier films and export packing for machinery — written by the people who make
+          them, for the people who specify them.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="anchor-nav">
+    <div class="wrap">
+      <ul>
+        <% groups.forEach(function(g){ %>
+          <li><a href="#<%= g.slug %>"><%= g.name %></a></li>
+        <% }) %>
+        <li><a href="/glossary">Glossary</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <% if (lead) { %>
+    <section class="section section--tight">
+      <div class="wrap">
+        <article class="postlead">
+          <div class="postlead__text">
+            <p class="eyebrow"><%= lead.topic_name %></p>
+            <h2 class="h-section"><a href="<%= lead.path %>"><%= lead.title %></a></h2>
+            <p class="lede"><%= lead.summary %></p>
+            <p class="postmeta">
+              <span><time datetime="<%= lead.updated %>"><%= h.date(lead.updated) %></time></span>
+              <span><%= lead.minutes %> min read</span>
+            </p>
+            <a class="tlink tlink--brand" href="<%= lead.path %>">Read the guide <%- icon('arrow', 15) %></a>
+          </div>
+          <% if (lead.takeaways.length) { %>
+            <div class="postlead__aside">
+              <p class="mono">Key takeaways</p>
+              <ul class="keypoints">
+                <% lead.takeaways.forEach(function(t){ %><li><%= t %></li><% }) %>
+              </ul>
+            </div>
+          <% } %>
+        </article>
+      </div>
+    </section>
+  <% } %>
+
+  <% groups.forEach(function(g, i){ %>
+    <section class="section section--tight section--rule<%= i % 2 === 0 ? ' section--paper' : '' %>" id="<%= g.slug %>">
+      <div class="wrap">
+        <%- include('../partials/shead', { sh: { eyebrow: 'Topic', title: g.name, lede: g.blurb, align: 'left' } }) %>
+        <div class="cards cards--3 cards--loose">
+          <% g.posts.forEach(function(post){ %>
+            <%- include('../partials/post-card', { post: post }) %>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% }) %>
+
+  <%- include('../partials/cta', {
+    ctaEyebrow: 'Not covered here?',
+    ctaHeading: 'Ask the technical team',
+    ctaBody: 'Send the product data sheet, the drum or vessel dimensions, or the machine drawing. The reply is a specification and a sample for trial fitment, not a price list.'
+  }) %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

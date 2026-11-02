@@ -1,0 +1,14 @@
+<%#
+  A guide in a list: the topic, the title, the short answer, and how long it
+  takes to read. The short answer is the card's description on purpose — it is
+  the most useful sentence in the guide, so it is the one worth showing.
+%>
+<article class="card postcard">
+  <span class="card__num"><%= post.topic_name %></span>
+  <h3 class="card__title"><a class="postcard__link" href="<%= post.path %>"><%= post.title %></a></h3>
+  <p class="card__desc"><%= h.truncate(post.summary, 170) %></p>
+  <span class="card__meta">
+    <span><time datetime="<%= post.updated %>"><%= h.date(post.updated) %></time> &nbsp;·&nbsp; <%= post.minutes %> min read</span>
+    <span class="card__arrow"><%- icon('arrow', 15) %></span>
+  </span>
+</article>

@@ -180,7 +180,7 @@ const settings = [
   },
   {
     key: 'default_seo_title',
-    value: 'GI PackTech — Industrial Flexible Packaging Manufacturer, Valsad',
+    value: 'GI PackTech — Industrial Flexible Packaging Manufacturer, Valsad, India',
     label: 'Default page title',
     group_name: 'SEO',
     sort: 2,
@@ -188,7 +188,7 @@ const settings = [
   {
     key: 'default_seo_description',
     value:
-      'Custom drum liners, container liners, FIBC liners, heavy duty sacks, machine covers and pallet covers. Manufacturer and exporter since 2006, Valsad, Gujarat.',
+      'Custom drum liners, container liners, FIBC liners, heavy duty sacks, machine covers and pallet covers. Manufacturer and exporter since 2006, Gujarat, India.',
     label: 'Default meta description',
     input_type: 'textarea',
     group_name: 'SEO',
@@ -264,9 +264,12 @@ const pages = [
   {
     slug: 'home',
     title: 'Home',
-    seo_title: 'GI PackTech — We Protect the Value of What Is Inside',
+    // The title is the strongest single signal a search engine reads, so it
+    // carries what the company makes and where. The positioning line stays
+    // the headline on the page itself.
+    seo_title: 'Industrial Flexible Packaging Manufacturer in India | GI PackTech',
     seo_description:
-      'Custom industrial packaging: drum liners 6 to 100 inches, FIBC and container liners, heavy duty sacks and machine covers. Manufacturer since 2006.',
+      'Drum and reactor liners from 6 to 100 inches, FIBC and container liners, sacks and machine covers. Manufacturer and exporter, Gujarat, India, since 2006.',
     blocks: [
       { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Manufacturer & exporter · Since 2006' },
       {
@@ -464,9 +467,9 @@ const pages = [
   {
     slug: 'faq',
     title: 'FAQ',
-    seo_title: 'Industrial Packaging FAQ — Drum Liners & FIBC | GI PackTech',
+    seo_title: 'Industrial Packaging FAQ — Drum Liners, FIBC, Export | GI PackTech',
     seo_description:
-      'Straight answers on drum liner sizes, materials, minimum quantities, lead times, samples and antistatic grades — from the manufacturer, not a reseller.',
+      'Straight answers on drum and reactor liners, FIBC types, container liners, machine covers, export, samples and materials, from the manufacturer.',
     blocks: [
       { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Answers' },
       {
@@ -479,7 +482,7 @@ const pages = [
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'Sizes, materials, minimum quantities, lead times and samples. Answered by the people who run the line.',
+          'Sizes, materials, static safety, export, samples and lead times. Answered by the people who run the line.',
       },
     ],
   },

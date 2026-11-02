@@ -1,0 +1,24 @@
+<%#
+  Guides that discuss what is on this page. Every guide links into the
+  catalogue; this is the link back, so a buyer on a product page can find the
+  explanation, and a crawler sees the two as one body of knowledge.
+
+    include('../partials/guides', { guides: guides, section: 'section section--tight section--rule' })
+%>
+<% if (typeof guides !== 'undefined' && guides && guides.length) { %>
+  <section class="<%= typeof section !== 'undefined' ? section : 'section section--tight section--rule' %>">
+    <div class="wrap">
+      <%- include('./shead', { sh: {
+        eyebrow: typeof guidesEyebrow !== 'undefined' ? guidesEyebrow : 'From the blog',
+        title: typeof guidesTitle !== 'undefined' ? guidesTitle : 'Related guides',
+        lede: typeof guidesLede !== 'undefined' ? guidesLede : '',
+        link: { href: '/blog', label: 'All guides' }, align: 'left'
+      } }) %>
+      <div class="cards cards--3 cards--loose swipe-sm">
+        <% guides.forEach(function(post){ %>
+          <%- include('./post-card', { post: post }) %>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+<% } %>

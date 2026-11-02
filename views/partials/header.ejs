@@ -46,6 +46,7 @@
       </div>
 
       <a class="nav__link" href="/materials">Materials</a>
+      <a class="nav__link" href="/blog"<%- currentPath.startsWith('/blog') ? ' aria-current="page"' : '' %>>Blog</a>
       <a class="nav__link" href="/faq">FAQ</a>
       <a class="nav__link" href="/about">About</a>
       <a class="nav__link" href="/contact">Contact</a>
@@ -73,6 +74,8 @@
       <span class="mono">Company</span>
       <a href="/industries">Industries <%- icon('arrow', 15) %></a>
       <a href="/materials">Materials <%- icon('arrow', 15) %></a>
+      <a href="/blog">Blog <%- icon('arrow', 15) %></a>
+      <a href="/glossary">Glossary <%- icon('arrow', 15) %></a>
       <a href="/faq">FAQ <%- icon('arrow', 15) %></a>
       <a href="/about">About <%- icon('arrow', 15) %></a>
       <a href="/contact">Contact <%- icon('arrow', 15) %></a>

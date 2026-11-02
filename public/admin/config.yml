@@ -63,7 +63,7 @@ collections:
     folder: content/products
     extension: yml
     format: yaml
-    # The 41 products come from the catalogue. Adding or removing one is a
+    # The products come from the catalogue. Adding or removing one is a
     # code change, so it cannot be done from here.
     create: false
     delete: false
@@ -158,3 +158,170 @@ collections:
             hint: >-
               Used when a page has no picture of its own — for instance when
               the FAQ is shared on WhatsApp or LinkedIn.
+
+  # The blog. Each guide is one Markdown file in content/blog, and the file
+  # name is its address: content/blog/what-is-vci-packaging.md is published at
+  # /blog/what-is-vci-packaging. Saving commits the file and Netlify rebuilds,
+  # so a new guide is live, in the sitemap, the feed and /llms.txt, a minute or
+  # two later. The build checks every product, industry and guide a post names,
+  # and stops rather than publish a link to a page that does not exist.
+  - name: blog
+    label: Blog guides
+    label_singular: Guide
+    icon: article
+    description: >-
+      Technical guides for buyers. Start with the short answer: two or three
+      sentences that answer the question in the title on their own. That is
+      the passage search engines and AI assistants quote.
+    folder: content/blog
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    identifier_field: title
+    slug: '{{slug}}'
+    slug_length: 70
+    summary: '{{title}}'
+    sortable_fields:
+      - title
+      - published
+      - topic
+    view_groups:
+      - label: Topic
+        field: topic
+    fields:
+      - name: title
+        label: Title
+        widget: string
+        hint: >-
+          The question or subject in the words a buyer would search with, for
+          example "What Is VCI Packaging? Corrosion Protection Without Oil".
+      - name: seo_title
+        label: Title in search results
+        widget: string
+        required: false
+        hint: Optional. Under 65 characters, ending "| GI PackTech". Leave empty to use the title.
+      - name: description
+        label: One-line description
+        widget: text
+        hint: >-
+          Shown under the title and in search results. 158 characters at most —
+          longer is cut off mid-sentence.
+      - name: topic
+        label: Topic
+        widget: select
+        options:
+          - { label: 'Sourcing and export', value: sourcing-and-export }
+          - { label: 'Industry guides', value: industry-guides }
+          - { label: 'Drum and vessel liners', value: drum-and-vessel-liners }
+          - { label: 'FIBC, liners and sacks', value: bulk-bags-and-liners }
+          - { label: 'Static safety', value: static-safety }
+          - { label: 'Barrier and moisture', value: barrier-and-moisture }
+          - { label: 'Shipping and logistics', value: shipping-and-logistics }
+          - { label: 'Machinery and export packing', value: machinery-and-export-packing }
+          - { label: 'Innovation and sustainability', value: innovation-and-sustainability }
+      - name: published
+        label: Published
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: '{{now}}'
+      - name: updated
+        label: Last changed
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: '{{now}}'
+        hint: Move this forward whenever the words change. Search engines read it.
+      - name: draft
+        label: Draft — keep off the site
+        widget: boolean
+        default: false
+        required: false
+      - name: summary
+        label: Short answer
+        widget: text
+        hint: >-
+          40 to 70 words that answer the title's question completely, with no
+          "in this article". It is shown first on the page and quoted by AI
+          assistants.
+      - name: takeaways
+        label: Key takeaways
+        widget: list
+        required: false
+        hint: Four or five one-line facts a reader leaves with.
+      - name: audience
+        label: Written for
+        widget: list
+        required: false
+        hint: For example "Chemical plants", "Machinery manufacturers".
+      - name: keywords
+        label: Search phrases
+        widget: list
+        required: false
+        hint: The phrases a buyer would type. Used in the page's metadata.
+      - name: body
+        label: Guide
+        widget: markdown
+        hint: >-
+          Use headings for each question the guide answers. Tables work. Link
+          to products with their address, for example /products/round-drum-liners.
+      - name: faqs
+        label: Questions and answers
+        label_singular: question
+        widget: list
+        required: false
+        summary: '{{fields.question}}'
+        fields:
+          - { name: question, label: Question, widget: string }
+          - { name: answer, label: Answer, widget: text, hint: 'Under 70 words, complete on its own.' }
+      - name: products
+        label: Products this guide is about
+        widget: relation
+        collection: products
+        value_field: slug
+        search_fields: [name]
+        display_fields: [name]
+        multiple: true
+        required: false
+        hint: Most central first. Each product page links back to the guide.
+      - name: industries
+        label: Industries
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: 'Machine Tools and Heavy Engineering', value: machine-tools-and-heavy-engineering }
+          - { label: 'Power and Electrical Equipment', value: power-and-electrical-equipment }
+          - { label: 'Lubricants and Base Oils', value: lubricants-and-base-oils }
+          - { label: 'Chemicals and Specialty Chemicals', value: chemicals-and-specialty-chemicals }
+          - { label: 'Pharmaceutical and Intermediates', value: pharmaceutical-and-intermediates }
+          - { label: 'Food and Food Ingredients', value: food-and-food-ingredients }
+          - { label: 'Fertilisers and Agrochemicals', value: fertilisers-and-agrochemicals }
+          - { label: 'Warehousing, Exports and Logistics', value: warehousing-exports-and-logistics }
+          - { label: 'Oil, Petrochemical and Refinery', value: oil-petrochemical-and-refinery }
+          - { label: 'Alcohol and Breweries', value: alcohol-and-breweries }
+          - { label: 'Automotive and Component Manufacturing', value: automotive-and-component-manufacturing }
+          - { label: 'Metals, Alloys and Scrap', value: metals-alloys-and-scrap }
+          - { label: 'Construction and Infrastructure', value: construction-and-infrastructure }
+          - { label: 'Demolition and Remediation', value: demolition-and-remediation }
+      - name: related
+        label: Related guides
+        widget: relation
+        collection: blog
+        value_field: '{{slug}}'
+        search_fields: [title]
+        display_fields: [title]
+        multiple: true
+        required: false
+      - name: image
+        label: Share picture
+        widget: image
+        required: false
+        hint: Optional. Used when the guide is shared. Defaults to the first product's photograph.
+      - name: priority
+        label: Order within a day
+        widget: number
+        value_type: int
+        required: false
+        hint: Lower comes first on the blog page when guides share a publish date.

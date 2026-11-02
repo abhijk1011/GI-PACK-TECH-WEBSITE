@@ -65,4 +65,14 @@ function truncate(str, n = 158) {
   return s.length <= n ? s : s.slice(0, n - 1).replace(/\s\S*$/, '') + '…';
 }
 
-module.exports = { lines, paragraphs, escapeHtml, dot, slugify, truncate };
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'];
+
+/** '2026-10-30' -> '30 October 2026'. Written out, so no reader has to guess the order. */
+function date(iso) {
+  const m = String(iso ?? '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return String(iso ?? '');
+  return `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${m[1]}`;
+}
+
+module.exports = { lines, paragraphs, escapeHtml, dot, slugify, truncate, date };

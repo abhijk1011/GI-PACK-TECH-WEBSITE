@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <article class="post">
+    <header class="phero gridbg">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/blog">Blog</a><span>/</span>
+          <a href="/blog#<%= post.topic %>"><%= post.topic_name %></a><span>/</span>
+          <span aria-current="page"><%= post.title %></span>
+        </nav>
+        <div class="phero__inner">
+          <p class="eyebrow"><%= post.topic_name %></p>
+          <h1 class="h-page"><%= post.title %></h1>
+          <p class="lede"><%= post.description %></p>
+          <p class="postmeta postmeta--center">
+            <span>By <%= s.company_name %> technical team</span>
+            <span>Published <time datetime="<%= post.published %>"><%= h.date(post.published) %></time></span>
+            <% if (post.updated !== post.published) { %>
+              <span>Updated <time datetime="<%= post.updated %>"><%= h.date(post.updated) %></time></span>
+            <% } %>
+            <span><%= post.minutes %> min read</span>
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section section--tight section--rule">
+      <div class="wrap">
+        <div class="postlayout">
+          <div class="post__main">
+            <%# The short answer comes first. It is what a reader in a hurry
+                needs, and it is the passage an answer engine quotes, so it
+                carries the substance rather than introducing it. %>
+            <aside class="answer" aria-label="Short answer">
+              <p class="answer__label">Short answer</p>
+              <p class="answer__text" data-speakable><%= post.summary %></p>
+            </aside>
+
+            <% if (post.takeaways.length) { %>
+              <section class="takeaways" aria-label="Key takeaways">
+                <h2 class="takeaways__title">Key takeaways</h2>
+                <ul class="keypoints">
+                  <% post.takeaways.forEach(function(t){ %><li><%= t %></li><% }) %>
+                </ul>
+              </section>
+            <% } %>
+
+            <div class="article">
+              <%- post.html %>
+            </div>
+
+            <% if (post.faqs.length) { %>
+              <section class="post__faq" id="questions">
+                <h2 class="post__h2">Frequently asked questions</h2>
+                <div class="qa">
+                  <% post.faqs.forEach(function(f){ %>
+                    <div class="qa__item">
+                      <h3 class="qa__q"><%= f.question %></h3>
+                      <div class="qa__a"><p><%= f.answer %></p></div>
+                    </div>
+                  <% }) %>
+                </div>
+              </section>
+            <% } %>
+
+            <footer class="post__foot">
+              <p>
+                Written by the <%= s.company_name %> technical team at the plant in Gundlav, Valsad,
+                Gujarat, India — <%= (s.nature_of_business || '').toLowerCase() %> of industrial
+                flexible packaging since <%= s.established_year %><% if (s.show_iso === '1' && s.iso_text) { %>, <%= s.iso_text %><% } %>.
+                Every product mentioned here is made to order against the buyer's specification.
+              </p>
+              <% if (post.industries.length) { %>
+                <div class="optionchips" style="margin-top:1.1rem;">
+                  <% post.resolvedIndustries.forEach(function(i){ %>
+                    <a class="optionchip" href="/industries/<%= i.slug %>"><%= i.name %></a>
+                  <% }) %>
+                </div>
+              <% } %>
+            </footer>
+          </div>
+
+          <aside class="post__aside">
+            <% if (post.toc.length > 1) { %>
+              <nav class="toc" aria-label="On this page">
+                <p class="mono toc__head">On this page</p>
+                <ol>
+                  <% post.toc.forEach(function(t){ %><li><a href="#<%= t.id %>"><%= t.label %></a></li><% }) %>
+                  <% if (post.faqs.length) { %><li><a href="#questions">Frequently asked questions</a></li><% } %>
+                </ol>
+              </nav>
+            <% } %>
+            <div class="rail">
+              <h2 class="rail__title">Specify your requirement</h2>
+              <p class="rail__body">
+                Send the product data sheet and the container, vessel or machine dimensions. The
+                reply is a specification and a sample for trial fitment.
+              </p>
+              <a class="btn btn--primary" href="/specify">
+                <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+              </a>
+              <div class="rail__contact">
+                <span class="rail__row">
+                  <%- icon('phone', 15) %>
+                  <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+                </span>
+                <span class="rail__row">
+                  <%- icon('mail', 15) %>
+                  <a href="mailto:<%= s.email %>?subject=<%= encodeURIComponent('Enquiry: ' + post.title) %>"><%= s.email %></a>
+                </span>
+                <% if (s.whatsapp) { %>
+                  <span class="rail__row">
+                    <%- icon('phone', 15) %>
+                    <a href="https://wa.me/<%= s.whatsapp %>" rel="noopener">WhatsApp</a>
+                  </span>
+                <% } %>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <% if (post.resolvedProducts.length) { %>
+    <section class="section section--paper section--rule">
+      <div class="wrap">
+        <%- include('../partials/shead', { sh: {
+          eyebrow: 'Mentioned in this guide', title: 'Products',
+          lede: 'Each one is made to order, in the material your product needs.',
+          link: { href: '/products', label: 'All products' }
+        } }) %>
+        <div class="cards cards--3 cards--loose swipe-sm">
+          <% post.resolvedProducts.slice(0, 6).forEach(function(p){ %>
+            <%- include('../partials/product-card', { p: p }) %>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (post.resolvedRelated.length) { %>
+    <section class="section section--tight section--rule">
+      <div class="wrap">
+        <%- include('../partials/shead', { sh: {
+          eyebrow: 'Keep reading', title: 'Related guides',
+          link: { href: '/blog', label: 'All guides' }, align: 'left'
+        } }) %>
+        <div class="cards cards--3 cards--loose">
+          <% post.resolvedRelated.slice(0, 3).forEach(function(r){ %>
+            <%- include('../partials/post-card', { post: r }) %>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <%- include('../partials/cta') %>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

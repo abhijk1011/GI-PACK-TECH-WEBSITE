@@ -23,8 +23,8 @@ const ejs = require('ejs');
 const model = require('../src/content/model');
 const text = require('../src/lib/text');
 const icon = require('../src/lib/icons');
-const productFaqs = require('../src/content/product-faqs');
 const { createAssetUrl } = require('../src/lib/assets');
+const llm = require('../src/lib/llm');
 
 const ROOT = path.join(__dirname, '..');
 const VIEWS = path.join(ROOT, 'views');
@@ -78,6 +78,9 @@ function render(urlPath, template, locals) {
       nav,
       assetUrl,
       currentPath: urlPath,
+      // Every page has a Markdown twin (see buildLlmPages); a file such as
+      // 404.html does not.
+      markdownPath: urlPath.includes('.') ? '' : llm.mdPathFor(urlPath),
       ...locals,
     },
     { filename: path.join(VIEWS, `${template}.ejs`), views: [VIEWS] }
@@ -129,6 +132,7 @@ function buildHome() {
     valueRows: model.valueRows,
     roles: model.roles,
     industries: model.industries.slice(0, 8),
+    guides: model.posts.slice(0, 3),
     seo: {
       title: page.seo_title,
       description: page.seo_description,
@@ -169,6 +173,7 @@ function buildCategories() {
         { name: category.name, path: `/products/${category.slug}` },
       ],
       itemList: products.map((p) => ({ name: p.name, path: `/products/${category.slug}/${p.slug}` })),
+      guides: model.postsForIndustry('', products.map((p) => p.slug), 3),
       seo: {
         title: category.seo_title || category.name,
         description: category.seo_description || h.truncate(category.intro),
@@ -181,7 +186,7 @@ function buildCategories() {
 
 function buildProductPages() {
   for (const product of model.products) {
-    const faqs = productFaqs[product.slug] || [];
+    const faqs = model.productFaqs[product.slug] || [];
     render(`/products/${product.category_slug}/${product.slug}`, 'pages/product', {
       product,
       images: product.images,
@@ -197,6 +202,7 @@ function buildProductPages() {
         .productsInCategory(product.category_slug)
         .filter((p) => p.slug !== product.slug)
         .map((p) => ({ slug: p.slug, name: p.name })),
+      guides: model.postsForProduct(product.slug, 3),
       seo: {
         title: product.seo_title || product.name,
         description:
@@ -226,6 +232,7 @@ function buildIndustries() {
       industry,
       products: industry.resolvedProducts,
       others: model.industries.filter((i) => i.slug !== industry.slug).slice(0, 6),
+      guides: model.postsForIndustry(industry.slug, industry.products || [], 3),
       crumbs: [
         { name: 'Industries', path: '/industries' },
         { name: industry.name, path: `/industries/${industry.slug}` },
@@ -246,6 +253,7 @@ function buildRoles() {
       role,
       products: role.resolvedProducts,
       roles: model.roles,
+      guides: model.postsForIndustry('', role.products || [], 3),
       seo: {
         title: role.seo_title || role.name,
         description: role.seo_description || h.truncate(role.intro),
@@ -333,6 +341,108 @@ function buildStaticPages() {
   });
 }
 
+/* ------------------------------------------------------------------ blog */
+function buildBlog() {
+  render('/blog', 'pages/blog', {
+    groups: model.postGroups,
+    lead: model.posts[0] || null,
+    blogPosts: model.posts,
+    crumbs: [{ name: 'Blog', path: '/blog' }],
+    itemList: model.posts.map((p) => ({ name: p.title, path: p.path })),
+    seo: {
+      title: 'Industrial Packaging Blog — Drum Liners, FIBC, Container Liners & Export Packing',
+      description:
+        'Technical guides from a manufacturer: drum and reactor liners, FIBC types, bulk bag liners, ' +
+        'static safety, barrier films, container liners and seaworthy export packing for machinery.',
+      path: '/blog',
+    },
+  });
+
+  for (const post of model.posts) {
+    render(post.path, 'pages/post', {
+      post,
+      faqSchema: post.faqs,
+      crumbs: [
+        { name: 'Blog', path: '/blog' },
+        { name: post.title, path: post.path },
+      ],
+      seo: {
+        title: post.seo_title || post.title,
+        description: post.description,
+        path: post.path,
+        image: post.image || post.resolvedProducts.find((p) => p.image)?.image?.path,
+        type: 'article',
+        post,
+      },
+    });
+  }
+
+  /*
+   * An RSS feed of the guides. Feed readers are a small audience; the reason
+   * for it is discovery. Aggregators, Bing and several answer engines poll
+   * feeds to find new pages sooner than a sitemap crawl would.
+   */
+  const esc = (v) => h.escapeHtml(v);
+  const rfc822 = (iso) => new Date(`${iso}T09:00:00+05:30`).toUTCString();
+  const items = model.posts
+    .map(
+      (p) =>
+        `    <item>\n` +
+        `      <title>${esc(p.title)}</title>\n` +
+        `      <link>${h.absUrl(p.path)}</link>\n` +
+        `      <guid isPermaLink="true">${h.absUrl(p.path)}</guid>\n` +
+        `      <pubDate>${rfc822(p.published)}</pubDate>\n` +
+        `      <category>${esc(p.topic_name)}</category>\n` +
+        `      <description>${esc(p.summary)}</description>\n` +
+        `    </item>`
+    )
+    .join('\n');
+  const latest = model.posts.reduce((d, p) => (p.updated > d ? p.updated : d), '');
+  fs.mkdirSync(path.join(OUT, 'blog'), { recursive: true });
+  fs.writeFileSync(
+    path.join(OUT, 'blog', 'feed.xml'),
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n` +
+      `  <channel>\n` +
+      `    <title>${esc(s.company_name)} — industrial packaging guides</title>\n` +
+      `    <link>${h.absUrl('/blog')}</link>\n` +
+      `    <atom:link href="${h.absUrl('/blog/feed.xml')}" rel="self" type="application/rss+xml"/>\n` +
+      `    <description>Technical guides on drum liners, FIBC and bulk bag liners, container liners, static safety, barrier films and export packing, from a manufacturer in Gujarat, India.</description>\n` +
+      `    <language>en</language>\n` +
+      (latest ? `    <lastBuildDate>${rfc822(latest)}</lastBuildDate>\n` : '') +
+      `${items}\n` +
+      `  </channel>\n` +
+      `</rss>\n`
+  );
+  written += 1;
+}
+
+function buildGlossary() {
+  const letters = [];
+  for (const t of model.glossary) {
+    const letter = /[a-z]/i.test(t.term[0]) ? t.term[0].toUpperCase() : '#';
+    let group = letters.find((l) => l.letter === letter);
+    if (!group) letters.push((group = { letter, terms: [] }));
+    group.terms.push(t);
+  }
+  render('/glossary', 'pages/glossary', {
+    terms: model.glossary,
+    letters,
+    definedTerms: model.glossary,
+    crumbs: [
+      { name: 'Blog', path: '/blog' },
+      { name: 'Glossary', path: '/glossary' },
+    ],
+    seo: {
+      title: 'Industrial Packaging Glossary — FIBC, Liners, Barrier Films, VCI',
+      description:
+        'Plain definitions of the terms used to specify industrial flexible packaging: FIBC types, SWL, ' +
+        'form-fit liners, EVOH, aluminium laminate, WVTR, VCI, container liners and more.',
+      path: '/glossary',
+    },
+  });
+}
+
 /* ------------------------------------------------------------- redirects
  * The Express app answered these at request time. Netlify does the same work
  * at the edge from this file, so no URL that was ever linked starts returning
@@ -346,6 +456,12 @@ function buildRedirects() {
     // The policy lives at /privacy. /privacy-policy is what a browser
     // autocompletes and what a link written from memory tends to say.
     ['/privacy-policy', '/privacy'],
+    // The words people guess for the blog.
+    ['/blogs', '/blog'],
+    ['/guides', '/blog'],
+    ['/insights', '/blog'],
+    ['/resources', '/blog'],
+    ['/glossary-of-terms', '/glossary'],
   ];
 
   // A product has one canonical URL. Reaching it under another category — from
@@ -367,13 +483,15 @@ function buildRedirects() {
 }
 
 /* -------------------------------------------------------- sitemap, robots */
-function buildSitemap() {
+function sitemapUrls() {
   const urls = [
     { loc: '/', pri: '1.0' },
     { loc: '/products', pri: '0.9' },
     { loc: '/industries', pri: '0.8' },
     { loc: '/materials', pri: '0.7' },
     { loc: '/faq', pri: '0.8' },
+    { loc: '/blog', pri: '0.8' },
+    { loc: '/glossary', pri: '0.6' },
     { loc: '/about', pri: '0.6' },
     { loc: '/specify', pri: '0.8' },
     { loc: '/contact', pri: '0.6' },
@@ -381,23 +499,53 @@ function buildSitemap() {
   ];
   for (const c of model.categories) urls.push({ loc: `/products/${c.slug}`, pri: '0.8' });
   for (const p of model.products) {
-    urls.push({ loc: `/products/${p.category_slug}/${p.slug}`, pri: '0.9' });
+    urls.push({
+      loc: `/products/${p.category_slug}/${p.slug}`,
+      pri: '0.9',
+      images: p.images.map((img) => ({ loc: img.path, title: img.alt || p.name })),
+    });
   }
   for (const i of model.industries) urls.push({ loc: `/industries/${i.slug}`, pri: '0.7' });
   for (const r of model.roles) urls.push({ loc: `/for/${r.slug}`, pri: '0.6' });
+  for (const post of model.posts) urls.push({ loc: post.path, pri: '0.7', lastmod: post.updated });
+  return urls;
+}
 
+function buildSitemap() {
+  const urls = sitemapUrls();
+
+  /*
+   * lastmod is the build date for pages generated from the catalogue, which
+   * is honest: they are regenerated on every deploy. A guide carries the date
+   * its words last changed instead, because that is what a crawler deciding
+   * whether to re-read it actually wants to know.
+   *
+   * Product photographs go in as image entries. A buyer searching images for
+   * "drum liner with spout" is a buyer, and the image sitemap is how a
+   * photograph is tied to the page that sells it.
+   */
   const today = new Date().toISOString().slice(0, 10);
   const body = urls
-    .map(
-      (u) =>
-        `  <url><loc>${h.absUrl(u.loc)}</loc><lastmod>${today}</lastmod>` +
-        `<priority>${u.pri}</priority></url>`
-    )
+    .map((u) => {
+      const imgs = (u.images || [])
+        .map(
+          (img) =>
+            `<image:image><image:loc>${h.escapeHtml(h.absUrl(img.loc))}</image:loc>` +
+            `<image:title>${h.escapeHtml(img.title)}</image:title></image:image>`
+        )
+        .join('');
+      return (
+        `  <url><loc>${h.absUrl(u.loc)}</loc><lastmod>${u.lastmod || today}</lastmod>` +
+        `<priority>${u.pri}</priority>${imgs}</url>`
+      );
+    })
     .join('\n');
 
   fs.writeFileSync(
     path.join(OUT, 'sitemap.xml'),
-    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ` +
+      `xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${body}\n</urlset>\n`
   );
   written += 1;
 
@@ -421,16 +569,21 @@ function buildSitemap() {
     'OAI-SearchBot',       // OpenAI — ChatGPT search index
     'ChatGPT-User',        // OpenAI — fetches a page a user asked about
     'ClaudeBot',           // Anthropic — crawler
+    'anthropic-ai',        // Anthropic — older token, still honoured
     'Claude-User',         // Anthropic — fetches a page a user asked about
     'Claude-SearchBot',    // Anthropic — search index
     'Google-Extended',     // Google — Gemini grounding and training
+    'Applebot',            // Apple — Siri and Spotlight answers
     'Applebot-Extended',   // Apple — Apple Intelligence
+    'Bingbot',             // Microsoft — Bing, which Copilot and ChatGPT search also draw on
     'PerplexityBot',       // Perplexity — index
     'Perplexity-User',     // Perplexity — fetches a cited page
     'Amazonbot',           // Amazon — Alexa answers
     'Meta-ExternalAgent',  // Meta AI
     'cohere-ai',
     'YouBot',
+    'DuckAssistBot',       // DuckDuckGo — AI-assisted answers
+    'MistralAI-User',      // Mistral — Le Chat fetches
     'CCBot'                // Common Crawl, which many models are trained from
   ];
 
@@ -438,6 +591,8 @@ function buildSitemap() {
     `User-agent: *\nAllow: /\nDisallow: /admin\n\n` +
     `# Answer engines and AI assistants are welcome to read and cite this site.\n` +
     aiAgents.map((a) => `User-agent: ${a}\nAllow: /\nDisallow: /admin\n`).join('\n') +
+    `\n# A plain-text map of the whole site for language models: ${h.absUrl('/llms.txt')}\n` +
+    `# Every page in full, in one file: ${h.absUrl('/llms-full.txt')}\n` +
     `\nSitemap: ${h.absUrl('/sitemap.xml')}\n`;
 
   fs.writeFileSync(
@@ -448,82 +603,55 @@ function buildSitemap() {
   return urls.length;
 }
 
-/* ------------------------------------------------------------------ llms.txt */
-/*
- * A language model reading this site pays for every page it opens, and the
- * catalogue is 74 of them. llms.txt is the convention that answers the
- * question it actually has — what does this company make, and which address
- * covers each thing — in one plain-text file it can read in full before
- * deciding what to fetch. Written from the same catalogue as the pages, so it
- * cannot describe a product that is not there.
+/* ------------------------------------------------------------- llms.txt
+ * The site as plain text for language models — see src/lib/llm.js for what
+ * each file is for. Written only when the site is open to crawlers: a site
+ * under review should not hand its full text to the assistants it is hiding
+ * its pages from.
  */
-function buildLlmsTxt() {
+function buildLlmPages() {
   if (s.robots_allow !== '1') return 0;
 
-  const L = [];
-  L.push(`# ${s.company_name}`);
-  L.push('');
-  L.push(`> ${s.default_seo_description}`);
-  L.push('');
-  L.push(
-    `${s.company_name} is a ${(s.nature_of_business || 'Manufacturer and Exporter').toLowerCase()} ` +
-      `of industrial flexible packaging, established ${s.established_year} and based in Valsad, ` +
-      `Gujarat, India. ${s.iso_text}. Everything listed here is made to specification, so pages ` +
-      `give materials, sizes and applications rather than prices; a quotation is the way to buy.`
-  );
-  L.push('');
-  L.push(`- Contact: ${s.contact_person}, ${s.contact_title} — ${s.email} — ${s.phone}`);
-  L.push(`- Works: ${s.plant_address}`);
-  L.push(`- Office: ${s.office_address}`);
-  L.push(`- GST: ${s.gst_number}`);
-  L.push('');
+  const { pages, index, full, sections } = llm.buildLlm({
+    model,
+    s,
+    absUrl: h.absUrl,
+    sitemap: sitemapUrls(),
+  });
 
-  L.push('## Key pages');
-  L.push('');
-  for (const [p, title, blurb] of [
-    ['/', 'Home', 'What the company makes and who it is for'],
-    ['/products', 'Products', 'Full catalogue, grouped into categories'],
-    ['/industries', 'Industries', 'The industries served, and what each one needs'],
-    ['/materials', 'Materials', 'How the material decides the performance'],
-    ['/faq', 'FAQ', 'Answers to the questions buyers ask most'],
-    ['/about', 'About', 'Company history, capability and certification'],
-    ['/specify', 'Specify a requirement', 'Send a specification and request a quotation'],
-    ['/contact', 'Contact', 'Contact details and enquiry form'],
-    ['/privacy', 'Privacy policy', 'What an enquiry collects, and what the site does not do']
-  ]) {
-    L.push(`- [${title}](${h.absUrl(p)}): ${blurb}`);
-  }
-  L.push('');
+  const write = (rel, body) => {
+    const file = path.join(OUT, rel);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, body);
+    written += 1;
+  };
 
-  for (const c of model.categories) {
-    const items = model.products.filter((p) => p.category_slug === c.slug);
-    if (!items.length) continue;
-    L.push(`## ${c.name}`);
-    L.push('');
-    if (c.tagline) {
-      L.push(String(c.tagline).replace(/\s+/g, ' ').trim());
-      L.push('');
-    }
-    for (const p of items) {
-      const blurb = (p.tagline || p.seo_description || p.description || '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 180);
-      L.push(`- [${p.name}](${h.absUrl(`/products/${p.category_slug}/${p.slug}`)})${blurb ? `: ${blurb}` : ''}`);
-    }
-    L.push('');
-  }
+  for (const p of pages) write(p.mdPath, p.md);
+  write('llms.txt', index);
+  write('llms-full.txt', full);
+  for (const [rel, body] of Object.entries(sections)) write(rel, body);
 
-  L.push('## Industries served');
-  L.push('');
-  for (const i of model.industries) {
-    L.push(`- [${i.name}](${h.absUrl(`/industries/${i.slug}`)})`);
-  }
-  L.push('');
+  /*
+   * Netlify does not reliably label .md files, and a browser or a model that
+   * is told text/plain without a charset can mangle the em dashes and inch
+   * marks the catalogue is full of. Each Markdown page also carries a
+   * canonical Link header pointing at its HTML page, so a search engine
+   * treats the two as one page rather than as duplicates, while assistants
+   * can still read the plain version.
+   */
+  const rules = [
+    ...pages.map((p) =>
+      `${p.mdPath}\n  Content-Type: text/markdown; charset=utf-8\n` +
+      `  Link: <${h.absUrl(p.url)}>; rel="canonical"\n  X-Content-Type-Options: nosniff`
+    ),
+    ...['/llms.txt', '/llms-full.txt', ...Object.keys(sections)].map(
+      (f) => `${f}\n  Content-Type: text/plain; charset=utf-8\n  X-Content-Type-Options: nosniff`
+    ),
+    '/blog/feed.xml\n  Content-Type: application/rss+xml; charset=utf-8',
+  ];
+  write('_headers', `${rules.join('\n\n')}\n`);
 
-  fs.writeFileSync(path.join(OUT, 'llms.txt'), L.join('\n'));
-  written += 1;
-  return 1;
+  return pages.length;
 }
 
 /* ------------------------------------------------------------------ main */
@@ -542,16 +670,19 @@ function main() {
   buildIndustries();
   buildRoles();
   buildStaticPages();
+  buildBlog();
+  buildGlossary();
   const redirectCount = buildRedirects();
   const urlCount = buildSitemap();
-  buildLlmsTxt();
+  const mdCount = buildLlmPages();
 
   if (!SITE) {
     console.warn('Warning: site_url is not set, so canonical and sitemap URLs will be relative.');
   }
   console.log(
     `Built ${written} files into dist/  ` +
-      `(${urlCount} URLs in the sitemap, ${redirectCount} redirects)`
+      `(${urlCount} URLs in the sitemap, ${mdCount} Markdown pages for AI assistants, ` +
+      `${model.posts.length} guides, ${redirectCount} redirects)`
   );
 }
 
