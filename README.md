@@ -58,7 +58,7 @@ Everything the site says lives in files under `src/content/`. Edit one, run
 | --- | --- |
 | `catalogue.js` | The 8 categories and all 43 products — the problem each one prevents, description, features, materials, sizes, applications, customisation options, photographs, cross-links and SEO |
 | `taxonomy.js` | The 14 industries, 4 buyer roles, the material reference table and the enquiry checklist |
-| `company.js` | Contact details, addresses, the settings that drive SEO, and the headings and paragraphs of the home, about, contact and specify pages |
+| `company.js` | Contact details, addresses, the settings that drive SEO, and the headings and paragraphs of the home, about, contact and enquiry pages |
 | `faqs.js` | The 64 questions and answers, in 12 groups, each optionally linked to a guide |
 | `product-faqs.js` | Each product's own questions |
 | `glossary.js` | The 63 glossary terms |
@@ -241,7 +241,8 @@ it starts at once. `npm run smoke` checks every listed file exists.
 
 ## Enquiries
 
-The contact form and the specification form are handled by **Netlify Forms**,
+The contact form and the enquiry form (at `/enquiry`, registered with Netlify
+as `specification`) are handled by **Netlify Forms**,
 which reads them out of the deployed HTML — no function, no database, no
 secrets. Submissions land in your inbox and are kept in Netlify under **Forms**.
 

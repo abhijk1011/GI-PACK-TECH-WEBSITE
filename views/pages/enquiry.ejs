@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/header') %>
+
+<main id="main">
+  <section class="phero gridbg">
+    <div class="wrap">
+      <div class="phero__inner">
+        <p class="eyebrow"><%= b.hero_eyebrow %></p>
+        <h1 class="h-page"><%= b.hero_heading %></h1>
+        <p class="lede"><%= b.intro %></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--rule">
+    <div class="wrap">
+      <div class="qlayout">
+
+        <%#
+          Five questions and no more: who you are, how to reach you, and what
+          you are after. Sizes, materials and handling are talked through on
+          the call that follows, so nobody gives up halfway down a long form.
+
+          The Netlify form name stays "specification", the name this form has
+          always had, so the email alert set up against it in Netlify keeps
+          working and past submissions stay in the same list.
+
+          Without JavaScript the browser's own checks apply (required, and the
+          pattern on the number). With it, site.js shows the messages written
+          on each field instead, beside the field they belong to.
+        %>
+        <form
+          class="qform"
+          name="specification"
+          method="post"
+          action="/thank-you"
+          data-netlify="true"
+          netlify-honeypot="website"
+          data-enquiry
+        >
+          <input type="hidden" name="form-name" value="specification">
+          <input type="hidden" name="source" value="enquiry">
+          <div class="visually-hidden" aria-hidden="true">
+            <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          </div>
+
+          <h2 class="qform__title">Your enquiry</h2>
+          <p class="qform__sub">Takes under a minute. Fields marked <span class="qform__star">*</span> are needed.</p>
+
+          <div class="field field--req">
+            <label class="field__label" for="name">Your name</label>
+            <input type="text" id="name" name="name" required autocomplete="name"
+              aria-describedby="name-err" data-missing="Please enter your name.">
+            <p class="field__err" id="name-err"></p>
+          </div>
+
+          <div class="field field--req">
+            <label class="field__label" for="company">Company or brand name</label>
+            <input type="text" id="company" name="company" required autocomplete="organization"
+              aria-describedby="company-err" data-missing="Please enter your company or brand name.">
+            <p class="field__err" id="company-err"></p>
+          </div>
+
+          <div class="field field--req">
+            <label class="field__label" for="phone">Mobile number</label>
+            <input type="tel" id="phone" name="phone" required autocomplete="tel" inputmode="tel"
+              pattern="\+?[0-9 \(\)\-]{8,20}" placeholder="+91 98765 43210"
+              aria-describedby="phone-hint phone-err"
+              data-missing="Please enter your mobile number."
+              data-invalid="Please check the number. Add the country code if you are outside India.">
+            <span class="field__why" id="phone-hint">We will call or WhatsApp you on this number</span>
+            <p class="field__err" id="phone-err"></p>
+          </div>
+
+          <div class="field field--req">
+            <label class="field__label" for="product">Product you are looking for</label>
+            <select id="product" name="product" required
+              aria-describedby="product-err" data-missing="Please choose a product, or “Not sure yet”.">
+              <option value="">Choose a product</option>
+              <option value="Not sure yet">Not sure yet / something else</option>
+              <% productGroups.forEach(function(g){ %>
+                <optgroup label="<%= g.name %>">
+                  <% g.products.forEach(function(p){ %>
+                    <option value="<%= p.name %>"><%= p.name %></option>
+                  <% }) %>
+                </optgroup>
+              <% }) %>
+            </select>
+            <p class="field__err" id="product-err"></p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="quantity">Quantity <span class="field__opt">(optional)</span></label>
+            <input type="text" id="quantity" name="quantity" autocomplete="off"
+              placeholder="e.g. 500 pieces, or 2,000 a month">
+          </div>
+
+          <button class="btn btn--primary btn--wide qform__submit" type="submit">
+            Send enquiry <span class="btn__arrow"><%- icon('arrow', 16) %></span>
+          </button>
+
+          <p class="qform__alt">
+            Prefer to talk? Call
+            <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a><% if (s.whatsapp) { %>
+            or <a href="https://wa.me/<%= s.whatsapp %>" rel="noopener">WhatsApp us</a><% } %>.
+          </p>
+          <p class="qform__fine">
+            We use these details only to reply to your enquiry. <a href="/privacy">Privacy policy</a>
+          </p>
+        </form>
+
+        <aside>
+          <div class="rail">
+            <h2 class="rail__title">What happens next</h2>
+            <ol class="nextsteps">
+              <li><span>Our team reads your enquiry and calls you back.</span></li>
+              <li><span>On the call, or by email, we go through sizes, materials and how your product is filled and handled.</span></li>
+              <li><span>You receive a specification and quotation, and a sample for trial fitment before bulk production.</span></li>
+            </ol>
+            <div class="rail__contact">
+              <span class="rail__row">
+                <%- icon('phone', 15) %>
+                <a href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%= s.phone %></a>
+              </span>
+              <span class="rail__row">
+                <%- icon('mail', 15) %>
+                <a href="mailto:<%= s.email %>"><%= s.email %></a>
+              </span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

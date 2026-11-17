@@ -82,7 +82,7 @@
           </dl>
         <% } %>
         <div class="btn-row">
-          <a class="btn btn--primary" href="/specify?product=<%= encodeURIComponent(product.name) %>">
+          <a class="btn btn--primary" href="/enquiry?product=<%= encodeURIComponent(product.name) %>">
             <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
           </a>
           <a class="btn btn--ghost" href="tel:<%= (s.phone||'').replace(/\s/g,'') %>"><%- icon('phone', 15) %> Call</a>
@@ -229,7 +229,7 @@
             Tell us what you are packing and the dimensions you are working to. We come back with a
             specification, not just a price.
           </p>
-          <a class="btn btn--primary" href="/specify?product=<%= encodeURIComponent(product.name) %>">
+          <a class="btn btn--primary" href="/enquiry?product=<%= encodeURIComponent(product.name) %>">
             <%= s.cta_primary %> <span class="btn__arrow"><%- icon('arrow', 16) %></span>
           </a>
           <div class="rail__contact">

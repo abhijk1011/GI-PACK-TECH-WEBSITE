@@ -257,7 +257,7 @@ src="https://www.facebook.com/tr?id=2201088867459109&ev=PageView&noscript=1"
   {
     key: 'enquiry_thanks',
     value:
-      'Thank you. Your requirement has reached our technical team and we will come back to you with a specification, not just a price.',
+      'Thank you. Your enquiry has reached our team, and we will be in touch shortly to talk through what you need.',
     label: 'Enquiry thank-you message',
     input_type: 'textarea',
     group_name: 'Enquiries',
@@ -265,7 +265,7 @@ src="https://www.facebook.com/tr?id=2201088867459109&ev=PageView&noscript=1"
   },
   {
     key: 'cta_primary',
-    value: 'Specify your requirement',
+    value: 'Send an enquiry',
     label: 'Primary call to action',
     group_name: 'Enquiries',
     sort: 2,
@@ -532,24 +532,24 @@ const pages = [
     ],
   },
   {
-    slug: 'specify',
-    title: 'Specify Your Requirement',
-    seo_title: 'Specify Your Packaging Requirement | GI PackTech',
+    slug: 'enquiry',
+    title: 'Send an Enquiry',
+    seo_title: 'Send an Enquiry | GI PackTech',
     seo_description:
-      'Give us the product, the container dimensions and the handling conditions, and we will issue a firm specification and quotation without a second round of questions.',
+      'Tell us your name, company, mobile number and the packaging you need. It takes under a minute, and our team calls you back to discuss sizes and details.',
     blocks: [
-      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Made to order' },
+      { block_key: 'hero_eyebrow', label: 'Hero eyebrow', value: 'Enquiry' },
       {
         block_key: 'hero_heading',
         label: 'Hero heading',
-        value: 'Specify your requirement',
+        value: 'Send an enquiry',
       },
       {
         block_key: 'intro',
         label: 'Introduction',
         input_type: 'textarea',
         value:
-          'Every product we make is made to order. These answers let us issue a firm specification and quotation without a second round of questions. Answer what you know — the rest can follow.',
+          'A few quick details is all we need. Sizes, materials and the rest we talk through with you on a call or by email.',
       },
     ],
   },

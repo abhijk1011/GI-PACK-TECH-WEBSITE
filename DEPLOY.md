@@ -34,7 +34,8 @@ That is the whole deploy. No environment variables are required.
 
 ## Step 2 — Turn on form submissions (2 minutes)
 
-The contact form and the specification form are handled by **Netlify Forms**,
+The contact form and the enquiry form (at `/enquiry`, registered with Netlify
+as `specification`) are handled by **Netlify Forms**,
 which reads the forms out of the deployed HTML. It has to be switched on once:
 
 **Project configuration → Forms → Enable form detection**, then **redeploy**

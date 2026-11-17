@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * Industries, buyer roles, materials and the enquiry checklist.
+ * Industries, buyer roles and materials.
  *
  * `priority` on an industry reflects how quickly that segment recognises the
  * value argument. It orders the industry listing; it is not shown as a number.
@@ -472,112 +472,4 @@ const materials = [
   },
 ];
 
-/*
- * The enquiry checklist from the catalogue, turned into the guided
- * "Specify your requirement" form. Every field explains why it is asked,
- * which is what makes the form read as technical rather than as a lead capture.
- */
-const checklist = [
-  {
-    field_key: 'product_packed',
-    question: 'What product will be packed?',
-    why: 'Decides material compatibility and the barrier needed',
-    input_type: 'text',
-    required: 1,
-    step: 1,
-  },
-  {
-    field_key: 'container_dimensions',
-    question: 'Container internal diameter and height, or machine dimensions',
-    why: 'The liner or cover is built to these dimensions',
-    input_type: 'text',
-    required: 1,
-    step: 1,
-  },
-  {
-    field_key: 'container_type',
-    question: 'Container type',
-    why: 'Decides fitment, gusset and closure arrangement',
-    input_type: 'select',
-    options: 'Steel drum\nPlastic drum\nFibre drum\nFIBC / jumbo bag\nPallet\nCrate\nMachine or equipment\nOther',
-    required: 0,
-    step: 1,
-  },
-  {
-    field_key: 'fill_discharge',
-    question: 'Fill and discharge method',
-    why: 'Decides spout, valve and bottom construction',
-    input_type: 'text',
-    required: 0,
-    step: 2,
-  },
-  {
-    field_key: 'temperature_range',
-    question: 'Temperature range during filling, transport and storage',
-    why: 'Decides film selection and seal specification',
-    input_type: 'text',
-    required: 0,
-    step: 2,
-  },
-  {
-    field_key: 'flammable',
-    question: 'Is the product flammable or static-sensitive?',
-    why: 'Decides whether a conductive construction is required',
-    input_type: 'select',
-    options: 'Yes\nNo\nNot sure',
-    required: 0,
-    step: 2,
-  },
-  {
-    field_key: 'regulated_grade',
-    question: 'Is a food, pharma or regulated grade required?',
-    why: 'Decides material certification',
-    input_type: 'select',
-    options: 'No\nFood grade\nPharma grade\nOther regulated grade',
-    required: 0,
-    step: 2,
-  },
-  {
-    field_key: 'storage_route',
-    question: 'Storage duration and transport route',
-    why: 'Decides barrier level and layer count',
-    input_type: 'text',
-    required: 0,
-    step: 3,
-  },
-  {
-    field_key: 'storage_location',
-    question: 'Indoor or outdoor storage, and for how long?',
-    why: 'Decides UV grade and fabric weight',
-    input_type: 'text',
-    required: 0,
-    step: 3,
-  },
-  {
-    field_key: 'reusable',
-    question: 'Single use or reusable?',
-    why: 'Decides between film and coated fabric construction',
-    input_type: 'select',
-    options: 'Single use\nReusable\nNot sure',
-    required: 0,
-    step: 3,
-  },
-  {
-    field_key: 'annual_quantity',
-    question: 'Estimated annual quantity and call-off pattern',
-    why: 'Decides tooling, pricing and lead time',
-    input_type: 'text',
-    required: 0,
-    step: 3,
-  },
-  {
-    field_key: 'printing',
-    question: 'Printing, coding or identification required?',
-    why: 'Decides print setup',
-    input_type: 'text',
-    required: 0,
-    step: 3,
-  },
-];
-
-module.exports = { industries, roles, materials, checklist };
+module.exports = { industries, roles, materials };

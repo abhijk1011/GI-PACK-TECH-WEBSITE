@@ -19,7 +19,7 @@ const path = require('path');
 const yaml = require('js-yaml');
 
 const { categories: rawCategories, products: rawProducts } = require('./catalogue');
-const { industries: rawIndustries, roles: rawRoles, materials, checklist } = require('./taxonomy');
+const { industries: rawIndustries, roles: rawRoles, materials } = require('./taxonomy');
 const { settings: rawSettings, pages: rawPages, valueRows } = require('./company');
 const { categories: faqCategories, faqs: rawFaqs } = require('./faqs');
 const { privacyPolicy } = require('./legal');
@@ -292,14 +292,6 @@ const privacy = privacyPolicy(settings);
 
 /* ------------------------------------------------------------ materials */
 const materialList = materials.map((m, i) => ({ ...m, sort: i + 1, published: 1 }));
-const checklistItems = checklist.map((c, i) => ({
-  ...c,
-  sort: i + 1,
-  published: 1,
-  required: c.required ?? 0,
-  input_type: c.input_type ?? 'text',
-  options: c.options ?? '',
-}));
 
 /*
  * Every photograph on the site, newest-looking first, for the proof strip.
@@ -330,7 +322,6 @@ module.exports = {
   industries,
   roles,
   materials: materialList,
-  checklist: checklistItems,
   valueRows: valueRows.map((v, i) => ({ ...v, sort: i + 1, published: 1 })),
   faqs,
   faqGroups,

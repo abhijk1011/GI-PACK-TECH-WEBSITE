@@ -308,4 +308,85 @@
       window.addEventListener('resize', onScroll, { passive: true });
     }
   }
+
+  /* ---------------------------------------------------- enquiry form
+   * A product page links here with ?product=<name>, so the visitor starts
+   * with that product chosen. On submit, each empty or malformed field gets
+   * its own message underneath it, written on the field in the markup, and
+   * the first one is focused. Without this script the browser's own checks
+   * still stop an empty form.
+   */
+  var enquiry = document.querySelector('[data-enquiry]');
+  if (enquiry) {
+    var productSelect = enquiry.querySelector('select[name="product"]');
+    var wanted = null;
+    try { wanted = new URLSearchParams(window.location.search).get('product'); } catch (e) { /* old browser */ }
+    if (wanted && productSelect) {
+      for (var i = 0; i < productSelect.options.length; i++) {
+        if (productSelect.options[i].value === wanted) { productSelect.selectedIndex = i; break; }
+      }
+    }
+
+    enquiry.noValidate = true;
+    var checked = enquiry.querySelectorAll('[data-missing]');
+    var submit = enquiry.querySelector('button[type="submit"]');
+    var submitHtml = submit ? submit.innerHTML : '';
+
+    var problem = function (field) {
+      var value = (field.value || '').trim();
+      if (!value) return field.getAttribute('data-missing');
+      if (field.type === 'tel') {
+        var digits = value.replace(/\D/g, '');
+        if (!/^\+?[0-9 ()\-]+$/.test(value) || digits.length < 8 || digits.length > 15) {
+          return field.getAttribute('data-invalid');
+        }
+      }
+      return '';
+    };
+
+    var show = function (field, message) {
+      var out = document.getElementById(field.id + '-err');
+      if (out) out.textContent = message || '';
+      if (message) field.setAttribute('aria-invalid', 'true');
+      else field.removeAttribute('aria-invalid');
+    };
+
+    checked.forEach(function (field) {
+      // Once a field has been flagged, clear the message as soon as it is put right.
+      var recheck = function () {
+        if (field.getAttribute('aria-invalid') === 'true') show(field, problem(field));
+      };
+      field.addEventListener('input', recheck);
+      field.addEventListener('change', recheck);
+    });
+
+    enquiry.addEventListener('submit', function (e) {
+      var first = null;
+      checked.forEach(function (field) {
+        var message = problem(field);
+        show(field, message);
+        if (message && !first) first = field;
+      });
+      if (first) {
+        e.preventDefault();
+        first.focus();
+        return;
+      }
+      // One tap, one enquiry: a second tap while the page is posting would
+      // send the same enquiry twice.
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = 'Sending…';
+      }
+    });
+
+    // Coming back with the browser's back button restores this page from
+    // memory, button and all, so it has to be usable again.
+    window.addEventListener('pageshow', function () {
+      if (submit && submit.disabled) {
+        submit.disabled = false;
+        submit.innerHTML = submitHtml;
+      }
+    });
+  }
 })();

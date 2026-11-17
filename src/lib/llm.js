@@ -67,7 +67,7 @@ function buildLlm({ model, s, absUrl, sitemap }) {
       'approximate annual quantity. The reply is a specification, a quotation and a sample for trial fitment.',
     '',
     bullets([
-      `Specify a requirement: ${abs('/specify')}`,
+      `Send an enquiry: ${abs('/enquiry')}`,
       `Contact: ${s.contact_person}, ${s.contact_title}`,
       `Email: ${s.email}`,
       `Phone: ${s.phone}`,
@@ -406,16 +406,22 @@ function buildLlm({ model, s, absUrl, sitemap }) {
     body: clean(model.page('contact').blocks.intro),
   }));
 
-  add('company', '/specify', 'Specify a requirement', doc({
-    url: '/specify',
-    title: 'Specify your packaging requirement',
-    summary: model.page('specify').seo_description,
+  add('company', '/enquiry', 'Send an enquiry', doc({
+    url: '/enquiry',
+    title: 'Send an enquiry',
+    summary: model.page('enquiry').seo_description,
     body: [
-      clean(model.page('specify').blocks.intro),
+      clean(model.page('enquiry').blocks.intro),
       '',
-      '## What the specification asks',
+      '## What the form asks',
       '',
-      bullets(model.checklist.map((c) => `${c.question}${c.why ? ` — ${c.why}` : ''}`)),
+      bullets([
+        'Your name',
+        'Company or brand name',
+        'Mobile number',
+        'The product you are looking for',
+        'Quantity (optional)',
+      ]),
     ].join('\n'),
   }));
 
@@ -501,7 +507,7 @@ function buildLlm({ model, s, absUrl, sitemap }) {
     '',
     link('/', 'Home', 'What the company makes and who it is for'),
     link('/about', 'About', 'History, capability, certification and how the company works'),
-    link('/specify', 'Specify a requirement', 'What to send for a firm specification and quotation'),
+    link('/enquiry', 'Send an enquiry', 'A five-field form; the team calls back to discuss sizes and materials'),
     link('/contact', 'Contact', 'Plant, office, phone, email and WhatsApp'),
     '',
     '## Reference',

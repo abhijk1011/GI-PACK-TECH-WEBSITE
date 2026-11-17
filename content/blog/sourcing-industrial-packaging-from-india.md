@@ -86,7 +86,7 @@ Made-to-order packaging has no list price, so "please send your price list" gets
 5. **Quantity** — the approximate annual volume and the first order size.
 6. **Destination and terms** — the destination port or delivery address and the Incoterm you buy on.
 
-With those six, a manufacturer can specify the construction and quote it in one round. GI PackTech's [specification form](/specify) asks exactly these questions.
+With those six, a manufacturer can specify the construction and quote it in one round. To start with GI PackTech, [send a quick enquiry](/enquiry) and the team will go through them with you on a call.
 
 ## Incoterms, ports and documents
 

@@ -51,7 +51,7 @@ execFileSync('node', [path.join(__dirname, 'build.js')], { stdio: 'inherit', cwd
 
 console.log('\nPublic pages');
 for (const p of ['/', '/products', '/industries', '/materials', '/faq', '/about', '/contact',
-  '/specify', '/privacy', '/thank-you', '/blog', '/glossary', '/blog/feed.xml', '/sitemap.xml',
+  '/enquiry', '/privacy', '/thank-you', '/blog', '/glossary', '/blog/feed.xml', '/sitemap.xml',
   '/robots.txt', '/404.html']) {
   page(p);
 }
@@ -92,6 +92,9 @@ const rules = new Map(
 log(rules.get('/capabilities')?.to === '/products', '/capabilities moves to the range');
 log(rules.get('/faqs')?.to === '/faq', '/faqs moves to the FAQ');
 log(rules.get('/privacy-policy')?.to === '/privacy', '/privacy-policy moves to the policy');
+// The enquiry form lived at /specify, and product pages linked there with a
+// ?product= that ads, emails and search results may still carry.
+log(rules.get('/specify')?.to === '/enquiry', '/specify moves to the enquiry form');
 const wrongCat = rules.get('/products/pallet-covers-and-pallet-wraps/pvc-round-drum-liner');
 log(
   wrongCat?.to === '/products/round-drum-liners/pvc-round-drum-liner',
@@ -104,7 +107,7 @@ log(
 log(![...rules.keys()].some((from) => fileFor(from)), 'no redirect shadows a real page');
 
 console.log('\nEnquiry forms');
-for (const [url, name] of [['/contact', 'contact'], ['/specify', 'specification']]) {
+for (const [url, name] of [['/contact', 'contact'], ['/enquiry', 'specification']]) {
   const body = html(url) || '';
   log(body.includes(`name="${name}"`) && body.includes('data-netlify="true"'),
     `${url} form is registered with Netlify Forms`);
@@ -115,6 +118,47 @@ for (const [url, name] of [['/contact', 'contact'], ['/specify', 'specification'
   log(!body.includes('_csrf'), `${url} has no stale CSRF field`);
 }
 log((html('/thank-you') || '').includes('noindex'), 'the thank-you page is noindex');
+{
+  /*
+   * The enquiry form is short on purpose: name, company or brand, mobile,
+   * product and an optional quantity. Sizes and materials are talked through
+   * on the call. A sixth question is a decision to make deliberately, so it
+   * fails here until the expected list below is changed with it.
+   */
+  const body = html('/enquiry') || '';
+  const form = (body.match(/<form[\s\S]*?<\/form>/) || [''])[0];
+  const asked = [...form.matchAll(/<(input|select|textarea)\b[^>]*>/g)]
+    .map((m) => m[0])
+    .filter((tag) => !/type="hidden"/.test(tag) && !/name="website"/.test(tag))
+    .map((tag) => (tag.match(/name="([^"]+)"/) || [])[1]);
+  const expected = ['name', 'company', 'phone', 'product', 'quantity'];
+  log(asked.join() === expected.join(), 'the enquiry form asks only the five quick questions',
+    `\u2192 ${asked.join(', ')}`);
+  const required = [...form.matchAll(/<(input|select)\b[^>]*\brequired\b[^>]*>/g)]
+    .map((m) => (m[0].match(/name="([^"]+)"/) || [])[1]);
+  log(required.join() === 'name,company,phone,product', 'everything but the quantity is required',
+    `\u2192 ${required.join(', ')}`);
+  log(/<input type="tel"[^>]*name="phone"/.test(form), 'the mobile number opens the phone keypad');
+  const offered = new Set([...form.matchAll(/<option value="([^"]*)"/g)].map((m) => m[1].replace(/&amp;/g, '&').replace(/&#39;/g, "'")));
+  const absent = model.products.filter((p) => !offered.has(p.name));
+  log(absent.length === 0, 'every product can be chosen on the enquiry form',
+    absent.length ? `\u2192 missing ${absent.map((p) => p.name).join(', ')}` : `\u2192 ${model.products.length}`);
+}
+{
+  // Every button that once said "Specify your requirement" now points here.
+  let stale = [];
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.html') && /href="\/specify[?"]/.test(fs.readFileSync(full, 'utf8'))) {
+        stale.push(path.relative(DIST, full));
+      }
+    }
+  };
+  walk(DIST);
+  log(stale.length === 0, 'no page links to the old /specify address', stale.slice(0, 5).join(', '));
+}
 
 console.log('\nFAQ');
 const faqHtml = html('/faq') || '';

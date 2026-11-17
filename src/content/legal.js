@@ -108,16 +108,13 @@ function privacyPolicy(s) {
             ],
           },
           {
-            title: 'The specification form, at /specify',
-            intro:
-              'The same contact details as above, your role if you select one, and the technical answers the ' +
-              'form asks for:',
+            title: 'The enquiry form, at /enquiry',
             list: [
-              'The product you are enquiring about, and what you intend to pack in it',
-              'Container or machine dimensions, container type, and the fill and discharge method',
-              'Temperature range, flammability or static sensitivity, and whether a food, pharma or other regulated grade is required',
-              'Storage duration and location, transport route, and whether the item is single use or reusable',
-              'Estimated annual quantity, call-off pattern, and any printing or coding required',
+              'Your name',
+              'Your company or brand name',
+              'Your mobile number',
+              'The product you are looking for',
+              'The quantity, if you choose to give one',
             ],
           },
           {

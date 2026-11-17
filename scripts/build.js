@@ -287,14 +287,19 @@ function buildStaticPages() {
     seo: { title: contact.seo_title, description: contact.seo_description, path: '/contact' },
   });
 
-  const specify = model.page('specify');
-  render('/specify', 'pages/specify', {
-    b: specify.blocks,
-    checklist: model.checklist,
-    products: model.products.map((p) => ({ slug: p.slug, name: p.name })),
-    roles: model.roles.map((r) => ({ slug: r.slug, name: r.name })),
-    prefill: '',
-    seo: { title: specify.seo_title, description: specify.seo_description, path: '/specify' },
+  // The enquiry form. Products are offered grouped under their categories, in
+  // catalogue order, so a long list stays easy to scan on a phone's picker. A
+  // product page links here with ?product=<name>, and site.js preselects it.
+  const enquiry = model.page('enquiry');
+  render('/enquiry', 'pages/enquiry', {
+    b: enquiry.blocks,
+    productGroups: model.categories
+      .map((c) => ({
+        name: c.name,
+        products: model.products.filter((p) => p.category_slug === c.slug).map((p) => ({ name: p.name })),
+      }))
+      .filter((g) => g.products.length),
+    seo: { title: enquiry.seo_title, description: enquiry.seo_description, path: '/enquiry' },
   });
 
   render('/materials', 'pages/materials', {
@@ -453,6 +458,11 @@ function buildRedirects() {
     ['/capabilities', '/products'],
     ['/faqs', '/faq'],
     ['/frequently-asked-questions', '/faq'],
+    // The enquiry form was "Specify your requirement" at /specify until
+    // November 2026. Netlify carries the query string across, so an old
+    // product link's ?product= still preselects the product.
+    ['/specify', '/enquiry'],
+    ['/inquiry', '/enquiry'],
     // The policy lives at /privacy. /privacy-policy is what a browser
     // autocompletes and what a link written from memory tends to say.
     ['/privacy-policy', '/privacy'],
@@ -493,7 +503,7 @@ function sitemapUrls() {
     { loc: '/blog', pri: '0.8' },
     { loc: '/glossary', pri: '0.6' },
     { loc: '/about', pri: '0.6' },
-    { loc: '/specify', pri: '0.8' },
+    { loc: '/enquiry', pri: '0.8' },
     { loc: '/contact', pri: '0.6' },
     { loc: '/privacy', pri: '0.3' },
   ];
