@@ -142,26 +142,37 @@ console.log('\nPrivacy policy');
   }
   log(body.includes(privacy.updated), 'the policy carries its last-updated date');
   /*
-   * The policy states plainly that this site runs no analytics, sets no
-   * cookies and embeds nothing. Those are the sentences a later change can
+   * The policy names exactly one tracker, the Meta pixel, and states plainly
+   * that there is nothing else: no other analytics, no cookies beyond the
+   * pixel's, nothing embedded. Those are the sentences a later change can
    * quietly turn into false statements in a legal document — head_scripts and
-   * body_scripts are pasted into every page, so a tag added there would do it
-   * without touching this file. The rendered page is checked rather than the
-   * settings, so it catches a tag whichever way it arrived. A Search Console
-   * verification meta tag is deliberately not on this list: it tracks nobody,
-   * and head_scripts exists partly to carry it.
+   * body_scripts are pasted into every page, so a tag added or removed there
+   * would do it without touching this file. The rendered page is checked
+   * rather than the settings, so it catches a tag whichever way it arrived. A
+   * Search Console verification meta tag is deliberately not on this list: it
+   * tracks nobody, and head_scripts exists partly to carry it.
    */
-  const trackers =
-    /googletagmanager|google-analytics|gtag\(|fbq\(|hotjar|clarity\.ms|matomo|mixpanel|plausible|fathom|segment\.(io|com)/i;
-  log(!trackers.test(body), 'no analytics tag contradicts the "no tracking" section');
-  log(!/document\.cookie/.test(body), 'nothing on the page sets a cookie');
+  const undisclosed =
+    /googletagmanager|google-analytics|gtag\(|hotjar|clarity\.ms|matomo|mixpanel|plausible|fathom|segment\.(io|com)/i;
+  log(!undisclosed.test(body), 'no tracker the policy does not disclose is on the page');
+  const pixelOnPage = /fbq\(\s*'init'/.test(body);
+  const pixelInPolicy = body.includes('id="meta-pixel"');
+  log(pixelOnPage === pixelInPolicy, 'the Meta pixel is on the page exactly when the policy describes it',
+    pixelOnPage === pixelInPolicy ? ''
+      : pixelOnPage ? '→ the pixel is on the page but the policy has no meta-pixel section'
+      : '→ the policy describes a pixel that is not on the page');
+  const thanks = html('/thank-you') || '';
+  log(!/fbq\(\s*'track',\s*'Lead'/.test(thanks) || pixelInPolicy, 'the Lead event is covered by the policy');
+  log(!/document\.cookie/.test(body), 'no inline script on the page sets a cookie');
   log(!/<(iframe|embed)\b/i.test(body), 'the policy page embeds nothing itself');
   // Every https:// reference on the page must be a link somebody clicks, not a
   // resource the browser fetches — that is what "loads nothing from a third
-  // party" means, and it is the claim a stray <script src> would break.
+  // party" means, and it is the claim a stray <script src> would break. The
+  // one exception is the Meta pixel's no-script image, which the policy names.
   const fetched = [...body.matchAll(/<(?:script|img|link|source|video|audio|iframe)[^>]*?(?:src|href)="(https?:\/\/[^"]+)"/gi)]
     .map((m) => m[1])
-    .filter((u) => !u.startsWith(model.settings.site_url));
+    .filter((u) => !u.startsWith(model.settings.site_url))
+    .filter((u) => !(pixelInPolicy && u.startsWith('https://www.facebook.com/tr?')));
   log(fetched.length === 0, 'the page fetches nothing from a third party',
     fetched.length ? fetched.join(', ') : '');
 }

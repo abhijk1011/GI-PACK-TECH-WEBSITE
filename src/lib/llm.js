@@ -534,7 +534,7 @@ function buildLlm({ model, s, absUrl, sitemap }) {
     '',
     '## Optional',
     '',
-    link('/privacy', 'Privacy policy', 'What an enquiry collects; the site sets no cookies and runs no analytics'),
+    link('/privacy', 'Privacy policy', 'What an enquiry collects, and what the Meta pixel on this site records'),
     `- [Sitemap](${abs('/sitemap.xml')})`,
     `- [Guides feed (RSS)](${abs('/blog/feed.xml')})`,
   ].join('\n')) + '\n';

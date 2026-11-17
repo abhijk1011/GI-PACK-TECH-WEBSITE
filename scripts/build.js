@@ -319,7 +319,7 @@ function buildStaticPages() {
       title: 'Privacy Policy',
       description:
         'What this site collects, why, who else sees it and how long it is kept. ' +
-        'No cookies, no analytics and no tracking, and a named grievance officer.',
+        'One measurement tag, the Meta pixel, and a named grievance officer.',
       path: '/privacy',
     },
   });
