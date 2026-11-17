@@ -213,7 +213,30 @@ const settings = [
   },
   {
     key: 'head_scripts',
-    value: '',
+    /*
+     * The Meta pixel, exactly as Events Manager issues it, so Facebook and
+     * Instagram ads can be measured against visits to this site. The privacy
+     * policy (src/content/legal.js) describes it in its own section, and
+     * scripts/smoke.js fails the build if the two ever disagree: remove the
+     * pixel here and that section has to go in the same commit.
+     */
+    value: `<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2201088867459109');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2201088867459109&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->`,
     label: 'Custom head code',
     hint: 'Google Analytics, Search Console verification, Meta pixel. Pasted into every page <head>.',
     input_type: 'textarea',

@@ -9,13 +9,15 @@
  * Three rules govern edits here.
  *
  * The first is that every sentence has to be true of this site as it is built
- * today, not of a generic website. This site sets no cookies, runs no
- * analytics, loads no third-party fonts and has no database behind it, so the
- * policy says so plainly rather than hedging with the boilerplate most
- * policies carry. That plain statement is also the trap: the moment somebody
- * pastes a Google Analytics tag into `head_scripts`, embeds a map, or adds a
- * chat widget, the "what this site does not do" section becomes a false
- * statement in a legal document. Change this file in the same commit.
+ * today, not of a generic website. This site runs exactly one measurement
+ * tag, the Meta pixel in `head_scripts`, which has its own section below;
+ * beyond that it sets no cookies, loads no third-party fonts and has no
+ * database behind it, so the policy says so plainly rather than hedging with
+ * the boilerplate most policies carry. That plain statement is also the trap:
+ * the moment somebody pastes another tag into `head_scripts`, takes the pixel
+ * out, embeds a map, or adds a chat widget, the "what this site does not do"
+ * section becomes a false statement in a legal document. Change this file in
+ * the same commit.
  *
  * The second is that it is written as a function of settings rather than as a
  * literal. A privacy policy naming an address, a mailbox and a grievance
@@ -31,7 +33,7 @@
 
 // Written by hand. See the note above.
 const EFFECTIVE = '19 September 2026';
-const UPDATED = '19 September 2026';
+const UPDATED = '17 November 2026';
 
 /** Builds the policy against the site settings, so no detail is stated twice. */
 function privacyPolicy(s) {
@@ -44,8 +46,9 @@ function privacyPolicy(s) {
     intro:
       'This site exists to take an engineering enquiry and answer it with a specification. ' +
       'The only personal data it asks for is what a technical reply needs: who you are, where ' +
-      'to reach you, and what you are trying to protect. It sets no cookies, runs no analytics, ' +
-      'and carries no advertising or tracking of any kind.',
+      'to reach you, and what you are trying to protect. It runs one measurement tool, the Meta pixel, ' +
+      'so that we can tell whether our Facebook and Instagram ads bring enquiries. Beyond that it sets ' +
+      'no cookies and carries no analytics, advertising or tracking.',
 
     sections: [
       {
@@ -123,7 +126,9 @@ function privacyPolicy(s) {
               'Serving a page leaves the record that serving any page leaves. Our host logs the request: the ' +
               'IP address it came from, the time, the page asked for, the browser and operating system that ' +
               'asked, and the page that referred you, if any. We do not join those logs to the forms, and we ' +
-              'do not use them to build a profile of you.',
+              'do not use them to build a profile of you.\n\n' +
+              'The Meta pixel also records each visit, for Meta rather than for our host. The next section ' +
+              'describes it.',
           },
         ],
         after:
@@ -135,6 +140,42 @@ function privacyPolicy(s) {
           'treats as sensitive. If you send such data anyway, we will delete it rather than file it.',
       },
 
+      /*
+       * Present because the pixel is in head_scripts, and only because of
+       * that. scripts/smoke.js checks the two together: the pixel on a page
+       * without this section, or this section without the pixel, fails the
+       * build.
+       */
+      {
+        slug: 'meta-pixel',
+        name: 'The Meta pixel',
+        heading: 'The Meta pixel, and what it records',
+        body:
+          'We advertise on Facebook and Instagram, and to know whether those ads bring us enquiries, this site ' +
+          'carries the Meta pixel: a small script from Meta Platforms, the company that runs both. It is the ' +
+          'only measurement tool on the site. When a page loads, your browser fetches the script from Meta and ' +
+          'sends Meta a record of the visit:',
+        list: [
+          'The address of the page you viewed, and of the page that referred you, if any',
+          'Your IP address, and the browser, operating system and device you are using',
+          'Basic information about the page, such as its title and the labels of buttons you click',
+          'That you reached the thank-you page after sending an enquiry, recorded as a "Lead" with nothing of what you wrote',
+          'An identifier kept in a cookie named _fbp, which the script sets on this site so that Meta can recognise the same browser on a later visit. It expires 90 days after your last visit',
+          'If you are logged in to Facebook or Instagram in the same browser, Meta can also connect the visit to your account through its own cookies',
+        ],
+        after:
+          'The pixel does not send Meta your name, your email address, your telephone number or anything you ' +
+          'type into either form. Those reach us alone, as described above.\n\n' +
+          'Meta uses what it receives to report to us, in totals, how many people saw our ads, visited the site ' +
+          'and sent an enquiry, and to show our ads to people who have visited before or who resemble those who ' +
+          'have. We see the totals, not who you are. Meta also handles the data under its own privacy policy, ' +
+          'published on facebook.com, which governs what it does beyond the job it does for us.\n\n' +
+          'You can stop it. Tracking protection in your browser, or a content blocker, keeps the script from ' +
+          'loading, and every page of this site works exactly the same without it. If you have a Facebook or ' +
+          'Instagram account, its ad preferences let you limit how activity on other websites is used to show ' +
+          'you ads.',
+      },
+
       {
         slug: 'what-we-dont',
         name: 'What we do not do',
@@ -144,19 +185,17 @@ function privacyPolicy(s) {
           'one is short in the places that matter, and the list below is the reason. As this site is built and ' +
           'deployed today:',
         list: [
-          'It sets no cookies of its own, for any purpose.',
-          'It runs no analytics. No Google Analytics, no Meta pixel, no heatmaps, no session recording, no A/B testing.',
-          'It carries no advertising, and no advertising or retargeting tags.',
-          'It loads no fonts, scripts or stylesheets from a third party. The typefaces are served from our own domain precisely so that reading a page tells nobody else you read it.',
+          'Apart from the Meta pixel\'s _fbp cookie, it sets no cookies, for any purpose. Nothing on the site needs a cookie to work.',
+          'It runs no analytics beyond the Meta pixel. No Google Analytics, no heatmaps, no session recording, no A/B testing.',
+          'It shows no advertising, and the Meta pixel is the only advertising tag on it.',
+          'Apart from the Meta pixel\'s script, it loads no fonts, scripts or stylesheets from a third party. The typefaces and everything else are served from our own domain.',
           'It embeds nothing. No maps, no video players, no chat widget, no social feed.',
           'It has no database and no public login, so there is no store of visitors to breach.',
-          'We never sell personal data, rent it, trade it, or hand it to a data broker or an advertising network. There is no circumstance in which we would.',
+          'We never sell personal data, rent it or trade it, and never hand it to a data broker. Meta, through the pixel, is the only advertising network that receives anything from this site, and it never receives your enquiry.',
         ],
         after:
-          'Because there is no tracking to consent to, this site shows no cookie banner. That is not an ' +
-          'omission; there is nothing to ask you about.\n\n' +
-          'If any of that changes, if a measurement tool or an embedded map is ever added, this policy will be ' +
-          'updated with the change and the date at the top of the page will move.',
+          'If any of that changes, if another measurement tool or an embedded map is ever added, this policy ' +
+          'will be updated with the change and the date at the top of the page will move.',
       },
 
       {
@@ -192,6 +231,7 @@ function privacyPolicy(s) {
           'defined job for us under its own terms:',
         list: [
           'Netlify, Inc. (United States) hosts this website and receives the form submissions. A submission is stored in our account there so it can be read and answered, and Netlify processes it on our instructions.',
+          'Meta Platforms receives the record of each visit that the Meta pixel sends, described above, and uses it to measure and target our ads as well as under its own terms. It does not receive your enquiry.',
           'Our email and telephone providers carry the reply, in the ordinary way email and calls are carried.',
           'Our accountant and auditor see order records where the law requires them to.',
         ],
@@ -209,11 +249,14 @@ function privacyPolicy(s) {
         body:
           'Your enquiry is read and worked on in India, at Valsad and Mumbai. Before it reaches us it passes ' +
           'through and is stored on infrastructure our host operates outside India, principally in the United ' +
-          'States, and our email is likewise carried by servers that may sit outside India.\n\n' +
+          'States, and our email is likewise carried by servers that may sit outside India. The record of a ' +
+          'visit that the Meta pixel sends goes straight from your browser to Meta, which processes it in the ' +
+          'United States and elsewhere.\n\n' +
           'The Digital Personal Data Protection Act, 2023 permits transfer outside India except to a country ' +
           'the Central Government restricts, and we transfer personal data to no restricted country. Where the ' +
           'GDPR applies, transfers out of the European Economic Area rest on the European Commission\'s ' +
-          'Standard Contractual Clauses as incorporated in our host\'s terms.',
+          'Standard Contractual Clauses as incorporated in our host\'s terms, and what Meta receives is ' +
+          'transferred under Meta\'s own terms.',
       },
 
       {
@@ -232,6 +275,7 @@ function privacyPolicy(s) {
           'An enquiry that does not lead to an order is kept for up to 24 months and then deleted. Packaging enquiries have a long tail, and a project deferred for a year is a common thing: a specification we still hold is one you do not have to write out again.',
           'An enquiry that becomes an order joins the order record, and is kept as long as tax, accounting and contract law require. In India that is generally at least eight years from the end of the financial year concerned.',
           'Request logs held by our host are kept for the short period its service retains them, and are not archived by us.',
+          'The Meta pixel\'s _fbp cookie expires in your browser 90 days after your last visit. What the pixel sends to Meta is held by Meta, for as long as its own policy provides, not by us.',
         ],
         after:
           'You can ask us to delete your enquiry sooner than any of this, and unless we are legally required ' +

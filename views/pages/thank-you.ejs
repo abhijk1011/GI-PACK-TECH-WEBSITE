@@ -23,5 +23,10 @@
 </main>
 
 <%- include('../partials/footer') %>
+<%# Both enquiry forms land here only after Netlify accepts a submission, so
+    reaching this page is the conversion: it is what Ads Manager counts as a
+    Lead. Nothing from the form is sent with it. Guarded so the page is
+    unaffected if the pixel is ever taken out of head_scripts. %>
+<script>if (window.fbq) fbq('track', 'Lead');</script>
 </body>
 </html>
